@@ -26,6 +26,30 @@ const double VELOCITY_BOOST = 1.0;
 const rgb_color_t PACMAN_COLOR = {.r = 1, .g = 1, .b = 0};
 const rgb_color_t DOT_COLOR = {.r = 1, .g = 1, .b = 0};
 
+vector_t camera_offset_func(body_t *focal_body, void *aux)
+{
+  vector_t center = vec_multiply(0.5, max);
+  return vec_subtract(center, body_get_centroid(focal_body));
+}
+
+vector_t camera_mover_func(vector_t offset, body_t *body)
+{
+  camera_mode_t camera_mode = body_get_camera_mode(body);
+
+  switch (camera_mode)
+  {
+  case FOLLOW:
+    return offset;
+    break;
+  case SCENE:
+    return offset;
+    break;
+  default:
+    return VEC_ZERO;
+    break;
+  }
+}
+
 vector_t wrap_position(vector_t original_position)
 {
   if (original_position.x < min.x)
@@ -120,6 +144,7 @@ void make_dot(scene_t *scene)
   vector_t position = {.x = rand() % SCREEN_SIZE_X, .y = rand() % SCREEN_SIZE_Y};
   body_set_centroid(dot, position);
   body_set_movable(dot, false);
+  body_set_camera_mode(dot, SCENE);
   scene_add_body(scene, dot);
 }
 
@@ -135,8 +160,13 @@ int main(int argc, char *argv[])
   vector_t position = (vector_t){.x = SCREEN_SIZE_X / 2, .y = SCREEN_SIZE_Y / 2};
   body_set_centroid(pacman, position);
   body_set_movable(pacman, true);
+  body_set_camera_mode(pacman, FOLLOW);
   scene_add_body(scene, pacman);
   sdl_init(min, max);
+  scene_add_camera_management(scene,
+                              (camera_offset_func_t)camera_offset_func,
+                              (camera_mover_func_t)camera_mover_func,
+                              NULL);
   double dt;
   double time_until_add = DOT_ADD_PERIOD;
   sdl_event_args((void *)pacman);

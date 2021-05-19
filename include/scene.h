@@ -14,14 +14,14 @@ typedef struct scene scene_t;
 /**
  * Calculates the offset vector based off of a focal body and aux info.
  */
-typedef vector_t (*camera_offset_t)(body_t *focal_body, void *aux);
+typedef vector_t (*camera_offset_func_t)(body_t *focal_body, void *aux);
 
 /**
  * Dependent on the camera mode, calculates the amount to move a body to adjust 
  * for the desired scene change.
- * Offset is computed by the scene's camera_offset_t.
+ * Offset is computed by the scene's camera_offset_func_t.
  */
-typedef vector_t (*camera_mover_t)(vector_t offset, body_t *body);
+typedef vector_t (*camera_mover_func_t)(vector_t offset, body_t *body);
 
 /**
  * A function which adds some forces or impulses to bodies,
@@ -140,8 +140,8 @@ void scene_add_bodies_force_creator(
  */
 void scene_add_camera_management(
     scene_t *scene,
-    camera_offset_t camera_offset,
-    camera_mover_t camera_mover,
+    camera_offset_func_t camera_offset,
+    camera_mover_func_t camera_mover,
     void *camera_aux);
 
 /**

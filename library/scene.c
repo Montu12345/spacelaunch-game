@@ -52,8 +52,8 @@ typedef struct scene
 {
     list_t *bodies;
     list_t *forces;
-    camera_offset_t camera_offset;
-    camera_mover_t camera_mover;
+    camera_offset_func_t camera_offset;
+    camera_mover_func_t camera_mover;
     size_t focal_body_idx;
     void *camera_aux;
 } scene_t;
@@ -134,11 +134,15 @@ bool force_is_removed(force_t *force)
     return false;
 }
 
+bool idx_is_valid(size_t idx, list_t *list)
+{
+    return idx >= 0 && idx < list_size(list);
+}
+
 size_t get_focal_body_idx(scene_t *scene)
 {
     size_t cached_idx = scene->focal_body_idx;
-    bool idx_is_valid = cached_idx >= 0 && cached_idx < list_size(scene->bodies);
-    if (idx_is_valid)
+    if (idx_is_valid(cached_idx, scene->bodies))
     {
         body_t *cached_body = list_get(scene->bodies, cached_idx);
         if (body_get_camera_mode(cached_body) == FOLLOW)
@@ -162,8 +166,8 @@ size_t get_focal_body_idx(scene_t *scene)
 
 void scene_add_camera_management(
     scene_t *scene,
-    camera_offset_t camera_offset,
-    camera_mover_t camera_mover,
+    camera_offset_func_t camera_offset,
+    camera_mover_func_t camera_mover,
     void *camera_aux)
 {
     scene->camera_aux = camera_aux;
@@ -174,7 +178,7 @@ void scene_add_camera_management(
 
 void apply_camera(scene_t *scene)
 {
-    if (scene->focal_body_idx == INVALID_FOCAL_IDX)
+    if (!idx_is_valid(scene->focal_body_idx, scene->bodies))
     {
         return;
     }
@@ -244,6 +248,6 @@ void scene_tick(scene_t *scene, double dt)
 {
     apply_forces(scene);
     clean_forces(scene);
-    move_and_clean_bodies(scene, dt);
     apply_camera(scene);
+    move_and_clean_bodies(scene, dt);
 }
