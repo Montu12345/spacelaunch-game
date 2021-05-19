@@ -54,6 +54,19 @@ typedef struct body_descriptors body_descriptors_t;
  */
 typedef struct body body_t;
 
+/**
+ * Categories for rules for each body to follow in regards to the camera.
+ * Each camera mode is customizable, these are the intended functionalities.
+ */
+typedef enum
+{
+    LOCKED,     // Body is not affected by the camera
+    BACKGROUND, // For creating moving backgrounds
+    FOREGROUND, // For creating moving foregrounds
+    FOLLOW,     // Subject of camera movement, used once.
+    SCENE       // Elements of the scene which should be left behind
+} camera_mode_t;
+
 body_appearance_t body_appearance_init(
     list_t *shape,
     rgb_color_t color);
@@ -83,7 +96,6 @@ body_kinematic_variables_t body_kinematic_variables_init(
  */
 body_t *body_init(list_t *shape, double mass, rgb_color_t color);
 
-
 /**
  * Allocates memory for a body with the given parameters.
  * The body is initially at rest.
@@ -102,8 +114,7 @@ body_t *body_init_with_info(
     double mass,
     rgb_color_t color,
     void *info,
-    free_func_t info_freer
-);
+    free_func_t info_freer);
 
 /**
  * Gets the information associated with a body.
@@ -112,7 +123,6 @@ body_t *body_init_with_info(
  * @return the info passed to body_init()
  */
 void *body_get_info(body_t *body);
-
 
 /**
  * Marks a body for removal--future calls to body_is_removed() will return true.
@@ -132,7 +142,6 @@ void body_remove(body_t *body);
  * @return whether body_remove() has been called on the body
  */
 bool body_is_removed(body_t *body);
-
 
 /**
  * Releases the memory allocated for a body.
@@ -241,6 +250,22 @@ void body_set_movable(body_t *body, bool movable);
  * @return boolean, true if the body is movable
  */
 bool body_is_movable(body_t *body);
+
+/**
+ * Changes a body's tracking by the camera 
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param camera_mode the type of desired tracking
+ */
+void body_set_camera_mode(body_t *body, camera_mode_t camera_mode);
+
+/**
+ * Gets the camera mode of the body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return camera_mode_t, the body's set camera mode
+ */
+camera_mode_t body_get_camera_mode(body_t *body);
 
 /**
  * Changes a body's orientation in the plane.

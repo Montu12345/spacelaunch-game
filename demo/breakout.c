@@ -251,6 +251,7 @@ int main()
             scene_tick(demo, dt);
             ball = create_ball(demo);
             paddle = make_paddle(demo);
+            sdl_event_args(paddle);
             create_new_game(demo, ball, paddle);
         }
         scene_tick(demo, dt);

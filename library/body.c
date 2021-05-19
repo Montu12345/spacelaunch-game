@@ -37,6 +37,7 @@ typedef struct body_aux_properties
     void *info;
     free_func_t info_freer;
     bool is_removed;
+    camera_mode_t camera_mode;
 } body_aux_properties_t;
 
 typedef struct body
@@ -72,12 +73,14 @@ body_physical_properties_t body_physical_properties_init(
 body_aux_properties_t body_aux_properties_init(
     void *info,
     free_func_t info_freer,
-    bool is_removed)
+    bool is_removed,
+    camera_mode_t camera_mode)
 {
     body_aux_properties_t aux = {
         .info = info,
         .info_freer = info_freer,
-        .is_removed = is_removed};
+        .is_removed = is_removed,
+        .camera_mode = camera_mode};
     return aux;
 };
 
@@ -117,7 +120,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color)
         BODY_IS_MOVABLE);
     rgb_color_t color_pointer = rgb_init(color.r, color.g, color.b);
     body_appearance_t appearance = body_appearance_init(shape, color_pointer);
-    body_aux_properties_t aux = body_aux_properties_init(NULL, NULL, false);
+    body_aux_properties_t aux = body_aux_properties_init(NULL, NULL, false, LOCKED);
     *body = (body_t){
         .kinematic_variables = kinematic,
         .physical_properties = physical,
@@ -172,6 +175,16 @@ void body_set_movable(body_t *body, bool movable)
 bool body_is_movable(body_t *body)
 {
     return body->physical_properties.movable;
+}
+
+void body_set_camera_mode(body_t *body, camera_mode_t camera_mode)
+{
+    body->aux.camera_mode = camera_mode;
+}
+
+camera_mode_t body_get_camera_mode(body_t *body)
+{
+    return body->aux.camera_mode;
 }
 
 list_t *body_get_shape(body_t *body)

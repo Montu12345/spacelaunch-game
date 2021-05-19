@@ -11,6 +11,21 @@
  */
 typedef struct scene scene_t;
 
+
+typedef void (*camera_offset_t)(vector_t scene_offset);
+
+/**
+ * Dependent on the camera mode, moves a body to adjust for the desired scene change.
+ * Scene offset is computed by the scene's camera_offset_t
+ *
+ * @param key a character indicating which key was pressed
+ * @param type the type of key event (KEY_PRESSED or KEY_RELEASED)
+ * @param held_time if a press event, the time the key has been held in seconds
+ * @param body_t a body that moves
+ */
+typedef void (*camera_mover_t)(vector_t camera_offset);
+
+
 /**
  * A function which adds some forces or impulses to bodies,
  * e.g. from collisions, gravity, or spring forces.

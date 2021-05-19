@@ -1,5 +1,5 @@
 # List of demo programs
-DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs
+DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs camerademo
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
@@ -85,6 +85,9 @@ bin/pegs: out/pegs.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 bin/breakout: out/breakout.o out/sdl_wrapper.o $(STUDENT_OBJS)
+		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
+
+bin/camerademo: out/camerademo.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 
@@ -235,6 +238,9 @@ bin/pegs.exe: out/pegs.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 bin/breakout.exe: out/breakout.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
+bin/camerademo.exe: out/camerademo.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
+
 # Builds the test suite executables from the corresponding test .o file
 # and the library .o files. The only difference from the demo build command
 # is that it doesn't link the SDL libraries.
@@ -249,7 +255,8 @@ bin/nbodies bin\nbodies: bin/nbodies.exe;
 bin/damping bin\damping: bin/damping.exe; 
 bin/spaceinvaders bin\spaceinvaders: bin/spaceinvaders.exe
 bin/pegs bin\pegs: bin/pegs.exe; 
-bin/breakout bin\breakout: bin/pegs.exe; 
+bin/breakout bin\breakout: bin/breakout.exe; 
+bin/camerademo bin\camerademo: bin/camerademo.exe; 
 bin/test_suite_% bin\test_suite_%: bin/test_suite_%.exe ;
 
 # CMD commands to test and clean
