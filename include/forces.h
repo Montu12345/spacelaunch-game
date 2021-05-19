@@ -133,11 +133,4 @@ vector_t impulse_to_body_1(
     vector_t axis,
     double elasticity);
 
-/* TODO: Remove */
-void create_half_desructive_collision(
-    scene_t *scene,
-    double elasticity,
-    body_t *body1,
-    body_t *body2);
-
 #endif // #ifndef __FORCES_H__

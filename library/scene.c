@@ -157,7 +157,6 @@ size_t get_focal_body_idx(scene_t *scene)
         curr_body = list_get(scene->bodies, idx);
         if (body_get_camera_mode(curr_body) == FOLLOW)
         {
-            scene->focal_body_idx = idx;
             return idx;
         }
     }
@@ -178,6 +177,7 @@ void scene_add_camera_management(
 
 void apply_camera(scene_t *scene)
 {
+    scene->focal_body_idx = get_focal_body_idx(scene);
     if (!idx_is_valid(scene->focal_body_idx, scene->bodies))
     {
         return;

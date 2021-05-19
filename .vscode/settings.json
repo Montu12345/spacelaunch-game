@@ -44,6 +44,7 @@
     // User-level only... Just delete when you're done with the course.
     "terminal.integrated.defaultProfile.windows": "Visual Studio Developer Prompt",
     "files.associations": {
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "collision.h": "c"
     }
 }

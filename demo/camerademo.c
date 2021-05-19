@@ -1,8 +1,10 @@
-#include "pacman.h"
+#include "camerademo.h"
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "collision.h"
+#include "forces.h"
 
 /** 
  * Modifications on pacman to test out camera functionality
@@ -18,7 +20,6 @@ const int PACMAN_STEP = 10;
 const int CIRCLE_PRECISION = 10;
 const int PACMAN_PRECISION = 30;
 const double PACMAN_VELOCITY_SCALE = 30;
-const double EAT_TOLERANCE = 10.0;
 const int INITIAL_DOTS = 30;
 const double DOT_ADD_PERIOD = 1.0;
 const double VELOCITY_BOOST = 1.0;
@@ -50,64 +51,13 @@ vector_t camera_mover_func(vector_t offset, body_t *body)
   }
 }
 
-vector_t wrap_position(vector_t original_position)
-{
-  if (original_position.x < min.x)
-  {
-    return (vector_t){.x = max.x, original_position.y};
-  }
-  else if (original_position.x > max.x)
-  {
-    return (vector_t){.x = min.x, original_position.y};
-  }
-  else if (original_position.y < min.y)
-  {
-    return (vector_t){.x = original_position.x, max.y};
-  }
-  else if (original_position.y > max.y)
-  {
-    return (vector_t){.x = original_position.x, min.y};
-  }
-  else
-  {
-    return original_position;
-  }
-}
-
-bool eat(size_t dot_idx, body_t *dot, body_t *pacman, scene_t *scene)
-{
-  vector_t p1 = body_get_centroid(pacman);
-  vector_t p2 = body_get_centroid(dot);
-  double distance = vec_magnitude(vec_subtract(p1, p2));
-  if (distance < EAT_TOLERANCE)
-  {
-    scene_remove_body(scene, dot_idx);
-    return true;
-  }
-  return false;
-}
-
-void check_eat(body_t *pacman, scene_t *scene)
-{
-  for (size_t idx = 0; idx < scene_bodies(scene); idx++)
-  {
-    body_t *dot = scene_get_body(scene, idx);
-    if (!body_is_movable(dot) && eat(idx, dot, pacman, scene))
-    {
-      idx--;
-      return;
-    }
-  }
-}
-
 void move_pacman(double angle, double scale, body_t *pacman)
 {
   vector_t i = (vector_t){PACMAN_STEP * scale, 0};
   vector_t move_vector = vec_rotate(i, angle);
   vector_t pacman_position = body_get_centroid(pacman);
   vector_t next_position = vec_add(pacman_position, move_vector);
-  vector_t new_position = wrap_position(next_position);
-  body_set_centroid(pacman, new_position);
+  body_set_centroid(pacman, next_position);
   body_set_rotation(pacman, angle);
   body_set_velocity(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
 }
@@ -137,7 +87,17 @@ void handle(char key, key_event_type_t type, double held_time, body_t *pacman)
   }
 }
 
-void make_dot(scene_t *scene)
+void half_destructive_handler(body_t *keep, body_t *erase, vector_t axis)
+{
+  body_remove(erase);
+}
+
+void create_half_desructive_collision(scene_t *scene, body_t *keep, body_t *erase)
+{
+  create_collision(scene, keep, erase, (collision_handler_t)half_destructive_handler, NULL, NULL);
+}
+
+void make_dot(scene_t *scene, body_t *pacman)
 {
   list_t *circle = sprite_make_circle(CIRCLE_PRECISION);
   body_t *dot = body_init(circle, 0, DOT_COLOR);
@@ -146,17 +106,18 @@ void make_dot(scene_t *scene)
   body_set_movable(dot, false);
   body_set_camera_mode(dot, SCENE);
   scene_add_body(scene, dot);
+  create_half_desructive_collision(scene, pacman, dot);
 }
 
 int main(int argc, char *argv[])
 {
   scene_t *scene = scene_init();
-  for (int i = 0; i < INITIAL_DOTS; i++)
-  {
-    make_dot(scene);
-  }
   list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
   body_t *pacman = body_init(pacman_shape, 0, PACMAN_COLOR);
+  for (int i = 0; i < INITIAL_DOTS; i++)
+  {
+    make_dot(scene, pacman);
+  }
   vector_t position = (vector_t){.x = SCREEN_SIZE_X / 2, .y = SCREEN_SIZE_Y / 2};
   body_set_centroid(pacman, position);
   body_set_movable(pacman, true);
@@ -176,13 +137,10 @@ int main(int argc, char *argv[])
     time_until_add -= dt;
     if (time_until_add <= 0)
     {
-      make_dot(scene);
+      make_dot(scene, pacman);
       time_until_add = DOT_ADD_PERIOD;
     }
     scene_tick(scene, dt);
-    vector_t pacman_position = body_get_centroid(pacman);
-    body_set_centroid(pacman, wrap_position(pacman_position));
-    check_eat(pacman, scene);
     sdl_clear();
     sdl_on_key((key_handler_t)handle);
     sdl_render_scene(scene);
