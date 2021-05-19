@@ -12,6 +12,7 @@
 
 const size_t BODIES_DEFAULT_CAPACITY = 32;
 const size_t FORCES_DEFAULT_CAPACITY = 64;
+const size_t INVALID_FOCAL_IDX = -1;
 
 typedef struct force
 {
@@ -51,9 +52,13 @@ typedef struct scene
 {
     list_t *bodies;
     list_t *forces;
+    camera_offset_t camera_offset;
+    camera_mover_t camera_mover;
+    size_t focal_body_idx;
+    void *camera_aux;
 } scene_t;
 
-scene_t *scene_init(void)
+scene_t *scene_init()
 {
     list_t *bodies = list_init(BODIES_DEFAULT_CAPACITY, (free_func_t)body_free);
     list_t *forces = list_init(FORCES_DEFAULT_CAPACITY, (free_func_t)force_free);
@@ -61,6 +66,7 @@ scene_t *scene_init(void)
     assert(scene != NULL);
     scene->bodies = bodies;
     scene->forces = forces;
+    scene->camera_aux = NULL;
     return scene;
 }
 
@@ -128,14 +134,71 @@ bool force_is_removed(force_t *force)
     return false;
 }
 
-void scene_tick(scene_t *scene, double dt)
+size_t get_focal_body_idx(scene_t *scene)
+{
+    size_t cached_idx = scene->focal_body_idx;
+    bool idx_is_valid = cached_idx >= 0 && cached_idx < list_size(scene->bodies);
+    if (idx_is_valid)
+    {
+        body_t *cached_body = list_get(scene->bodies, cached_idx);
+        if (body_get_camera_mode(cached_body) == FOLLOW)
+        {
+            return cached_idx;
+        }
+    }
+
+    body_t *curr_body;
+    for (size_t idx = 0; idx < list_size(scene->bodies); idx++)
+    {
+        curr_body = list_get(scene->bodies, idx);
+        if (body_get_camera_mode(curr_body) == FOLLOW)
+        {
+            scene->focal_body_idx = idx;
+            return idx;
+        }
+    }
+    return INVALID_FOCAL_IDX;
+}
+
+void scene_add_camera_management(
+    scene_t *scene,
+    camera_offset_t camera_offset,
+    camera_mover_t camera_mover,
+    void *camera_aux)
+{
+    scene->camera_aux = camera_aux;
+    scene->camera_offset = camera_offset;
+    scene->camera_mover = camera_mover;
+    scene->focal_body_idx = get_focal_body_idx(scene);
+}
+
+void apply_camera(scene_t *scene)
+{
+    if (scene->focal_body_idx == INVALID_FOCAL_IDX)
+    {
+        return;
+    }
+    body_t *focal_body = scene_get_body(scene, scene->focal_body_idx);
+    vector_t offset = scene->camera_offset(focal_body, scene->camera_aux);
+    for (size_t idx = 0; idx < scene_bodies(scene); idx++)
+    {
+        body_t *current_body = scene_get_body(scene, idx);
+        vector_t movement = scene->camera_mover(offset, current_body);
+        body_set_camera_movement(current_body, movement);
+    }
+}
+
+void apply_forces(scene_t *scene)
 {
     for (size_t idx = 0; idx < scene_forces(scene); idx++)
     {
         force_t *force = list_get(scene->forces, idx);
         force->forcer(force->aux);
     }
+}
 
+void remove_forces(scene_t *scene)
+{
     for (size_t idx = 0; idx < scene_forces(scene); idx++)
     {
         force_t *force = list_get(scene->forces, idx);
@@ -146,7 +209,24 @@ void scene_tick(scene_t *scene, double dt)
             idx--;
         }
     }
+}
 
+void clean_forces(scene_t *scene)
+{
+    for (size_t idx = 0; idx < scene_forces(scene); idx++)
+    {
+        force_t *force = list_get(scene->forces, idx);
+        if (force->bodies != NULL && force_is_removed(force))
+        {
+            list_remove(scene->forces, idx);
+            force_free(force);
+            idx--;
+        }
+    }
+}
+
+void move_and_clean_bodies(scene_t *scene, double dt)
+{
     for (size_t idx = 0; idx < scene_bodies(scene); idx++)
     {
         body_t *current_body = scene_get_body(scene, idx);
@@ -158,4 +238,12 @@ void scene_tick(scene_t *scene, double dt)
             idx--;
         }
     }
+}
+
+void scene_tick(scene_t *scene, double dt)
+{
+    apply_forces(scene);
+    clean_forces(scene);
+    move_and_clean_bodies(scene, dt);
+    apply_camera(scene);
 }

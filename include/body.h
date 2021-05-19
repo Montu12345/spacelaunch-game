@@ -252,6 +252,15 @@ void body_set_movable(body_t *body, bool movable);
 bool body_is_movable(body_t *body);
 
 /**
+ * Updates the required movment of the body with respect to the camera.
+ * Is applied in body tick, erases after the tick.
+ * 
+ * @param body the body to move with respect to the camera
+ * @param movement the change in position of the body to move with the camera
+ */ 
+void body_set_camera_movement(body_t *body, vector_t movement);
+
+/**
  * Changes a body's tracking by the camera 
  *
  * @param body a pointer to a body returned from body_init()

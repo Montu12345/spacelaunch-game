@@ -218,7 +218,6 @@ void clear_scene(scene_t *scene)
     {
         body_t *current_body = scene_get_body(scene, i);
         body_remove(current_body);
-        //body_free(current_body);
     }
 }
 
