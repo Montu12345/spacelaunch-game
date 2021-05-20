@@ -24,9 +24,9 @@ const int INITIAL_DOTS = 30;
 const double DOT_ADD_PERIOD = 1.0;
 const double ROCKET_ELASTICITY = 2.0;
 const double VELOCITY_BOOST = 1.0;
-const double DOT_MASS = 50000;
-const double PACMAN_MASS = 1000;
-const double GRAVITY_CONSTANT = 100;
+const double DOT_MASS = INFINITY;
+const double PACMAN_MASS = 100;
+// const double GRAVITY_CONSTANT = 10;
 
 const rgb_color_t PACMAN_COLOR = {.r = 0, .g = 0, .b = 0};
 const rgb_color_t DOT_COLOR = {.r = 0, .g = 0, .b = 0};
@@ -91,9 +91,9 @@ void handle(char key, key_event_type_t type, double held_time, body_t *pacman)
   }
 }
 
-void create_gravity_rocket_obstacles(scene_t *scene, body_t *rocket, body_t *obstacle){
-    create_newtonian_gravity(scene, GRAVITY_CONSTANT, rocket, obstacle);
-}
+// void create_gravity_rocket_obstacles(scene_t *scene, body_t *rocket, body_t *obstacle){
+//     create_newtonian_gravity(scene, GRAVITY_CONSTANT, rocket, obstacle);
+// }
 
 void create_collision_rocket_obstacles(scene_t *scene, body_t *rocket, body_t *obstacle){
     create_physics_collision(scene, ROCKET_ELASTICITY, rocket, obstacle);
@@ -107,7 +107,7 @@ void make_dot(scene_t *scene, body_t *pacman)
   body_set_centroid(dot, position);
   body_set_movable(dot, false);
   body_set_camera_mode(dot, SCENE);
-  create_gravity_rocket_obstacles(scene, pacman, dot);
+//create_gravity_rocket_obstacles(scene, pacman, dot);
   create_collision_rocket_obstacles(scene, pacman, dot);
   scene_add_body(scene, dot);
 }
