@@ -1,5 +1,9 @@
 # List of demo programs
+<<<<<<< HEAD
 DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs camerademo moverocket spacelaunch
+=======
+DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs camerademo spacelaunch
+>>>>>>> 0d83000f537bce3a1c84ba33ca82c06a425f744a
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
@@ -90,9 +94,12 @@ bin/breakout: out/breakout.o out/sdl_wrapper.o $(STUDENT_OBJS)
 bin/camerademo: out/camerademo.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
+<<<<<<< HEAD
 bin/moverocket: out/moverocket.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
+=======
+>>>>>>> 0d83000f537bce3a1c84ba33ca82c06a425f744a
 bin/spacelaunch: out/spacelaunch.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
@@ -252,6 +259,9 @@ bin/moverocket.exe: out/moverocket.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 bin/spacelaunch.exe: out/spacelaunch.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
+bin/spacelaunch.exe: out/spacelaunch.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
+
 # Builds the test suite executables from the corresponding test .o file
 # and the library .o files. The only difference from the demo build command
 # is that it doesn't link the SDL libraries.
@@ -268,9 +278,14 @@ bin/spaceinvaders bin\spaceinvaders: bin/spaceinvaders.exe
 bin/pegs bin\pegs: bin/pegs.exe; 
 bin/breakout bin\breakout: bin/breakout.exe; 
 bin/camerademo bin\camerademo: bin/camerademo.exe; 
+<<<<<<< HEAD
 bin/moverocket bin\moverocket: bin/moverocket.exe; 
 bin/spacelaunch bin\spacelaunch: bin/moverocket.exe; 
 bin/test_suite_% bin\test_suite_%: bin/test_suite_%.exe ;
+=======
+bin/spacelaunch bin\spacelaunch: bin/camerademo.exe; 
+bin/test_suite_% bin\test_suite_%: bin/test_suite_%.exe;
+>>>>>>> 0d83000f537bce3a1c84ba33ca82c06a425f744a
 
 # CMD commands to test and clean
 
