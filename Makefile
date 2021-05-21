@@ -1,5 +1,5 @@
 # List of demo programs
-DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs camerademo
+DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs camerademo moverocket spacelaunch
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
@@ -90,6 +90,11 @@ bin/breakout: out/breakout.o out/sdl_wrapper.o $(STUDENT_OBJS)
 bin/camerademo: out/camerademo.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
+bin/moverocket: out/moverocket.o out/sdl_wrapper.o $(STUDENT_OBJS)
+		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
+
+bin/spacelaunch: out/spacelaunch.o out/sdl_wrapper.o $(STUDENT_OBJS)
+		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 # Builds the test suite executables from the corresponding test .o file
 # and the library .o files. The only difference from the demo build command
@@ -240,6 +245,12 @@ bin/breakout.exe: out/breakout.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 
 bin/camerademo.exe: out/camerademo.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
+	
+bin/moverocket.exe: out/moverocket.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
+
+bin/spacelaunch.exe: out/spacelaunch.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
 # Builds the test suite executables from the corresponding test .o file
 # and the library .o files. The only difference from the demo build command
@@ -257,6 +268,8 @@ bin/spaceinvaders bin\spaceinvaders: bin/spaceinvaders.exe
 bin/pegs bin\pegs: bin/pegs.exe; 
 bin/breakout bin\breakout: bin/breakout.exe; 
 bin/camerademo bin\camerademo: bin/camerademo.exe; 
+bin/moverocket bin\moverocket: bin/moverocket.exe; 
+bin/spacelaunch bin\spacelaunch: bin/moverocket.exe; 
 bin/test_suite_% bin\test_suite_%: bin/test_suite_%.exe ;
 
 # CMD commands to test and clean
