@@ -27,9 +27,11 @@ const double EAT_TOLERANCE = 10.0;
 const double DOT_ADD_PERIOD = 1.0;
 const double VELOCITY_BOOST = 1.0;
 
-const rgb_color_t PACMAN_COLOR = {.r = 1, .g = 1, .b = 0};
-const rgb_color_t DOT_COLOR = {.r = 1, .g = 1, .b = 0};
+const double PACMAN_MASS = 2.0;
+const double DOT_MASS = 1.0;
 
+const rgb_color_t PACMAN_COLOR = {.r = 0, .g = 0, .b = 0};
+const rgb_color_t DOT_COLOR = {.r = 0, .g = 0, .b = 0};
 
 vector_t camera_offset_func(body_t *focal_body, void *aux)
 {
@@ -59,12 +61,12 @@ void move_rocket(double angle, double scale, body_t *pacman)
 {
     vector_t i = (vector_t){PACMAN_STEP * scale, 0};
     vector_t move_vector = vec_rotate(i, angle);
-    vector_t pacman_position = body_get_centroid(pacman);
-    vector_t next_position = vec_add(pacman_position, move_vector);
+    // vector_t pacman_position = body_get_centroid(pacman);
+    // vector_t next_position = vec_add(pacman_position, move_vector);
     // body_set_centroid(pacman, next_position);
     // body_set_rotation(pacman, angle);
-    // body_add_impulse(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
-    body_set_velocity(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
+    body_add_impulse(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
+    // body_set_velocity(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
 }
 
 void handle(char key, key_event_type_t type, double held_time, body_t *pacman)
@@ -109,20 +111,20 @@ void create_half_desructive_collision(scene_t *scene, body_t *keep, body_t *eras
 void make_dot(scene_t *scene, body_t *pacman)
 {
   list_t *circle = sprite_make_circle(CIRCLE_PRECISION);
-  body_t *dot = body_init(circle, 0, DOT_COLOR);
+  body_t *dot = body_init(circle, DOT_MASS, DOT_COLOR);
   vector_t position = {.x = rand() % SCREEN_SIZE_X, .y = rand() % SCREEN_SIZE_Y};
   body_set_centroid(dot, position);
   body_set_movable(dot, false);
-  body_set_camera_mode(dot, SCENE);
+  // body_set_camera_mode(dot, SCENE);
   scene_add_body(scene, dot);
-  create_half_desructive_collision(scene, pacman, dot);
+  // create_half_desructive_collision(scene, pacman, dot);
 }
 
 int main(int argc, char *argv[])
 {
     scene_t *scene = scene_init();
     list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
-    body_t *pacman = body_init(pacman_shape, 0, PACMAN_COLOR);
+    body_t *pacman = body_init(pacman_shape, PACMAN_MASS, PACMAN_COLOR);
     for (int i = 0; i < INITIAL_DOTS; i++)
     {
         make_dot(scene, pacman);
@@ -130,13 +132,13 @@ int main(int argc, char *argv[])
     vector_t position = INITIAL_POS;
     body_set_centroid(pacman, position);
     body_set_movable(pacman, true);
-    body_set_camera_mode(pacman, FOLLOW);
+    // body_set_camera_mode(pacman, FOLLOW);
     scene_add_body(scene, pacman);
     sdl_init(min, max);
-    scene_add_camera_management(scene,
-                    (camera_offset_func_t)camera_offset_func,
-                    (camera_mover_func_t)camera_mover_func,
-                    NULL);
+    // scene_add_camera_management(scene,
+    //                 (camera_offset_func_t)camera_offset_func,
+    //                 (camera_mover_func_t)camera_mover_func,
+    //                 NULL);
     double dt;
     double time_until_add = DOT_ADD_PERIOD;
     sdl_event_args((void *)pacman);
