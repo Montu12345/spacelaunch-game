@@ -24,6 +24,9 @@ const vector_t ACCELERATION = {.x = 0, .y = -5000};
 const int SCREEN_SIZE_X = 1000;
 const int SCREEN_SIZE_Y = 500;
 
+const int MAX_OBSTACLES_SCREEN_SIZE_X = 2000;
+const int MAX_OBSTACLES_SCREEN_SIZE_Y = 1000;
+
 const vector_t min = {.x = 0, .y = 0};
 const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 
@@ -51,6 +54,7 @@ enum body_type_t
 {
     good_obstacle_t,
     bad_obstacle_t,
+    rocket_t
 };
 
 enum body_type_t *body_type_init(enum body_type_t b)
@@ -149,24 +153,6 @@ void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
     }
 }
 
-// void handle_2(char key, key_event_type_t type, double held_time, space_aux_t *aux)
-// {
-//     double boost = VELOCITY_BOOST + held_time;
-
-//     if (type == KEY_PRESSED)
-//     {
-//         if (key == A_KEY)
-//         {
-//         aux->continue_game = true;
-//         printf("works \n");
-//         }
-//         else if (key == Q_KEY)
-//         {
-//         aux->continue_game = false;
-//         }
-//     }
-// }
-
 void physics_collision_forcer_2(body_t *pacman, body_t *dot, vector_t axis)
 {
     vector_t j1 = impulse_to_body_1(pacman, dot, axis, ROCKET_ELASTICITY);
@@ -198,11 +184,21 @@ void make_dot(scene_t *scene, body_t *pacman)
         obstacle_type = body_type_init(good_obstacle_t);
     }
     else{
-    color = GOOD_DOT_COLOR;
-    obstacle_type = body_type_init(bad_obstacle_t);
+        color = GOOD_DOT_COLOR;
+        obstacle_type = body_type_init(bad_obstacle_t);
     }
     body_t *dot = body_init_with_info(circle, DOT_MASS, color, obstacle_type, free);
     vector_t position = {.x = (rand() % SCREEN_SIZE_X), .y = rand() % SCREEN_SIZE_Y};
+    for (int i = 0; i < scene_bodies(scene); i++){
+        body_t *current_body = scene_get_body(scene, i);
+        if (*(enum body_type_t *)body_get_info(current_body) == bad_obstacle_t || *(enum body_type_t *)body_get_info(current_body) == good_obstacle_t){
+            vector_t cur_body_pos = body_get_centroid(current_body);
+            while(fabs(position.x - cur_body_pos.x) < CIRCLE_PRECISION * 2 || fabs(position.y - cur_body_pos.y) < CIRCLE_PRECISION * 2){
+                position = (vector_t){.x = (rand() % SCREEN_SIZE_X), .y = rand() % SCREEN_SIZE_Y};
+                // i = -1;
+            }
+        }
+    }
     body_set_centroid(dot, position);
     body_set_movable(dot, false);
     // body_set_camera_mode(dot, SCENE);
@@ -214,7 +210,7 @@ void make_dot(scene_t *scene, body_t *pacman)
 bool restart_game(body_t *ball)
 {
     vector_t pos = body_get_centroid(ball);
-    if (pos.y - PACMAN_PRECISION > SCREEN_SIZE_Y || pos.y - PACMAN_PRECISION < 0)
+    if (pos.y - PACMAN_PRECISION > MAX_OBSTACLES_SCREEN_SIZE_Y || pos.y - PACMAN_PRECISION < -50)
     {
         return true;
     }
@@ -231,16 +227,9 @@ void clear_scene(scene_t *scene)
     }
 }
 
-// void create_new_game(scene_t *scene, body_t *ball, body_t *paddle)
-// {
-//     create_boxes(scene, ball);
-//     create_pegs(scene, ball);
-//     ball_paddle_collision(scene, ball, paddle);
-// }
-
 body_t *make_pacman(scene_t *scene){
     list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
-    body_t *pacman = body_init(pacman_shape, PACMAN_MASS, PACMAN_COLOR);
+    body_t *pacman = body_init_with_info(pacman_shape, PACMAN_MASS, PACMAN_COLOR, body_type_init(rocket_t), free);
     body_set_centroid(pacman, INITIAL_POS);
     body_set_movable(pacman, true);
     // body_set_camera_mode(pacman, FOLLOW);
@@ -256,7 +245,7 @@ int main(int argc, char *argv[])
     {
         make_dot(scene, pacman);
     }
-    space_aux_t *aux = space_aux_init(pacman, false);
+    space_aux_t *aux = space_aux_init(pacman, true);
     sdl_init(min, max);
     // scene_add_camera_management(scene,
     //                            (camera_offset_func_t)camera_offset_func,
@@ -272,20 +261,20 @@ int main(int argc, char *argv[])
         int timer = 0;
         if (restart_game(pacman))
         {
-            list_t *background_list = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
-            body_t *background = body_init(background_list, 0, (rgb_color_t){.r = 0, .g = 0, .b = 0});
-            clear_scene(scene);
-            scene_add_body(scene, background);
-            while (timer < 200){
-                sdl_on_key((key_handler_t)handle);
-                if (aux->continue_game){
-                    timer = 200;
-                }
-                sdl_render_scene(scene);
-                // printf("asdf %d \n", timer);
-                timer += 1;
-                sdl_show();
-            }
+            // list_t *background_list = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
+            // body_t *background = body_init(background_list, 0, (rgb_color_t){.r = 0, .g = 0, .b = 0});
+            // clear_scene(scene);
+            // scene_add_body(scene, background);
+            // while (timer < 200){
+            //     sdl_on_key((key_handler_t)handle);
+            //     if (aux->continue_game){
+            //         timer = 200;
+            //     }
+            //     sdl_render_scene(scene);
+            //     // printf("asdf %d \n", timer);
+            //     timer += 1;
+            //     sdl_show();
+            // }
             // scene_tick(scene, dt);
             clear_scene(scene);
             sdl_clear();
@@ -299,7 +288,7 @@ int main(int argc, char *argv[])
             for (int i = 0; i < INITIAL_DOTS; i++){
                 make_dot(scene, pacman);
             }
-            aux->continue_game = false;
+            aux->continue_game = true;
             aux->pacman = pacman;
             sdl_event_args(aux);
             // create_new_game(scene, scene, paddle);
