@@ -264,7 +264,7 @@ body_t *make_pacman(scene_t *scene){
     return pacman;
 }
 
-void *make_shooting_star(scene_t *scene){
+void make_shooting_star(scene_t *scene){
     list_t *shooting_star_list = sprite_make_circle(3);
     body_t *shooting_star = body_init_with_info(shooting_star_list, INFINITY, SHOOTING_STAR_COLOR, body_type_init(star_t), free);
     vector_t pos = {.x = 0, .y = rand() % MAX_OBSTACLES_SCREEN_SIZE_X};
@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
     {
         make_dot(scene, pacman);
     }
-    space_aux_t *aux = space_aux_init(pacman, true);
+    space_aux_t *aux = space_aux_init(pacman, false);
     sdl_init(min, max);
     // scene_add_camera_management(scene,
     //                            (camera_offset_func_t)camera_offset_func,
@@ -298,28 +298,30 @@ int main(int argc, char *argv[])
         sdl_event_args(aux);
         dt = time_since_last_tick();
         time_until_add -= dt;
-        int timer = 0;
+        double timer = 0;
         if(t % 170 == 0){
             make_shooting_star(scene);
             t = 0;
         }
         if (restart_game(pacman))
         {
-            // list_t *background_list = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
-            // body_t *background = body_init(background_list, 0, (rgb_color_t){.r = 0, .g = 0, .b = 0});
-            // clear_scene(scene);
-            // scene_add_body(scene, background);
-            // while (timer < 200){
-            //     sdl_on_key((key_handler_t)handle);
-            //     if (aux->continue_game){
-            //         timer = 200;
-            //     }
-            //     sdl_render_scene(scene);
-            //     // printf("asdf %d \n", timer);
-            //     timer += 1;
-            //     sdl_show();
-            // }
-            // scene_tick(scene, dt);
+            list_t *background_list = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
+            body_t *background = body_init(background_list, 0, (rgb_color_t){.r = 0, .g = 0, .b = 0});
+            clear_scene(scene);
+            scene_add_body(scene, background);
+            while (timer < 200 && !sdl_is_done()){
+                timer += time_since_last_tick();
+                sdl_clear();
+                sdl_event_args(aux);
+                sdl_on_key((key_handler_t)handle);
+                if (aux->continue_game){
+                    timer = 200;
+                }
+                sdl_render_scene(scene);
+                // printf("asdf %f \n", timer);
+                sdl_show();
+            }
+            scene_tick(scene, dt);
             clear_scene(scene);
             sdl_clear();
             sdl_render_scene(scene);
@@ -331,10 +333,10 @@ int main(int argc, char *argv[])
             make_background_color(scene);
             make_background_stars(scene);
             pacman = make_pacman(scene);
-            for (int i = 0; i < INITIAL_DOTS; i++){
-                make_dot(scene, pacman);
-            }
-            aux->continue_game = true;
+            // for (int i = 0; i < INITIAL_DOTS; i++){
+            //     make_dot(scene, pacman);
+            // }
+            aux->continue_game = false;
             aux->pacman = pacman;
             sdl_event_args(aux);
             // create_new_game(scene, scene, paddle);
