@@ -241,6 +241,10 @@ void body_set_centroid(body_t *body, vector_t x)
     body->kinematic_variables.position = x;
 }
 
+void body_set_color(body_t *body, rgb_color_t color){
+    body->appearance.color = color;
+}
+
 void body_set_velocity(body_t *body, vector_t v)
 {
     body->kinematic_variables.velocity = v;

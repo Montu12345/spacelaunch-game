@@ -220,6 +220,14 @@ rgb_color_t body_get_color(body_t *body);
 void body_set_centroid(body_t *body, vector_t x);
 
 /**
+ * Change'e the color of the body.
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param color the body's new color
+ */
+void body_set_color(body_t *body, rgb_color_t color);
+
+/**
  * Changes a body's velocity (the time-derivative of its position).
  *
  * @param body a pointer to a body returned from body_init()
