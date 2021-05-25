@@ -50,7 +50,8 @@ const rgb_color_t GOOD_DOT_COLOR = {.r = 0, .g = 1, .b = 0};
 
 const rgb_color_t BACKGROUND_COLOR = {.r = 0, .g = 0, .b = .55};
 const rgb_color_t STAR_COLOR = {.r = 1, .g = 1, .b = 1};
-const rgb_color_t SHOOTING_STAR_COLOR = {.r = 0.89, .g = 0.35, .b = 0.13};
+const rgb_color_t SHOOTING_STAR_COLOR = {.r = 1, .g = 1, .b = 1};
+// .r = 0.89, .g = 0.35, .b = 0.13
 
 // const double GRAVITY_CONSTANT = 10;
 
