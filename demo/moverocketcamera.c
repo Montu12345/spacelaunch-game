@@ -21,7 +21,7 @@ const vector_t INITIAL_POS = {.x = SCREEN_SIZE_X / 10, .y = SCREEN_SIZE_Y / 10};
 const int PACMAN_STEP = 10;
 const int CIRCLE_PRECISION = 10;
 const int PACMAN_PRECISION = 30;
-const double PACMAN_VELOCITY_SCALE = 30;
+const double PACMAN_VELOCITY_SCALE = 1;
 const int INITIAL_DOTS = 30;
 const double EAT_TOLERANCE = 10.0;
 const double DOT_ADD_PERIOD = 1.0;
@@ -122,21 +122,41 @@ void make_dot(scene_t *scene, body_t *pacman)
   // create_half_desructive_collision(scene, pacman, dot);
 }
 
-int main(int argc, char *argv[])
+void add_dots(scene_t *scene, body_t *pacman)
 {
-  scene_t *scene = scene_init();
-  list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
-  body_t *pacman = body_init(pacman_shape, PACMAN_MASS, PACMAN_COLOR);
   for (int i = 0; i < INITIAL_DOTS; i++)
   {
     make_dot(scene, pacman);
   }
-  vector_t position = INITIAL_POS;
-  body_set_centroid(pacman, position);
+}
+
+body_t *add_pacman(scene_t *scene)
+{
+  list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
+  body_t *pacman = body_init(pacman_shape, PACMAN_MASS, PACMAN_COLOR);
+
+  body_set_centroid(pacman, INITIAL_POS);
   body_set_movable(pacman, true);
   body_set_camera_mode(pacman, FOLLOW);
   scene_add_body(scene, pacman);
+
+  return pacman;
+}
+
+int main(int argc, char *argv[])
+{
+  // Initialize random number generator
+  srand(time(NULL));
+
+  // Initialize scene
   sdl_init(min, max);
+  scene_t *scene = scene_init();
+
+  // Add elements to the scene
+  body_t *pacman = add_pacman(scene);
+  add_dots(scene, pacman);
+
+  // Add camera management
   scene_add_camera_management(scene,
                               (camera_offset_func_t)camera_offset_func,
                               (camera_mover_func_t)camera_mover_func,
@@ -146,20 +166,23 @@ int main(int argc, char *argv[])
   double dt;
   double time_until_add = DOT_ADD_PERIOD;
   sdl_event_args((void *)pacman);
+
   while (!sdl_is_done())
   {
     dt = time_since_last_tick();
+
+    // Add dot every DOT_ADD_PERIOD seconds.
     time_until_add -= dt;
     if (time_until_add <= 0)
     {
       make_dot(scene, pacman);
       time_until_add = DOT_ADD_PERIOD;
     }
+
     scene_tick(scene, dt);
-    sdl_clear();
     sdl_on_key((key_handler_t)handle);
     sdl_render_scene(scene);
-    sdl_show();
   }
+
   scene_free(scene);
 }
