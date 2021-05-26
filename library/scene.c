@@ -67,6 +67,7 @@ scene_t *scene_init()
     scene->bodies = bodies;
     scene->forces = forces;
     scene->camera_aux = NULL;
+    scene->focal_body = NULL;
     return scene;
 }
 
@@ -158,6 +159,10 @@ void scene_set_focal_body(scene_t *scene, body_t *focal_body)
 void apply_camera(scene_t *scene)
 {
     body_t *focal_body = scene->focal_body;
+    if (!focal_body)
+    {
+        return;
+    }
     vector_t offset = scene->camera_offset(focal_body, scene->camera_aux);
     for (size_t idx = 0; idx < scene_bodies(scene); idx++)
     {
