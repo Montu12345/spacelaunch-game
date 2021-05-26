@@ -75,7 +75,7 @@ enum body_type_t *body_type_init(enum body_type_t b)
 typedef struct space_aux
 {
     body_t *pacman;
-    bool continue_game;
+    int continue_game;
 } space_aux_t;
 
 space_aux_t *space_aux_init(body_t *pacman, bool continue_game)
@@ -151,12 +151,12 @@ void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
         }
         else if (key == A_KEY)
         {
-        aux->continue_game = true;
+        aux->continue_game = 1;
         printf("works \n");
         }
         else if (key == Q_KEY)
         {
-        aux->continue_game = false;
+        aux->continue_game = 2;
         }
     }
 }
@@ -197,16 +197,6 @@ void make_dot(scene_t *scene, body_t *pacman)
     }
     body_t *dot = body_init_with_info(circle, DOT_MASS, color, obstacle_type, free);
     vector_t position = {.x = (rand() % SCREEN_SIZE_X), .y = rand() % SCREEN_SIZE_Y};
-    for (int i = 0; i < scene_bodies(scene); i++){
-        body_t *current_body = scene_get_body(scene, i);
-        if (*(enum body_type_t *)body_get_info(current_body) == bad_obstacle_t || *(enum body_type_t *)body_get_info(current_body) == good_obstacle_t){
-            vector_t cur_body_pos = body_get_centroid(current_body);
-            while(fabs(position.x - cur_body_pos.x) < CIRCLE_PRECISION * 2 || fabs(position.y - cur_body_pos.y) < CIRCLE_PRECISION * 2){
-                position = (vector_t){.x = (rand() % SCREEN_SIZE_X), .y = rand() % SCREEN_SIZE_Y};
-                // i = -1;
-            }
-        }
-    }
     body_set_centroid(dot, position);
     body_set_movable(dot, false);
     // body_set_camera_mode(dot, SCENE);
@@ -238,6 +228,7 @@ void clear_scene(scene_t *scene)
 void make_background_color(scene_t *scene){
     list_t *background_list = sprite_make_rect(0, MAX_OBSTACLES_SCREEN_SIZE_X, 0, MAX_OBSTACLES_SCREEN_SIZE_Y);
     body_t *background = body_init_with_info(background_list, INFINITY, BACKGROUND_COLOR, body_type_init(background_t), free);
+
     scene_add_body(scene, background);
 }
 
@@ -284,7 +275,7 @@ int main(int argc, char *argv[])
     {
         make_dot(scene, pacman);
     }
-    space_aux_t *aux = space_aux_init(pacman, false);
+    space_aux_t *aux = space_aux_init(pacman, 0);
     sdl_init(min, max);
     // scene_add_camera_management(scene,
     //                            (camera_offset_func_t)camera_offset_func,
@@ -293,6 +284,7 @@ int main(int argc, char *argv[])
     double dt;
     double time_until_add = DOT_ADD_PERIOD;
     int t = 0;
+    bool truth = false;
     while (!sdl_is_done()){
         t += 1;
         sdl_event_args(aux);
@@ -314,29 +306,32 @@ int main(int argc, char *argv[])
                 sdl_clear();
                 sdl_event_args(aux);
                 sdl_on_key((key_handler_t)handle);
-                if (aux->continue_game){
+                if (aux->continue_game == 1){
                     timer = 200;
+                }
+                if (aux->continue_game == 2){
+                    timer = 200;
+                    truth = true;
                 }
                 sdl_render_scene(scene);
                 // printf("asdf %f \n", timer);
                 sdl_show();
+            }
+            if(truth){
+                break;
             }
             scene_tick(scene, dt);
             clear_scene(scene);
             sdl_clear();
             sdl_render_scene(scene);
             sdl_show();
-            
-            if (!aux->continue_game){
-                break;
-            }
             make_background_color(scene);
             make_background_stars(scene);
             pacman = make_pacman(scene);
-            // for (int i = 0; i < INITIAL_DOTS; i++){
-            //     make_dot(scene, pacman);
-            // }
-            aux->continue_game = false;
+            for (int i = 0; i < INITIAL_DOTS; i++){
+                make_dot(scene, pacman);
+            }
+            aux->continue_game = 0;
             aux->pacman = pacman;
             sdl_event_args(aux);
             // create_new_game(scene, scene, paddle);
