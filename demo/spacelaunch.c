@@ -62,7 +62,7 @@ const int Q_KEY_VALUE = 2;
 
 const rgb_color_t RED = {.r = 1, .g = 0, .b = 0};
 const rgb_color_t YELLOW = {.r = 1, .g = 1, .b = 0};
-const rgb_color_t BACKGROUND_COLOR_2 = {.r = 0, .g = 0, .b = 0};
+const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int WAIT_BACKGROUND_TIME = 200;
 
 const rgb_color_t STAR_COLOR = {.r = 1, .g = 1, .b = 1};
@@ -208,7 +208,12 @@ void physics_collision_forcer_2(body_t *pacman, body_t *dot, vector_t axis)
 
 void create_collision_rocket_obstacles(scene_t *scene, body_t *pacman, body_t *dot)
 {
-    create_collision(scene, pacman, dot, (collision_handler_t)physics_collision_forcer_2, NULL, NULL);
+    create_collision(scene, 
+                     pacman, 
+                     dot, 
+                     (collision_handler_t)physics_collision_forcer_2, 
+                     NULL, 
+                     NULL);
 }
 
 void make_dot(scene_t *scene, body_t *pacman)
@@ -237,7 +242,8 @@ void make_dot(scene_t *scene, body_t *pacman)
 bool restart_game(body_t *ball)
 {
     vector_t pos = body_get_centroid(ball);
-    if (pos.y - PACMAN_PRECISION > MAX_OBSTACLES_SCREEN_SIZE_Y || pos.y - PACMAN_PRECISION < MIN_OBSTACLES_SCREEN_SIZE_Y)
+    if (pos.y - PACMAN_PRECISION > MAX_OBSTACLES_SCREEN_SIZE_Y || 
+        pos.y - PACMAN_PRECISION < MIN_OBSTACLES_SCREEN_SIZE_Y)
     {
         return true;
     }
@@ -255,8 +261,15 @@ void clear_scene(scene_t *scene)
 }
 
 void make_background_color(scene_t *scene){
-    list_t *background_list = sprite_make_rect(0, MAX_OBSTACLES_SCREEN_SIZE_X, 0, MAX_OBSTACLES_SCREEN_SIZE_Y);
-    body_t *background = body_init_with_info(background_list, INFINITY, BACKGROUND_COLOR, body_type_init(background_t), free);
+    list_t *background_list = sprite_make_rect(0, 
+                                               MAX_OBSTACLES_SCREEN_SIZE_X, 
+                                               0, 
+                                               MAX_OBSTACLES_SCREEN_SIZE_Y);
+    body_t *background = body_init_with_info(background_list, 
+                                             INFINITY, 
+                                             BACKGROUND_COLOR, 
+                                             body_type_init(background_t), 
+                                             free);
     scene_add_body(scene, background);
 }
 
@@ -264,20 +277,29 @@ void make_background_stars(scene_t *scene){
     
     for (int i = 0; i < MAX_OBSTACLES_SCREEN_SIZE_Y / FREQUNCY_FOR_STARS; i++){
         for (int j = 0; j < MAX_OBSTACLES_SCREEN_SIZE_X / FREQUNCY_FOR_STARS; j++){
-            list_t *star_list = sprite_make_star(STAR_NUM_OF_POINTS, STAR_MIN_LENGTH, STAR_MAX_LENGTH);
-            body_t *star = body_init_with_info(star_list, INFINITY, STAR_COLOR, body_type_init(star_t), free);
-            vector_t pos = {.x = i * DISTANCE_BETWEEN_STARS, .y = j * DISTANCE_BETWEEN_STARS  + (i % 2) * DISTANCE_BETWEEN_STARS/2.0};
+            list_t *star_list = sprite_make_star(STAR_NUM_OF_POINTS, 
+                                                 STAR_MIN_LENGTH, 
+                                                 STAR_MAX_LENGTH);
+            body_t *star = body_init_with_info(star_list, 
+                                               INFINITY, 
+                                               STAR_COLOR, 
+                                               body_type_init(star_t), 
+                                               free);
+            vector_t pos = {.x = i * DISTANCE_BETWEEN_STARS, 
+                            .y = j * DISTANCE_BETWEEN_STARS + (i % 2) * DISTANCE_BETWEEN_STARS/2.0};
             body_set_centroid(star, pos);
             scene_add_body(scene, star);
         }
     }
 }
 
-
-
 body_t *make_pacman(scene_t *scene){
     list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
-    body_t *pacman = body_init_with_info(pacman_shape, PACMAN_MASS, PACMAN_COLOR, body_type_init(rocket_t), free);
+    body_t *pacman = body_init_with_info(pacman_shape, 
+                                         PACMAN_MASS, 
+                                         PACMAN_COLOR, 
+                                         body_type_init(rocket_t), 
+                                         free);
     body_set_centroid(pacman, INITIAL_POS);
     body_set_movable(pacman, true);
     // body_set_camera_mode(pacman, FOLLOW);
@@ -287,7 +309,11 @@ body_t *make_pacman(scene_t *scene){
 
 void make_shooting_star(scene_t *scene){
     list_t *shooting_star_list = sprite_make_circle(3);
-    body_t *shooting_star = body_init_with_info(shooting_star_list, INFINITY, SHOOTING_STAR_COLOR, body_type_init(star_t), free);
+    body_t *shooting_star = body_init_with_info(shooting_star_list, 
+                                                INFINITY, 
+                                                SHOOTING_STAR_COLOR, 
+                                                body_type_init(star_t), 
+                                                free);
     vector_t pos = {.x = 0, .y = rand() % MAX_OBSTACLES_SCREEN_SIZE_X};
     vector_t velocity = SHOOTING_STAR_VELCOITY;
     body_set_velocity(shooting_star, velocity);
@@ -332,6 +358,12 @@ void restart_game_2(double dt, scene_t *scene){
     sdl_show();
 }
 
+space_aux_t *game_restart_aux(space_aux_t *aux, body_t *pacman){
+    aux->continue_game = STARTING_KEY_VALUE;
+    aux->pacman = pacman;
+    return aux;
+}
+
 int main(int argc, char *argv[])
 {
     double dt;
@@ -358,23 +390,27 @@ int main(int argc, char *argv[])
         }
         if (restart_game(pacman))
         {
-            list_t *background_list = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
-            body_t *background = body_init(background_list, 0, BACKGROUND_COLOR_2);
+            list_t *background_list = sprite_make_rect(0, 
+                                                       SCREEN_SIZE_X, 
+                                                       0, 
+                                                       SCREEN_SIZE_Y);
+            body_t *background = body_init(background_list, 
+                                           0, 
+                                           WAIT_BACKGROUND_COLOR);
             clear_scene(scene);
             scene_add_body(scene, background);
             while (timer < WAIT_BACKGROUND_TIME && !sdl_is_done()){
                 timer = continue_game(timer, scene, aux, truth)->timer;
                 truth = continue_game(timer, scene, aux, truth)->truth;
             }
-            if(truth){
+            if (truth){
                 break;
             }
             restart_game_2(dt, scene);
             make_background(scene);
             pacman = make_pacman(scene);
             make_moons(scene, pacman);
-            aux->continue_game = STARTING_KEY_VALUE;
-            aux->pacman = pacman;
+            aux = game_restart_aux(aux, pacman);
             sdl_event_args(aux);
             scene_tick(scene, dt);
         }
