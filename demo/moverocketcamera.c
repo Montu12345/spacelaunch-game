@@ -21,7 +21,7 @@ const vector_t INITIAL_POS = {.x = SCREEN_SIZE_X / 10, .y = SCREEN_SIZE_Y / 10};
 const int PACMAN_STEP = 10;
 const int CIRCLE_PRECISION = 10;
 const int PACMAN_PRECISION = 30;
-const double PACMAN_VELOCITY_SCALE = 1;
+const double PACMAN_VELOCITY_SCALE = 30;
 const int INITIAL_DOTS = 30;
 const double EAT_TOLERANCE = 10.0;
 const double DOT_ADD_PERIOD = 1.0;
@@ -36,8 +36,10 @@ const rgb_color_t DOT_COLOR = {.r = 0, .g = 0, .b = 0};
 vector_t camera_offset_func(body_t *focal_body, void *aux)
 {
   vector_t center = vec_multiply(0.5, max);
+  vector_t offset = vec_subtract(center, body_get_centroid(focal_body));
+
   // printf("center: <%f %f>\n", center.x, center.y);
-  return vec_subtract(center, body_get_centroid(focal_body));
+  return offset;
 }
 
 vector_t camera_mover_func(vector_t offset, body_t *body)

@@ -241,7 +241,8 @@ void body_set_centroid(body_t *body, vector_t x)
     body->kinematic_variables.position = x;
 }
 
-void body_set_color(body_t *body, rgb_color_t color){
+void body_set_color(body_t *body, rgb_color_t color)
+{
     body->appearance.color = color;
 }
 
@@ -310,10 +311,7 @@ void body_tick(body_t *body, double dt)
     vector_t v_avg = vec_multiply(0.5, vec_add(vi, vf));
 
     vector_t xi = body_get_centroid(body);
-    vector_t dx_kin = vec_multiply(dt, v_avg);
-    vector_t dx_cam = body->aux.camera_movement;
-    vector_t dx = vec_add(dx_cam, dx_kin);
-    body->aux.camera_movement = VEC_ZERO;
+    vector_t dx = vec_multiply(dt, v_avg);
     vector_t xf = vec_add(xi, dx);
     body_set_centroid(body, xf);
 
@@ -321,4 +319,13 @@ void body_tick(body_t *body, double dt)
     double thetai = body_get_rotation(body);
     double thetaf = thetai + dtheta;
     body_set_rotation(body, thetaf);
+}
+
+void body_adjust_camera(body_t *body)
+{
+    vector_t xi = body_get_centroid(body);
+    vector_t dx_cam = body->aux.camera_movement;
+    vector_t xf = vec_add(xi, dx_cam);
+    body->aux.camera_movement = VEC_ZERO;
+    body_set_centroid(body, xf);
 }

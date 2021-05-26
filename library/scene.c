@@ -155,7 +155,7 @@ void scene_set_focal_body(scene_t *scene, body_t *focal_body)
     scene->focal_body = focal_body;
 }
 
-void apply_camera(scene_t *scene)
+void calculate_camera(scene_t *scene)
 {
     body_t *focal_body = scene->focal_body;
     vector_t offset = scene->camera_offset(focal_body, scene->camera_aux);
@@ -164,6 +164,12 @@ void apply_camera(scene_t *scene)
         body_t *current_body = scene_get_body(scene, idx);
         vector_t movement = scene->camera_mover(offset, current_body);
         body_set_camera_movement(current_body, movement);
+    }
+
+    for (size_t idx = 0; idx < scene_bodies(scene); idx++)
+    {
+        body_t *current_body = scene_get_body(scene, idx);
+        body_adjust_camera(current_body);
     }
 }
 
@@ -223,6 +229,6 @@ void scene_tick(scene_t *scene, double dt)
 {
     apply_forces(scene);
     clean_forces(scene);
-    apply_camera(scene);
     move_and_clean_bodies(scene, dt);
+    calculate_camera(scene);
 }

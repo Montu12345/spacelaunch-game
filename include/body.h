@@ -265,7 +265,7 @@ bool body_is_movable(body_t *body);
  * 
  * @param body the body to move with respect to the camera
  * @param movement the change in position of the body to move with the camera
- */ 
+ */
 void body_set_camera_movement(body_t *body, vector_t movement);
 
 /**
@@ -334,5 +334,12 @@ vector_t body_get_force(body_t *body);
  * @param dt the number of seconds elapsed since the last tick
  */
 void body_tick(body_t *body, double dt);
+
+/**
+ * Moves the body with respect to the camera.
+ * To be called each tick.
+ * @param body the body to adjust according to the camera.
+ */
+void body_adjust_camera(body_t *body);
 
 #endif // #ifndef __BODY_H__
