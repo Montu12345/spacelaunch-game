@@ -141,6 +141,8 @@ int main(int argc, char *argv[])
                               (camera_offset_func_t)camera_offset_func,
                               (camera_mover_func_t)camera_mover_func,
                               NULL);
+  scene_set_focal_body(scene, pacman);
+
   double dt;
   double time_until_add = DOT_ADD_PERIOD;
   sdl_event_args((void *)pacman);

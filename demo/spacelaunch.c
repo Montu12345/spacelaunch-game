@@ -375,10 +375,6 @@ int main(int argc, char *argv[])
     make_moons(scene, pacman);
     space_aux_t *aux = space_aux_init(pacman, STARTING_KEY_VALUE);
     sdl_init(min, max);
-    // scene_add_camera_management(scene,
-    //                            (camera_offset_func_t)camera_offset_func,
-    //                            (camera_mover_func_t)camera_mover_func,
-    //                            NULL);
     while (!sdl_is_done()){
         t += 1;
         sdl_event_args(aux);
