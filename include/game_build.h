@@ -62,7 +62,7 @@ void game_build_draw_asteroids(scene_t *scene, body_t *rocket);
  *
  * @param scene a pointer to a scene returned from scene_init()
  */
-void game_build_make_stary_night(scene_t *scene);
+void game_build_draw_stary_night(scene_t *scene);
 
 /**
  * Creates the rocket.
@@ -70,21 +70,21 @@ void game_build_make_stary_night(scene_t *scene);
  * 
  * @param scene a pointer to a scene returned from scene_init()
  */
-body_t *game_build_make_rocket(scene_t *scene);
+body_t *game_build_rocket(scene_t *scene);
 
 /**
  * Creates the sky.
  *
  * @param scene a pointer to a scene returned from scene_init()
  */
-void game_build_make_sky(scene_t *scene);
+void game_build_sky(scene_t *scene);
 
 /**
  * Creates the stars that are in the sky.
  *
  * @param scene a pointer to a scene returned from scene_init()
  */
-void game_build_make_stars(scene_t *scene);
+void game_build_stars(scene_t *scene);
 
 /**
  * Makes the asteroids.
@@ -92,6 +92,6 @@ void game_build_make_stars(scene_t *scene);
  * @param scene a pointer to a scene returned from scene_init()
  * @param rocket a pointer to the rocket in the scene.
  */
-void game_build_make_asteroid(scene_t *scene, body_t *rocket);
+void game_build_asteroid(scene_t *scene, body_t *rocket);
 
 #endif // #ifndef __GAME_BUILD_H__

@@ -16,6 +16,7 @@
 #include "collision.h"
 #include "spacelaunch2.h"
 #include "spacelaunch.h"
+#include "game_build.h"
 
 /** 
  * Modifications on pacman to test out camera functionality
@@ -184,10 +185,10 @@ int main(int argc, char *argv[])
     double dt;
     int t = 0;
     scene_t *scene = scene_init();
-    make_background_2(scene);
-    body_t *pacman = make_pacman_2(scene);
-    make_moons_2(scene, pacman);
-    space_aux_t *aux = space_aux_init_2(pacman, STARTING_KEY_VALUE);
+    game_build_draw_stary_night(scene);
+    body_t *pacman = game_build_rocket(scene);
+    game_build_draw_asteroids(scene, pacman);
+    space_aux_t *aux = space_aux_init(pacman, STARTING_KEY_VALUE);
     sdl_init(min, max);
     
     while (!sdl_is_done()){
@@ -195,7 +196,7 @@ int main(int argc, char *argv[])
         sdl_event_args(aux);
         dt = time_since_last_tick();
         if(t % SHOOTING_STAR_TIME == 0){
-            make_shooting_star_2(scene);
+            game_build_shooting_star(scene);
             t = 0;
         }
         if (restart_game_3(pacman))
@@ -217,9 +218,9 @@ int main(int argc, char *argv[])
                 break;
             }
             restart_game_2(dt, scene);
-            make_background_2(scene);
-            pacman = make_pacman_2(scene);
-            make_moons_2(scene, pacman);
+            game_build_draw_stary_night(scene);
+            pacman = game_build_rocket(scene);
+            game_build_draw_asteroids(scene, pacman);
             aux = game_restart_aux_2(aux, pacman);
             sdl_event_args(aux);
             scene_tick(scene, dt);

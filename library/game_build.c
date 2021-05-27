@@ -81,17 +81,17 @@ void game_build_shooting_star(scene_t *scene)
 void game_build_draw_asteroids(scene_t *scene, body_t *rocket)
 {
     for (int i = 0; i < GB_INITIAL_ASTEROIDS; i++){
-        game_build_make_asteroid(scene, rocket);
+        game_build_asteroid(scene, rocket);
     }
 }
 
-void game_build_make_stary_night(scene_t *scene)
+void game_build_draw_stary_night(scene_t *scene)
 {
-    game_build_make_sky(scene);
-    game_build_make_stars(scene);
+    game_build_sky(scene);
+    game_build_stars(scene);
 }
 
-body_t *game_build_make_rocket(scene_t *scene)
+body_t *game_build_rocket(scene_t *scene)
 {
     list_t *rocket_shape = sprite_make_pacman(GB_ROCKET_RADIUS);
     body_t *rocket = body_init_with_info(rocket_shape, 
@@ -106,7 +106,7 @@ body_t *game_build_make_rocket(scene_t *scene)
     return rocket;
 }
 
-void game_build_make_sky(scene_t *scene)
+void game_build_sky(scene_t *scene)
 {
     list_t *background_list = sprite_make_rect(0, 
                                                GB_MAX_OBSTACLES_SCREEN_SIZE_X, 
@@ -120,7 +120,7 @@ void game_build_make_sky(scene_t *scene)
     scene_add_body(scene, background);
 }
 
-void game_build_make_stars(scene_t *scene)
+void game_build_stars(scene_t *scene)
 {
     
     for (int i = 0; i < GB_MAX_OBSTACLES_SCREEN_SIZE_Y / GB_FREQUENCY_FOR_STARS; i++){
@@ -141,7 +141,7 @@ void game_build_make_stars(scene_t *scene)
     }
 }
 
-void game_build_make_asteroid(scene_t *scene, body_t *rocket)
+void game_build_asteroid(scene_t *scene, body_t *rocket)
 {
     list_t *circle = sprite_make_circle(GB_ASTEROID_RADIUS);
     rgb_color_t color;
