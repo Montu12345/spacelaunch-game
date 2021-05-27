@@ -28,11 +28,11 @@ const int GA_MAX_OBSTACLES_SCREEN_SIZE_X = 2000;
 const int GA_MAX_OBSTACLES_SCREEN_SIZE_Y = 1000;
 const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y = -50;
 
-enum body_type_t
+enum space_body_type_t
 {
-    good_obstacle_t,
+    GOOD_OBSTACLE,
     bad_obstacle_t,
-    rocket_t,
+    ROCKET,
     background_t,
     star_t,
     shooting_star_t,
@@ -41,7 +41,7 @@ enum body_type_t
 typedef struct space_aux
 {
     body_t *rocket;
-    int game_state;
+    int game_state_num;
 } space_aux_t;
 
 vector_t game_actions_camera_offset_func_2(body_t *focal_body, void *aux)
@@ -81,10 +81,10 @@ void game_actions_physics_collision(body_t *rocket, body_t *asteroid, vector_t a
     vector_t j2 = vec_negate(j1);
     body_add_impulse(rocket, j1);
     body_add_impulse(asteroid, j2);
-    if (*(enum body_type_t *)body_get_info(asteroid) == good_obstacle_t){
+    if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE){
         body_set_color(rocket, GA_YELLOW);
     }
-    else if (*(enum body_type_t *)body_get_info(asteroid) == bad_obstacle_t){
+    else if (*(enum space_body_type_t *)body_get_info(asteroid) == bad_obstacle_t){
         body_set_color(rocket, GA_RED);
     }
 }
@@ -121,7 +121,7 @@ void game_actions_clear_scene(scene_t *scene)
 }
 
 space_aux_t *game_actions_game_restart_aux(space_aux_t *aux, body_t *rocket){
-    aux->game_state = GA_STARTING_KEY_VALUE;
+    aux->game_state_num = GA_STARTING_KEY_VALUE;
     aux->rocket = rocket;
     return aux;
 }
