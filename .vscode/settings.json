@@ -45,6 +45,7 @@
     "terminal.integrated.defaultProfile.windows": "Visual Studio Developer Prompt",
     "files.associations": {
         "stdio.h": "c",
-        "collision.h": "c"
+        "collision.h": "c",
+        "sdl_ttf.h": "c"
     }
 }

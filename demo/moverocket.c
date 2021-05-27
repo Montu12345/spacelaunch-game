@@ -5,6 +5,8 @@
 #include "moverocket.h"
 #include "collision.h"
 #include "forces.h"
+#include "SDL_ttf.h"
+
 
 // Launch rocket demo
 
@@ -72,7 +74,8 @@ void move_rocket(double angle, double scale, body_t *pacman)
 
 void handle(char key, key_event_type_t type, double held_time, body_t *pacman)
 {
-  double boost = VELOCITY_BOOST + held_time;
+  // double boost = VELOCITY_BOOST + held_time;
+  double boost = 1;
 
   if (type == KEY_PRESSED)
   {
@@ -136,12 +139,16 @@ int main(int argc, char *argv[])
   // body_set_camera_mode(pacman, FOLLOW);
   scene_add_body(scene, pacman);
   sdl_init(min, max);
+  // TTF_Init();
   // scene_add_camera_management(scene,
   //                             (camera_offset_func_t)camera_offset_func,
   //                             (camera_mover_func_t)camera_mover_func,
   //                             NULL);
   double dt;
   double time_until_add = DOT_ADD_PERIOD;
+  // TTF_Font * font = TTF_OpenFont("arial.ttf", 25);
+  // SDL_Color color = { 255, 255, 255 };
+  // SDL_Surface * surface = TTF_RenderText_Solid(font, "Welcome to Gigi Labs", color);
   sdl_event_args((void *)pacman);
   while (!sdl_is_done())
   {
@@ -159,4 +166,6 @@ int main(int argc, char *argv[])
     sdl_show();
   }
   scene_free(scene);
+  // SDL_FreeSurface(surface);
+  // TTF_CloseFont(font);
 }
