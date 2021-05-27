@@ -273,7 +273,7 @@ double time_since_last_tick(void)
     return difference;
 }
 
-void create_words()
+void sdl_create_words()
 {
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
@@ -292,11 +292,8 @@ void create_words()
     boundary->h = min_pixel.y - max_pixel.y;
     SDL_RenderCopy(renderer, texture, NULL, boundary);
     SDL_RenderPresent(renderer);
-    // SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image",
-    // SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
-    // SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-    // SDL_DestroyTexture(texture);
-    // SDL_FreeSurface(surface);
-    // TTF_CloseFont(font);
-    // TTF_Quit();
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+    TTF_Quit();
 }

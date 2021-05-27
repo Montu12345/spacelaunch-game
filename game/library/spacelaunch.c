@@ -58,7 +58,7 @@ void screen_game_over_render(game_state_t *state)
     sdl_render_scene(state->scene);
     sdl_clear();
     sdl_render_scene(state->scene);
-    create_words();
+    sdl_create_words();
   }
   state->ticks += 1;
 }
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
       break;
     }
   }
-
+  
   scene_free(state->scene);
   free(state);
 }
