@@ -1,6 +1,13 @@
 #ifndef __GAME_BUILD_H__
 #define __GAME_BUILD_H__
 
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <unistd.h>
+#include <SDL2/SDL_ttf.h>
+
 #include "body.h"
 #include "collision.h"
 #include "color.h"

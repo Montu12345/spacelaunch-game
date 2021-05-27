@@ -46,6 +46,31 @@
     "files.associations": {
         "stdio.h": "c",
         "collision.h": "c",
+<<<<<<< HEAD
         "sdl_ttf.h": "c"
+=======
+        "locale": "c",
+        "string": "c",
+        "__config": "cpp",
+        "__locale": "cpp",
+        "chrono": "cpp",
+        "ctime": "cpp",
+        "filesystem": "cpp",
+        "iterator": "cpp",
+        "algorithm": "cpp",
+        "core": "cpp",
+        "*.tcc": "cpp",
+        "iomanip": "cpp",
+        "limits": "cpp",
+        "numeric": "cpp",
+        "ratio": "cpp",
+        "streambuf": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "*.def": "cpp",
+        "__availability": "cpp",
+        "condition_variable": "cpp"
+>>>>>>> ac15a3c7f8d36b1d5a3ead29f880e6795e649924
     }
 }

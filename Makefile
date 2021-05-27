@@ -18,7 +18,7 @@ CC = clang
 # -fno-omit-frame-pointer allows stack traces to be generated
 #   (take CS 24 for a full explanation)
 # -fsanitize=address enables asan
-CFLAGS = -Iinclude $(shell sdl2-config --cflags | sed -e "s/include\/SDL2/include/") -Wall -g -fno-omit-frame-pointer -fsanitize=address -Wno-nullability-completeness
+CFLAGS = -Iinclude -Igame/include $(shell sdl2-config --cflags | sed -e "s/include\/SDL2/include/") -Wall -g -fno-omit-frame-pointer -fsanitize=address -Wno-nullability-completeness
 # Compiler flag that links the program with the math library
 LIB_MATH = -lm
 # Compiler flags that link the program with the math and SDL libraries.
@@ -59,6 +59,9 @@ out/%.o: demo/%.c # or "demo"
 	$(CC) -c $(CFLAGS) $^ -o $@
 out/%.o: tests/%.c # or "tests"
 	$(CC) -c $(CFLAGS) $^ -o $@
+out/%.o: game/library/%.c # or "game/library"
+	$(CC) -c $(CFLAGS) $^ -o $@
+
 
 # Builds bin/bounce by linking the necessary .o files.
 # Unlike the out/%.o rule, this uses the LIBS flags and omits the -c flag,
@@ -221,6 +224,9 @@ out/%.obj: demo/%.c # or "demo"
 	$(CC) -c $^ $(CFLAGS) -Fo"$@"
 out/%.obj: tests/%.c # or "tests"
 	$(CC) -c $^ $(CFLAGS) -Fo"$@"
+out/%.obj: game/library/%.c # or "game/library"
+	$(CC) -c $^ $(CFLAGS) -Fo"$@"
+
 
 bin/bounce.exe bin\bounce.exe: out/bounce.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
