@@ -21,62 +21,16 @@
 /** 
  * Modifications on pacman to test out camera functionality
  */
-
-const vector_t ACCELERATION = {.x = 0, .y = -5000};
-
-const int SCREEN_SIZE_X = 1000;
-const int SCREEN_SIZE_Y = 500;
-
-const int MAX_OBSTACLES_SCREEN_SIZE_X = 2000;
-const int MAX_OBSTACLES_SCREEN_SIZE_Y = 1000;
-const int MIN_OBSTACLES_SCREEN_SIZE_Y = -50;
-
 const vector_t min = {.x = 0, .y = 0};
 const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
-
-const int PACMAN_STEP = 10;
-const int PACMAN_PRECISION = 30;
-const double PACMAN_VELOCITY_SCALE = 30;
-const double ROCKET_ELASTICITY = 0.5;
-const double VELOCITY_BOOST = 1.0;
-const double PACMAN_MASS = 100;
-
-const rgb_color_t PACMAN_COLOR = {.r = 0, .g = 0, .b = 0};
-const vector_t INITIAL_POS = {.x = SCREEN_SIZE_X / 10, .y = SCREEN_SIZE_Y / 10};
-
-const double DOT_ADD_PERIOD = 1.0;
-const int INITIAL_DOTS = 5;
-const int CIRCLE_PRECISION = 50;
-const double DOT_MASS = INFINITY;
-
-const rgb_color_t BAD_DOT_COLOR = {.r = 0, .g = 0, .b = 0};
-const rgb_color_t GOOD_DOT_COLOR = {.r = 0, .g = 1, .b = 0};
-
-const rgb_color_t BACKGROUND_COLOR = {.r = 0, .g = 0, .b = .55};
-
-const rgb_color_t SHOOTING_STAR_COLOR = {.r = 1, .g = 1, .b = 1};
-const vector_t SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
-const int SHOOTING_STAR_TIME = 170;
-// .r = 0.89, .g = 0.35, .b = 0.13
-
+const int SCREEN_SIZE_X = 1000;
+const int SCREEN_SIZE_Y = 500;
+const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
 const int A_KEY_VALUE = 1; 
 const int Q_KEY_VALUE = 2;
-
-const rgb_color_t RED = {.r = 1, .g = 0, .b = 0};
-const rgb_color_t YELLOW = {.r = 1, .g = 1, .b = 0};
-const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
-const int WAIT_BACKGROUND_TIME = 200;
-
-const rgb_color_t STAR_COLOR = {.r = 1, .g = 1, .b = 1};
-const int DISTANCE_BETWEEN_STARS = 125;
-const double FREQUNCY_FOR_STARS = 50.0;
-const int STAR_NUM_OF_POINTS = 4;
-const int STAR_MIN_LENGTH = 2;
-const int STAR_MAX_LENGTH = 4;
-
-
-// // const double GRAVITY_CONSTANT = 10;
+const double VELOCITY_BOOST = 1.0;
+const int SHOOTING_STAR_TIME = 170;
 
 enum body_type_t
 {
@@ -111,7 +65,6 @@ space_aux_t *space_aux_init(body_t *pacman, bool game_state)
     };
     return aux;
 }
-
 
 void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
 {
