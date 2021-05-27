@@ -18,80 +18,28 @@
 #include "game_build.h"
 #include "game_actions.h"
 
-/** 
- * Modifications on pacman to test out camera functionality
- */
 const int SCREEN_SIZE_X = 1000;
 const int SCREEN_SIZE_Y = 500;
 const vector_t min = {.x = 0, .y = 0};
 const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
-const int A_KEY_VALUE = 1;
-const int Q_KEY_VALUE = 2;
-const double VELOCITY_BOOST = 1.0;
 const int SHOOTING_STAR_TIME = 170;
 
-
-
-typedef struct space_aux
+void restart_game_2(double dt, scene_t *scene)
 {
-  body_t *pacman;
-  int game_state_num;
-} space_aux_t;
-
-// game_state
-space_aux_t *space_aux_init(body_t *pacman, bool game_state)
-{
-  space_aux_t *aux = malloc(sizeof(space_aux_t));
-  *aux = (space_aux_t){
-      .pacman = pacman,
-      .game_state_num = game_state,
-  };
-  return aux;
+  scene_tick(scene, dt);
+  game_actions_clear_scene(scene);
+  sdl_clear();
+  sdl_render_scene(scene);
+  sdl_show();
 }
 
-void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
-{
-  double boost = VELOCITY_BOOST + held_time;
-  if (type == KEY_PRESSED)
-  {
-    if (key == SPACEBAR)
-    {
-      game_actions_move_rocket(M_PI * 1.0 / 4, 1, aux->pacman);
-    }
-    else if (key == LEFT_ARROW)
-    {
-      game_actions_move_rocket(M_PI, boost, aux->pacman);
-    }
-    else if (key == RIGHT_ARROW)
-    {
-      game_actions_move_rocket(0, boost, aux->pacman);
-    }
-    else if (key == DOWN_ARROW)
-    {
-      game_actions_move_rocket(M_PI * 3.0 / 2, boost, aux->pacman);
-    }
-    else if (key == UP_ARROW)
-    {
-      game_actions_move_rocket(M_PI * 1.0 / 2, boost, aux->pacman);
-    }
-    else if (key == A_KEY)
-    {
-      aux->game_state_num = A_KEY_VALUE;
-    }
-    else if (key == Q_KEY)
-    {
-      aux->game_state_num = Q_KEY_VALUE;
-    }
-  }
-}
-
-int continue_game(scene_t *scene, space_aux_t *aux)
+int continue_game(scene_t *scene, game_state_t *aux)
 {
   sdl_clear();
   sdl_event_args(aux);
-  sdl_on_key((key_handler_t)handle);
+  sdl_on_key((key_handler_t)handle_key_press);
   if (aux->game_state_num == A_KEY_VALUE)
   {
     return A_KEY_VALUE;
@@ -105,22 +53,6 @@ int continue_game(scene_t *scene, space_aux_t *aux)
   return 0;
 }
 
-void restart_game_2(double dt, scene_t *scene)
-{
-  scene_tick(scene, dt);
-  game_actions_clear_scene(scene);
-  sdl_clear();
-  sdl_render_scene(scene);
-  sdl_show();
-}
-
-// space_aux_t *game_restart_aux(space_aux_t *aux, body_t *pacman)
-// {
-//     aux->game_state = STARTING_KEY_VALUE;
-//     aux->pacman = pacman;
-//     return aux;
-// }
-
 int main(int argc, char *argv[])
 {
   double dt;
@@ -129,7 +61,7 @@ int main(int argc, char *argv[])
   game_build_draw_stary_night(scene);
   body_t *pacman = game_build_rocket(scene);
   game_build_draw_asteroids(scene, pacman);
-  space_aux_t *aux = space_aux_init(pacman, STARTING_KEY_VALUE);
+  game_state_t *aux = game_state_init(pacman, STARTING_KEY_VALUE);
   sdl_init(min, max);
 
   while (!sdl_is_done())
@@ -172,7 +104,7 @@ int main(int argc, char *argv[])
     }
     scene_tick(scene, dt);
     sdl_clear();
-    sdl_on_key((key_handler_t)handle);
+    sdl_on_key((key_handler_t)handle_key_press);
     sdl_render_scene(scene);
     sdl_show();
   }

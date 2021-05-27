@@ -47,7 +47,7 @@ extern const double VELOCITY_BOOST_HOLD_KEY;
 typedef struct space_aux_t;
 
 space_aux_t space_aux_init(
-    body_t *defender, 
+    body_t *defender,
     scene_t *demo);
 
 /**

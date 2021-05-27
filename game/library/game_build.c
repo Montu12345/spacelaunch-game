@@ -1,20 +1,4 @@
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <unistd.h>
-#include <SDL2/SDL_ttf.h>
-
-#include "body.h"
-#include "collision.h"
-#include "color.h"
-#include "forces.h"
-#include "scene.h"
-#include "sdl_wrapper.h"
-#include "sprite.h"
-#include "collision.h"
 #include "game_build.h"
-#include "game_actions.h"
 
 const int GB_SCREEN_SIZE_X = 1000;
 const int GB_SCREEN_SIZE_Y = 500;
@@ -50,11 +34,11 @@ const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
-    bad_obstacle_t,
+    BAD_OBSTACLE,
     ROCKET,
-    background_t,
-    star_t,
-    shooting_star_t,
+    BACKGROUND_OBJECT,
+    STAR,
+    SHOOTING_STAR,
 };
 
 enum space_body_type_t *space_body_type_init(enum space_body_type_t b)
@@ -77,7 +61,7 @@ void game_build_shooting_star(scene_t *scene)
     body_t *shooting_star = body_init_with_info(shooting_star_list,
                                                 GB_SHOOTING_STAR_MASS,
                                                 GB_SHOOTING_STAR_COLOR,
-                                                game_build_body_type_init(star_t),
+                                                game_build_body_type_init(STAR),
                                                 free);
     vector_t pos = {.x = 0, .y = rand() % GB_MAX_OBSTACLES_SCREEN_SIZE_X};
     vector_t velocity = GB_SHOOTING_STAR_VELCOITY;
@@ -123,7 +107,7 @@ void game_build_sky(scene_t *scene)
     body_t *background = body_init_with_info(background_list,
                                              INFINITY,
                                              GB_BACKGROUND_COLOR,
-                                             game_build_body_type_init(background_t),
+                                             game_build_body_type_init(BACKGROUND_OBJECT),
                                              free);
     scene_add_body(scene, background);
 }
@@ -141,7 +125,7 @@ void game_build_stars(scene_t *scene)
             body_t *star = body_init_with_info(star_list,
                                                INFINITY,
                                                GB_STAR_COLOR,
-                                               game_build_body_type_init(star_t),
+                                               game_build_body_type_init(STAR),
                                                free);
             vector_t pos = {.x = i * GB_DISTANCE_BETWEEN_STARS,
                             .y = j * GB_DISTANCE_BETWEEN_STARS + (i % 2) * GB_DISTANCE_BETWEEN_STARS / 2.0};
@@ -164,7 +148,7 @@ void game_build_asteroid(scene_t *scene, body_t *rocket)
     else
     {
         color = GB_GOOD_ASTEROID_COLOR;
-        obstacle_type = game_build_body_type_init(bad_obstacle_t);
+        obstacle_type = game_build_body_type_init(BAD_OBSTACLE);
     }
     body_t *asteroid = body_init_with_info(circle, GB_ASTEROID_MASS, color, obstacle_type, free);
     vector_t position = {.x = (rand() % GB_SCREEN_SIZE_X), .y = rand() % GB_SCREEN_SIZE_Y};

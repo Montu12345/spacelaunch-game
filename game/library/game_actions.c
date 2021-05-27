@@ -1,17 +1,4 @@
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <unistd.h>
-
-#include "body.h"
-#include "collision.h"
-#include "color.h"
-#include "forces.h"
-#include "scene.h"
-#include "sdl_wrapper.h"
-#include "sprite.h"
-#include "collision.h"
+#include "game_actions.h"
 
 const int GA_SCREEN_SIZE_X = 1000;
 const int GA_SCREEN_SIZE_Y = 500;
@@ -27,22 +14,30 @@ const int GA_ROCKET_RADIUS = 30;
 const int GA_MAX_OBSTACLES_SCREEN_SIZE_X = 2000;
 const int GA_MAX_OBSTACLES_SCREEN_SIZE_Y = 1000;
 const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y = -50;
+const int A_KEY_VALUE = 1;
+const int Q_KEY_VALUE = 2;
+const double KEY_PRESS_VELOCITY_SCALE = 1.0;
 
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
-    bad_obstacle_t,
+    BAD_OBSTACLE,
     ROCKET,
-    background_t,
-    star_t,
-    shooting_star_t,
+    BACKGROUND_OBJECT,
+    STAR,
+    SHOOTING_STAR,
 };
 
-typedef struct space_aux
+
+game_state_t *game_state_init(body_t *focal_body, bool game_state)
 {
-    body_t *rocket;
-    int game_state_num;
-} space_aux_t;
+    game_state_t *aux = malloc(sizeof(game_state_t));
+    *aux = (game_state_t){
+        .focal_body = focal_body,
+        .game_state_num = game_state,
+    };
+    return aux;
+}
 
 vector_t game_actions_camera_offset_func_2(body_t *focal_body, void *aux)
 {
@@ -67,42 +62,80 @@ vector_t game_actions_camera_mover_func_2(vector_t offset, body_t *body)
     }
 }
 
-void game_actions_move_rocket(double angle, double scale, body_t *rocket)
+void game_actions_move_rocket(double angle, double scale, body_t *focal_body)
 {
     vector_t i = (vector_t){GA_ROCKET_STEP * scale, 0};
     vector_t move_vector = vec_rotate(i, angle);
-    body_set_rotation(rocket, angle);
-    body_add_impulse(rocket, vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
+    body_set_rotation(focal_body, angle);
+    body_add_impulse(focal_body, vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
 }
 
-void game_actions_physics_collision(body_t *rocket, body_t *asteroid, vector_t axis)
+void handle_key_press(char key, key_event_type_t type, double held_time, game_state_t *aux)
 {
-    vector_t j1 = impulse_to_body_1(rocket, asteroid, axis, GA_ROCKET_ELASTICITY);
+    double boost = KEY_PRESS_VELOCITY_SCALE + held_time;
+    if (type == KEY_PRESSED)
+    {
+        if (key == SPACEBAR)
+        {
+            game_actions_move_rocket(M_PI * 1.0 / 4, 1, aux->focal_body);
+        }
+        else if (key == LEFT_ARROW)
+        {
+            game_actions_move_rocket(M_PI, boost, aux->focal_body);
+        }
+        else if (key == RIGHT_ARROW)
+        {
+            game_actions_move_rocket(0, boost, aux->focal_body);
+        }
+        else if (key == DOWN_ARROW)
+        {
+            game_actions_move_rocket(M_PI * 3.0 / 2, boost, aux->focal_body);
+        }
+        else if (key == UP_ARROW)
+        {
+            game_actions_move_rocket(M_PI * 1.0 / 2, boost, aux->focal_body);
+        }
+        else if (key == A_KEY)
+        {
+            aux->game_state_num = A_KEY_VALUE;
+        }
+        else if (key == Q_KEY)
+        {
+            aux->game_state_num = Q_KEY_VALUE;
+        }
+    }
+}
+
+void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis)
+{
+    vector_t j1 = impulse_to_body_1(focal_body, asteroid, axis, GA_ROCKET_ELASTICITY);
     vector_t j2 = vec_negate(j1);
-    body_add_impulse(rocket, j1);
+    body_add_impulse(focal_body, j1);
     body_add_impulse(asteroid, j2);
-    if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE){
-        body_set_color(rocket, GA_YELLOW);
+    if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE)
+    {
+        body_set_color(focal_body, GA_YELLOW);
     }
-    else if (*(enum space_body_type_t *)body_get_info(asteroid) == bad_obstacle_t){
-        body_set_color(rocket, GA_RED);
+    else if (*(enum space_body_type_t *)body_get_info(asteroid) == BAD_OBSTACLE)
+    {
+        body_set_color(focal_body, GA_RED);
     }
 }
 
-void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *rocket, body_t *asteroid)
+void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid)
 {
-    create_collision(scene, 
-                     rocket, 
-                     asteroid, 
-                     (collision_handler_t)game_actions_physics_collision, 
-                     NULL, 
+    create_collision(scene,
+                     focal_body,
+                     asteroid,
+                     (collision_handler_t)game_actions_physics_collision,
+                     NULL,
                      NULL);
 }
 
-bool game_actions_restart_game(body_t *rocket)
+bool game_actions_restart_game(body_t *focal_body)
 {
-    vector_t pos = body_get_centroid(rocket);
-    if (pos.y - GA_ROCKET_RADIUS > GA_MAX_OBSTACLES_SCREEN_SIZE_Y || 
+    vector_t pos = body_get_centroid(focal_body);
+    if (pos.y - GA_ROCKET_RADIUS > GA_MAX_OBSTACLES_SCREEN_SIZE_Y ||
         pos.y - GA_ROCKET_RADIUS < GA_MIN_OBSTACLES_SCREEN_SIZE_Y)
     {
         return true;
@@ -120,8 +153,9 @@ void game_actions_clear_scene(scene_t *scene)
     }
 }
 
-space_aux_t *game_actions_game_restart_aux(space_aux_t *aux, body_t *rocket){
+game_state_t *game_actions_game_restart_aux(game_state_t *aux, body_t *focal_body)
+{
     aux->game_state_num = GA_STARTING_KEY_VALUE;
-    aux->rocket = rocket;
+    aux->focal_body = focal_body;
     return aux;
 }
