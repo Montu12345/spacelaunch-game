@@ -275,7 +275,7 @@ double time_since_last_tick(void)
 
 void create_words(){
     TTF_Init();
-    TTF_Font * font = TTF_OpenFont("Roberto-Black.ttf", 25);
+    TTF_Font * font = TTF_OpenFont("Roboto-Black.ttf", 25);
     SDL_Color color = { 255, 255, 255 };
     SDL_Surface * surface = TTF_RenderUTF8_Blended(font, "Welcome to Gigi Labs", color);
     SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, surface);

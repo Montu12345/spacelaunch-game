@@ -194,46 +194,46 @@ int main(int argc, char *argv[])
     space_aux_t *aux = space_aux_init_2(pacman, STARTING_KEY_VALUE);
     sdl_init(min, max);
     create_words();
-    // while (!sdl_is_done()){
+    while (!sdl_is_done()){
         
-    //     t += 1;
-    //     sdl_event_args(aux);
-    //     dt = time_since_last_tick();
-    //     if(t % SHOOTING_STAR_TIME == 0){
-    //         make_shooting_star_2(scene);
-    //         t = 0;
-    //     }
-    //     if (restart_game_3(pacman))
-    //     {
-    //         list_t *background_list = sprite_make_rect(0, 
-    //                                                    SCREEN_SIZE_X, 
-    //                                                    0, 
-    //                                                    SCREEN_SIZE_Y);
-    //         body_t *background = body_init(background_list, 
-    //                                        0, 
-    //                                        WAIT_BACKGROUND_COLOR);
-    //         clear_scene_2(scene);
-    //         scene_add_body(scene, background);
-    //         while (aux->game_state == 0 && !sdl_is_done()){
-    //             aux->game_state = continue_game(scene, aux);
-    //         }
-    //         if (aux->game_state == 2){
-    //             break;
-    //         }
-    //         restart_game_2(dt, scene);
-    //         make_background_2(scene);
-    //         pacman = make_pacman_2(scene);
-    //         make_moons_2(scene, pacman);
-    //         aux = game_restart_aux_2(aux, pacman);
-    //         sdl_event_args(aux);
-    //         scene_tick(scene, dt);
-    //     }
-    //     scene_tick(scene, dt);
-    //     sdl_clear();
-    //     sdl_on_key((key_handler_t)handle);
-    //     sdl_render_scene(scene);
-    //     sdl_show();
-    // }
+        t += 1;
+        sdl_event_args(aux);
+        dt = time_since_last_tick();
+        if(t % SHOOTING_STAR_TIME == 0){
+            make_shooting_star_2(scene);
+            t = 0;
+        }
+        if (restart_game_3(pacman))
+        {
+            list_t *background_list = sprite_make_rect(0, 
+                                                       SCREEN_SIZE_X, 
+                                                       0, 
+                                                       SCREEN_SIZE_Y);
+            body_t *background = body_init(background_list, 
+                                           0, 
+                                           WAIT_BACKGROUND_COLOR);
+            clear_scene_2(scene);
+            scene_add_body(scene, background);
+            while (aux->game_state == 0 && !sdl_is_done()){
+                aux->game_state = continue_game(scene, aux);
+            }
+            if (aux->game_state == 2){
+                break;
+            }
+            restart_game_2(dt, scene);
+            make_background_2(scene);
+            pacman = make_pacman_2(scene);
+            make_moons_2(scene, pacman);
+            aux = game_restart_aux_2(aux, pacman);
+            sdl_event_args(aux);
+            scene_tick(scene, dt);
+        }
+        scene_tick(scene, dt);
+        sdl_clear();
+        sdl_on_key((key_handler_t)handle);
+        sdl_render_scene(scene);
+        sdl_show();
+    }
     
     scene_free(scene);
 }
