@@ -133,8 +133,6 @@ void move_rocket_2(double angle, double scale, body_t *pacman)
     body_add_impulse(pacman, vec_multiply(PACMAN_VELOCITY_SCALE_2, move_vector));
 }
 
-
-
 void physics_collision_forcer_2(body_t *pacman, body_t *dot, vector_t axis)
 {
     vector_t j1 = impulse_to_body_1(pacman, dot, axis, ROCKET_ELASTICITY_2);
