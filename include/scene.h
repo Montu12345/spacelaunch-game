@@ -145,6 +145,20 @@ void scene_add_camera_management(
     void *camera_aux);
 
 /**
+ * Sets the focal body for the camera management system.
+ * 
+ * The focal body is the body the camera_offset is most concerned with,
+ * which is likely the game character.
+ * 
+ * Useful for the purpose of resetting scenes. Once the focal body is freed, be sure
+ * to set the focal body to an active body_t*.
+ * 
+ * @param scene a pointer to a scene returned from scene_init()
+ * @param focal_body function to calculate the offset to input to the camera mover
+ */
+void scene_set_focal_body(scene_t *scene, body_t *focal_body);
+
+/**
  * Executes a tick of a given scene over a small time interval.
  * This requires executing all the force creators
  * and then ticking each body (see body_tick()).

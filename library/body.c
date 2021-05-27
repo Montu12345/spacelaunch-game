@@ -38,7 +38,6 @@ typedef struct body_aux_properties
     free_func_t info_freer;
     bool is_removed;
     camera_mode_t camera_mode;
-    vector_t camera_movement;
 } body_aux_properties_t;
 
 typedef struct body
@@ -75,15 +74,13 @@ body_aux_properties_t body_aux_properties_init(
     void *info,
     free_func_t info_freer,
     bool is_removed,
-    camera_mode_t camera_mode,
-    vector_t camera_movement)
+    camera_mode_t camera_mode)
 {
     body_aux_properties_t aux = {
         .info = info,
         .info_freer = info_freer,
         .is_removed = is_removed,
-        .camera_mode = camera_mode,
-        .camera_movement = camera_movement};
+        .camera_mode = camera_mode};
     return aux;
 };
 
@@ -123,7 +120,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color)
         BODY_IS_MOVABLE);
     rgb_color_t color_pointer = rgb_init(color.r, color.g, color.b);
     body_appearance_t appearance = body_appearance_init(shape, color_pointer);
-    body_aux_properties_t aux = body_aux_properties_init(NULL, NULL, false, LOCKED, VEC_ZERO);
+    body_aux_properties_t aux = body_aux_properties_init(NULL, NULL, false, LOCKED);
     *body = (body_t){
         .kinematic_variables = kinematic,
         .physical_properties = physical,
@@ -178,11 +175,6 @@ void body_set_movable(body_t *body, bool movable)
 bool body_is_movable(body_t *body)
 {
     return body->physical_properties.movable;
-}
-
-void body_set_camera_movement(body_t *body, vector_t movement)
-{
-    body->aux.camera_movement = movement;
 }
 
 void body_set_camera_mode(body_t *body, camera_mode_t camera_mode)
@@ -241,7 +233,8 @@ void body_set_centroid(body_t *body, vector_t x)
     body->kinematic_variables.position = x;
 }
 
-void body_set_color(body_t *body, rgb_color_t color){
+void body_set_color(body_t *body, rgb_color_t color)
+{
     body->appearance.color = color;
 }
 
@@ -310,10 +303,7 @@ void body_tick(body_t *body, double dt)
     vector_t v_avg = vec_multiply(0.5, vec_add(vi, vf));
 
     vector_t xi = body_get_centroid(body);
-    vector_t dx_kin = vec_multiply(dt, v_avg);
-    vector_t dx_cam = body->aux.camera_movement;
-    vector_t dx = vec_add(dx_cam, dx_kin);
-    body->aux.camera_movement = VEC_ZERO;
+    vector_t dx = vec_multiply(dt, v_avg);
     vector_t xf = vec_add(xi, dx);
     body_set_centroid(body, xf);
 
@@ -321,4 +311,12 @@ void body_tick(body_t *body, double dt)
     double thetai = body_get_rotation(body);
     double thetaf = thetai + dtheta;
     body_set_rotation(body, thetaf);
+}
+
+
+void body_adjust_for_camera(body_t *body, vector_t movement)
+{
+    vector_t xi = body_get_centroid(body);
+    vector_t xf = vec_add(xi, movement);
+    body_set_centroid(body, xf);
 }
