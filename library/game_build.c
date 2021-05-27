@@ -14,6 +14,7 @@
 #include "sprite.h"
 #include "collision.h"
 #include "game_build.h"
+#include "game_actions.h"
 
 const int GB_SCREEN_SIZE_X = 1000;
 const int GB_SCREEN_SIZE_Y = 500;
@@ -160,6 +161,6 @@ void game_build_asteroid(scene_t *scene, body_t *rocket)
     body_set_movable(asteroid, false);
     // body_set_camera_mode(ASTEROID, SCENE);
     // create_gravity_rocket_obstacles(scene, ROCKET, ASTEROID);
-    create_collision_rocket_obstacles_2(scene, rocket, asteroid);
+    game_actions_rocket_obstacles_collision(scene, rocket, asteroid);
     scene_add_body(scene, asteroid);
 }

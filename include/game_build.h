@@ -66,9 +66,9 @@ void game_build_draw_stary_night(scene_t *scene);
 
 /**
  * Creates the rocket.
- * Return: pointer to the rocket
  * 
  * @param scene a pointer to a scene returned from scene_init()
+ * @return pointer to the rocket
  */
 body_t *game_build_rocket(scene_t *scene);
 

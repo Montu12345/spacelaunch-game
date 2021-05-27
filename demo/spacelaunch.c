@@ -14,17 +14,18 @@
 #include "sdl_wrapper.h"
 #include "sprite.h"
 #include "collision.h"
-#include "spacelaunch2.h"
+// #include "spacelaunch2.h"
 #include "spacelaunch.h"
 #include "game_build.h"
+#include "game_actions.h"
 
 /** 
  * Modifications on pacman to test out camera functionality
  */
-const vector_t min = {.x = 0, .y = 0};
-const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const int SCREEN_SIZE_X = 1000;
 const int SCREEN_SIZE_Y = 500;
+const vector_t min = {.x = 0, .y = 0};
+const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
 const int A_KEY_VALUE = 1; 
@@ -73,23 +74,23 @@ void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
     {
         if (key == SPACEBAR)
         {
-            move_rocket_2(M_PI * 1.0 / 4, 1, aux->pacman);
+            game_actions_move_rocket(M_PI * 1.0 / 4, 1, aux->pacman);
         }
         else if (key == LEFT_ARROW)
         {
-            move_rocket_2(M_PI, boost, aux->pacman);
+            game_actions_move_rocket(M_PI, boost, aux->pacman);
         }
         else if (key == RIGHT_ARROW)
         {
-            move_rocket_2(0, boost, aux->pacman);
+            game_actions_move_rocket(0, boost, aux->pacman);
         }
         else if (key == DOWN_ARROW)
         {
-            move_rocket_2(M_PI * 3.0 / 2, boost, aux->pacman);
+            game_actions_move_rocket(M_PI * 3.0 / 2, boost, aux->pacman);
         }
         else if (key == UP_ARROW)
         {
-            move_rocket_2(M_PI * 1.0 / 2, boost, aux->pacman);
+            game_actions_move_rocket(M_PI * 1.0 / 2, boost, aux->pacman);
         }
         else if (key == A_KEY)
         {
@@ -102,16 +103,17 @@ void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
     }
 }
 
-int continue_game(scene_t *scene, space_aux_t *aux){
+int continue_game(scene_t *scene, space_aux_t *aux)
+{
     sdl_clear();
     sdl_event_args(aux);
     sdl_on_key((key_handler_t)handle);
-    if (aux->game_state == A_KEY_VALUE){
+    if (aux->game_state == A_KEY_VALUE)
+    {
         return A_KEY_VALUE;
-        printf("here \n");
     }
-    if (aux->game_state == Q_KEY_VALUE){
-        // timer = WAIT_BACKGROUND_TIME;
+    if (aux->game_state == Q_KEY_VALUE)
+    {
         return Q_KEY_VALUE;
     }
     sdl_render_scene(scene);
@@ -119,7 +121,8 @@ int continue_game(scene_t *scene, space_aux_t *aux){
     return 0;
 }
 
-void restart_game_2(double dt, scene_t *scene){
+void restart_game_2(double dt, scene_t *scene)
+{
     scene_tick(scene, dt);
     clear_scene_2(scene);
     sdl_clear();
@@ -127,11 +130,12 @@ void restart_game_2(double dt, scene_t *scene){
     sdl_show();
 }
 
-space_aux_t *game_restart_aux(space_aux_t *aux, body_t *pacman){
-    aux->game_state = STARTING_KEY_VALUE;
-    aux->pacman = pacman;
-    return aux;
-}
+// space_aux_t *game_restart_aux(space_aux_t *aux, body_t *pacman)
+// {
+//     aux->game_state = STARTING_KEY_VALUE;
+//     aux->pacman = pacman;
+//     return aux;
+// }
 
 int main(int argc, char *argv[])
 {
@@ -144,7 +148,8 @@ int main(int argc, char *argv[])
     space_aux_t *aux = space_aux_init(pacman, STARTING_KEY_VALUE);
     sdl_init(min, max);
     
-    while (!sdl_is_done()){
+    while (!sdl_is_done())
+    {
         t += 1;
         sdl_event_args(aux);
         dt = time_since_last_tick();
@@ -152,7 +157,7 @@ int main(int argc, char *argv[])
             game_build_shooting_star(scene);
             t = 0;
         }
-        if (restart_game_3(pacman))
+        if (game_actions_restart_game(pacman))
         {
             list_t *background_list = sprite_make_rect(0, 
                                                        SCREEN_SIZE_X, 
@@ -161,20 +166,22 @@ int main(int argc, char *argv[])
             body_t *background = body_init(background_list, 
                                            0, 
                                            WAIT_BACKGROUND_COLOR);
-            clear_scene_2(scene);
+            game_actions_clear_scene(scene);
             scene_add_body(scene, background);
-            while (aux->game_state == 0 && !sdl_is_done()){
+            while (aux->game_state == 0 && !sdl_is_done())
+            {
                 create_words();
                 aux->game_state = continue_game(scene, aux);
             }
-            if (aux->game_state == 2){
+            if (aux->game_state == 2)
+            {
                 break;
             }
             restart_game_2(dt, scene);
             game_build_draw_stary_night(scene);
             pacman = game_build_rocket(scene);
             game_build_draw_asteroids(scene, pacman);
-            aux = game_restart_aux_2(aux, pacman);
+            aux = game_actions_game_restart_aux(aux, pacman);
             sdl_event_args(aux);
             scene_tick(scene, dt);
         }
