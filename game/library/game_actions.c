@@ -28,15 +28,6 @@ enum space_body_type_t
     SHOOTING_STAR,
 };
 
-game_state_t *game_state_init(body_t *focal_body, bool game_state)
-{
-    game_state_t *aux = malloc(sizeof(game_state_t));
-    *aux = (game_state_t){
-        .focal_body = focal_body,
-    };
-    return aux;
-}
-
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
 {
     vector_t center = vec_multiply(0.5, GA_max);

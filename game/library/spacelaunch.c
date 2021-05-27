@@ -52,6 +52,10 @@ void screen_game_over_render(game_state_t *state)
     body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
     scene_add_body(state->scene, background);
 
+    // TODO: Why does this make text rendering work? Reducing redundant calls breaks functionality.
+    sdl_render_scene(state->scene);
+    sdl_clear();
+    sdl_render_scene(state->scene);
     sdl_clear();
     sdl_render_scene(state->scene);
     create_words();

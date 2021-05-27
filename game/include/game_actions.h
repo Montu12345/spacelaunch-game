@@ -112,13 +112,5 @@ void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body,
  */
 void game_actions_check_for_game_over(game_state_t *state);
 
-/**
- * Updates the aux if the game continues
- * 
- * @param aux existing aux
- * @param focal_body focal_body on the screen
- * @return game_state_t 
- */
-game_state_t *game_actions_game_restart_aux(game_state_t *aux, body_t *focal_body);
 
 #endif // #ifndef __GAME_ACTIONS_H__
