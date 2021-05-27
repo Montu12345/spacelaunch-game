@@ -148,7 +148,6 @@ void handle(char key, key_event_type_t type, double held_time, space_aux_t *aux)
     }
 }
 
-
 int continue_game(scene_t *scene, space_aux_t *aux){
     sdl_clear();
     sdl_event_args(aux);
@@ -166,7 +165,6 @@ int continue_game(scene_t *scene, space_aux_t *aux){
     return 0;
 }
 
-
 void restart_game_2(double dt, scene_t *scene){
     scene_tick(scene, dt);
     clear_scene_2(scene);
@@ -183,8 +181,6 @@ space_aux_t *game_restart_aux(space_aux_t *aux, body_t *pacman){
 
 int main(int argc, char *argv[])
 {
-    
-    
     double dt;
     int t = 0;
     scene_t *scene = scene_init();
@@ -193,9 +189,8 @@ int main(int argc, char *argv[])
     make_moons_2(scene, pacman);
     space_aux_t *aux = space_aux_init_2(pacman, STARTING_KEY_VALUE);
     sdl_init(min, max);
-    create_words();
+    
     while (!sdl_is_done()){
-        
         t += 1;
         sdl_event_args(aux);
         dt = time_since_last_tick();
@@ -215,6 +210,7 @@ int main(int argc, char *argv[])
             clear_scene_2(scene);
             scene_add_body(scene, background);
             while (aux->game_state == 0 && !sdl_is_done()){
+                create_words();
                 aux->game_state = continue_game(scene, aux);
             }
             if (aux->game_state == 2){
