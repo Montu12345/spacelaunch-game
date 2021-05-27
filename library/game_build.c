@@ -81,19 +81,19 @@ void game_build_shooting_star(scene_t *scene)
 void game_build_draw_asteroids(scene_t *scene, body_t *rocket)
 {
     for (int i = 0; i < GB_INITIAL_ASTEROIDS; i++){
-        make_asteroid(scene, rocket);
+        game_build_make_asteroid(scene, rocket);
     }
 }
 
 void game_build_make_stary_night(scene_t *scene)
 {
-    game_build_make_background_color(scene);
-    game_build_make_background_stars(scene);
+    game_build_make_sky(scene);
+    game_build_make_stars(scene);
 }
 
 body_t *game_build_make_rocket(scene_t *scene)
 {
-    list_t *rocket_shape = sprite_make_ROCKET(GB_ROCKET_RADIUS);
+    list_t *rocket_shape = sprite_make_pacman(GB_ROCKET_RADIUS);
     body_t *rocket = body_init_with_info(rocket_shape, 
                                          GB_ROCKET_MASS, 
                                          GB_ROCKET_COLOR, 
