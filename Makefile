@@ -1,5 +1,5 @@
 # List of demo programs
-DEMOS = bounce gravity pacman nbodies damping spaceinvaders breakout pegs camerademo moverocket moverocketcamera spacelaunch
+DEMOS = bounce gravity pacman images nbodies damping spaceinvaders breakout pegs camerademo moverocket moverocketcamera spacelaunch
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
@@ -24,7 +24,7 @@ LIB_MATH = -lm
 # Compiler flags that link the program with the math and SDL libraries.
 # Note that $(...) substitutes a variable's value, so this line is equivalent to
 # LIBS = -lm -lSDL2 -lSDL2_gfx
-LIBS = $(LIB_MATH) $(shell sdl2-config --libs) -lSDL2_gfx -lSDL2_ttf
+LIBS = $(LIB_MATH) $(shell sdl2-config --libs) -lSDL2_gfx -lSDL2_ttf -lSDL2_image
 
 # List of compiled .o files corresponding to STUDENT_LIBS, e.g. "out/vector.o".
 # Don't worry about the syntax; it's just adding "out/" to the start
@@ -67,6 +67,9 @@ out/%.o: game/library/%.c # or "game/library"
 # Unlike the out/%.o rule, this uses the LIBS flags and omits the -c flag,
 # since it is building a full executable.
 bin/bounce: out/bounce.o out/sdl_wrapper.o $(STUDENT_OBJS)
+	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
+
+bin/images: out/images.o out/sdl_wrapper.o $(STUDENT_OBJS)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 bin/gravity: out/gravity.o out/sdl_wrapper.o $(STUDENT_OBJS)
