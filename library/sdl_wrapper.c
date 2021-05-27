@@ -273,12 +273,13 @@ double time_since_last_tick(void)
     return difference;
 }
 
-void create_words(){
+void create_words()
+{
     TTF_Init();
-    TTF_Font * font = TTF_OpenFont("Roboto-Black.ttf", 25);
-    SDL_Color color = { 255, 255, 255 };
-    SDL_Surface * surface = TTF_RenderUTF8_Blended(font, "Welcome to Gigi Labs", color);
-    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, surface);
+    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
+    SDL_Color color = {255, 255, 255};
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Welcome to Gigi Labs", color);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
     vector_t window_center = get_window_center();
     vector_t max = vec_add(center, max_diff),

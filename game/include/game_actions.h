@@ -14,6 +14,7 @@
 #include "sdl_wrapper.h"
 #include "sprite.h"
 #include "collision.h"
+#include "game_build.h"
 
 const int GA_SCREEN_SIZE_X;
 const int GA_SCREEN_SIZE_Y;
@@ -32,16 +33,28 @@ const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y;
 const int A_KEY_VALUE;
 const int Q_KEY_VALUE;
 
+typedef enum
+{
+  SCREEN_GAME_OVER,
+  SCREEN_GAME,
+  SCREEN_QUIT,
+} screen_t;
+
 /**
  * Properties to pass into the handler
  *  focal_body -- the focal_body body
- *  game_state_num -- int value to determine if the game should continue or end
 */
 typedef struct game_state
 {
   body_t *focal_body;
-  int game_state_num;
+  int ticks;
+  scene_t *scene;
+  body_t *rocket;
+  bool needs_restart;
+  screen_t current_screen;
 } game_state_t;
+
+void game_setup(game_state_t *state);
 
 void handle_key_press(char key, key_event_type_t type, double held_time, game_state_t *aux);
 
@@ -53,7 +66,7 @@ game_state_t *game_state_init(body_t *focal_body, bool game_state);
  * @param body a pointer to a body returned from body_init()
  * @return the info passed to body_init()
  */
-vector_t game_actions_camera_offset_func_2(body_t *focal_body, void *aux);
+vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux);
 
 /**
  * NEED TO DO!!!!!!!!!!
@@ -61,7 +74,7 @@ vector_t game_actions_camera_offset_func_2(body_t *focal_body, void *aux);
  * @param body a pointer to a body returned from body_init()
  * @return the info passed to body_init()
  */
-vector_t game_actions_camera_mover_func_2(vector_t offset, body_t *body);
+vector_t game_actions_camera_mover_func(vector_t offset, body_t *body);
 
 /**
  * Moves the focal_body.
@@ -70,7 +83,7 @@ vector_t game_actions_camera_mover_func_2(vector_t offset, body_t *body);
  * @param scale the scale to move the focal_body
  * @param focal_body focal_body in the scene
  */
-void game_actions_move_rocket(double angle, double scale, body_t *focal_body);
+void game_actions_thrust_rocket(double angle, double scale, body_t *focal_body);
 
 /**
  * Creates a collision between the rockey and an asteroid
@@ -91,20 +104,13 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
 void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid);
 
 /**
- * Whether the game should be continued or not.
+ * Changes the game state if necessary to GAME_OVER
+ * if the game has ended. 
  * Based on the position of the focal_body.
  *
- * @param body a pointer to a body returned from body_init()
- * @return true if game should continue; false if game should end
+ * @param state the game state
  */
-bool game_actions_restart_game(body_t *focal_body);
-
-/**
- * Clears all objects from the screen
- *
- * @param scene a pointer to a scene returned from scene_init()
- */
-void game_actions_clear_scene(scene_t *scene);
+void game_actions_check_for_game_over(game_state_t *state);
 
 /**
  * Updates the aux if the game continues

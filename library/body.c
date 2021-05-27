@@ -283,6 +283,7 @@ vector_t body_get_force(body_t *body)
 
 void body_tick(body_t *body, double dt)
 {
+
     vector_t force = body->kinematic_variables.net_force;
 
     double mass = body->physical_properties.mass;
@@ -312,7 +313,6 @@ void body_tick(body_t *body, double dt)
     double thetaf = thetai + dtheta;
     body_set_rotation(body, thetaf);
 }
-
 
 void body_adjust_for_camera(body_t *body, vector_t movement)
 {

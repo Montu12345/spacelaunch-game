@@ -28,24 +28,22 @@ enum space_body_type_t
     SHOOTING_STAR,
 };
 
-
 game_state_t *game_state_init(body_t *focal_body, bool game_state)
 {
     game_state_t *aux = malloc(sizeof(game_state_t));
     *aux = (game_state_t){
         .focal_body = focal_body,
-        .game_state_num = game_state,
     };
     return aux;
 }
 
-vector_t game_actions_camera_offset_func_2(body_t *focal_body, void *aux)
+vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
 {
     vector_t center = vec_multiply(0.5, GA_max);
     return vec_subtract(center, body_get_centroid(focal_body));
 }
 
-vector_t game_actions_camera_mover_func_2(vector_t offset, body_t *body)
+vector_t game_actions_camera_mover_func(vector_t offset, body_t *body)
 {
     camera_mode_t camera_mode = body_get_camera_mode(body);
     switch (camera_mode)
@@ -62,46 +60,63 @@ vector_t game_actions_camera_mover_func_2(vector_t offset, body_t *body)
     }
 }
 
-void game_actions_move_rocket(double angle, double scale, body_t *focal_body)
+void game_setup(game_state_t *state)
+{
+    scene_t *scene = scene_init();
+    game_build_draw_stary_night(scene);
+    body_t *rocket = game_build_rocket(scene);
+    game_build_draw_asteroids(scene, rocket);
+
+    state->rocket = rocket;
+    state->scene = scene;
+    state->needs_restart = false;
+}
+
+void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)
 {
     vector_t i = (vector_t){GA_ROCKET_STEP * scale, 0};
     vector_t move_vector = vec_rotate(i, angle);
-    body_set_rotation(focal_body, angle);
-    body_add_impulse(focal_body, vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
+    body_set_rotation(rocket, angle);
+    body_add_impulse(rocket, vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
 }
 
-void handle_key_press(char key, key_event_type_t type, double held_time, game_state_t *aux)
+void handle_key_press(char key, key_event_type_t type, double held_time, game_state_t *state)
 {
     double boost = KEY_PRESS_VELOCITY_SCALE + held_time;
-    if (type == KEY_PRESSED)
+    if (type != KEY_PRESSED)
     {
-        if (key == SPACEBAR)
+        return;
+    }
+
+    if (state->current_screen == SCREEN_GAME)
+    {
+        switch (key)
         {
-            game_actions_move_rocket(M_PI * 1.0 / 4, 1, aux->focal_body);
+        case SPACEBAR:
+            game_actions_thrust_rocket(M_PI * 1.0 / 4, 1, state->rocket);
+            break;
+        case LEFT_ARROW:
+            game_actions_thrust_rocket(M_PI, boost, state->rocket);
+            break;
+        case RIGHT_ARROW:
+            game_actions_thrust_rocket(0, boost, state->rocket);
+            break;
+        case DOWN_ARROW:
+            game_actions_thrust_rocket(M_PI * 3.0 / 2, boost, state->rocket);
+            break;
+        case UP_ARROW:
+            game_actions_thrust_rocket(M_PI * 1.0 / 2, boost, state->rocket);
+            break;
+        default:
+            break;
         }
-        else if (key == LEFT_ARROW)
+    }
+    else if (state->current_screen == SCREEN_GAME_OVER)
+    {
+        if (key == A_KEY)
         {
-            game_actions_move_rocket(M_PI, boost, aux->focal_body);
-        }
-        else if (key == RIGHT_ARROW)
-        {
-            game_actions_move_rocket(0, boost, aux->focal_body);
-        }
-        else if (key == DOWN_ARROW)
-        {
-            game_actions_move_rocket(M_PI * 3.0 / 2, boost, aux->focal_body);
-        }
-        else if (key == UP_ARROW)
-        {
-            game_actions_move_rocket(M_PI * 1.0 / 2, boost, aux->focal_body);
-        }
-        else if (key == A_KEY)
-        {
-            aux->game_state_num = A_KEY_VALUE;
-        }
-        else if (key == Q_KEY)
-        {
-            aux->game_state_num = Q_KEY_VALUE;
+            state->current_screen = SCREEN_GAME;
+            state->needs_restart = true;
         }
     }
 }
@@ -132,30 +147,13 @@ void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body,
                      NULL);
 }
 
-bool game_actions_restart_game(body_t *focal_body)
+void game_actions_check_for_game_over(game_state_t *state)
 {
-    vector_t pos = body_get_centroid(focal_body);
+    vector_t pos = body_get_centroid(state->rocket);
     if (pos.y - GA_ROCKET_RADIUS > GA_MAX_OBSTACLES_SCREEN_SIZE_Y ||
         pos.y - GA_ROCKET_RADIUS < GA_MIN_OBSTACLES_SCREEN_SIZE_Y)
     {
-        return true;
+        state->current_screen = SCREEN_GAME_OVER;
+        state->needs_restart = true;
     }
-    return false;
-}
-
-void game_actions_clear_scene(scene_t *scene)
-{
-    size_t number_of_boxes = scene_bodies(scene);
-    for (int i = 0; i < number_of_boxes; i++)
-    {
-        body_t *current_body = scene_get_body(scene, i);
-        body_remove(current_body);
-    }
-}
-
-game_state_t *game_actions_game_restart_aux(game_state_t *aux, body_t *focal_body)
-{
-    aux->game_state_num = GA_STARTING_KEY_VALUE;
-    aux->focal_body = focal_body;
-    return aux;
 }

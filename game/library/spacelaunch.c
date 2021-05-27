@@ -1,4 +1,3 @@
-// #include "camerademo.h"
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,88 +25,75 @@ const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
 const int SHOOTING_STAR_TIME = 170;
 
-void restart_game_2(double dt, scene_t *scene)
+void screen_game_render(game_state_t *state)
 {
-  scene_tick(scene, dt);
-  game_actions_clear_scene(scene);
-  sdl_clear();
-  sdl_render_scene(scene);
-  sdl_show();
+  if (state->needs_restart)
+  {
+    game_setup(state);
+  }
+  state->ticks += 1;
+  if (state->ticks % SHOOTING_STAR_TIME == 0)
+  {
+    game_build_shooting_star(state->scene);
+  }
+  game_actions_check_for_game_over(state);
 }
 
-int continue_game(scene_t *scene, game_state_t *aux)
+void screen_game_over_render(game_state_t *state)
 {
-  sdl_clear();
-  sdl_event_args(aux);
-  sdl_on_key((key_handler_t)handle_key_press);
-  if (aux->game_state_num == A_KEY_VALUE)
+  if (state->ticks == 0)
   {
-    return A_KEY_VALUE;
+    scene_free(state->scene);
+    state->scene = scene_init();
+    state->rocket = NULL;
+    state->needs_restart = false;
+
+    list_t *screen_rect = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
+    body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
+    scene_add_body(state->scene, background);
+
+    sdl_clear();
+    sdl_render_scene(state->scene);
+    create_words();
   }
-  if (aux->game_state_num == Q_KEY_VALUE)
-  {
-    return Q_KEY_VALUE;
-  }
-  sdl_render_scene(scene);
-  sdl_show();
-  return 0;
+  state->ticks += 1;
 }
 
 int main(int argc, char *argv[])
 {
-  double dt;
-  int t = 0;
-  scene_t *scene = scene_init();
-  game_build_draw_stary_night(scene);
-  body_t *pacman = game_build_rocket(scene);
-  game_build_draw_asteroids(scene, pacman);
-  game_state_t *aux = game_state_init(pacman, STARTING_KEY_VALUE);
-  sdl_init(min, max);
+  // Initialize the game state
+  game_state_t *state = malloc(sizeof(game_state_t));
+  state->current_screen = SCREEN_GAME;
+  state->needs_restart = true;
 
+  // Initialize SDL
+  sdl_init(min, max);
+  sdl_event_args(state);
+  sdl_on_key((key_handler_t)handle_key_press);
+
+  // Render the correct screen each tick.
   while (!sdl_is_done())
   {
-    t += 1;
-    sdl_event_args(aux);
-    dt = time_since_last_tick();
-    if (t % SHOOTING_STAR_TIME == 0)
+    double dt = time_since_last_tick();
+    if (state->needs_restart)
     {
-      game_build_shooting_star(scene);
-      t = 0;
+      state->ticks = 0;
     }
-    if (game_actions_restart_game(pacman))
+    switch (state->current_screen)
     {
-      list_t *background_list = sprite_make_rect(0,
-                                                 SCREEN_SIZE_X,
-                                                 0,
-                                                 SCREEN_SIZE_Y);
-      body_t *background = body_init(background_list,
-                                     0,
-                                     WAIT_BACKGROUND_COLOR);
-      game_actions_clear_scene(scene);
-      scene_add_body(scene, background);
-      while (aux->game_state_num == 0 && !sdl_is_done())
-      {
-        create_words();
-        aux->game_state_num = continue_game(scene, aux);
-      }
-      if (aux->game_state_num == 2)
-      {
-        break;
-      }
-      restart_game_2(dt, scene);
-      game_build_draw_stary_night(scene);
-      pacman = game_build_rocket(scene);
-      game_build_draw_asteroids(scene, pacman);
-      aux = game_actions_game_restart_aux(aux, pacman);
-      sdl_event_args(aux);
-      scene_tick(scene, dt);
+    case SCREEN_GAME:
+      screen_game_render(state);
+      scene_tick(state->scene, dt);
+      sdl_render_scene(state->scene);
+      break;
+    case SCREEN_GAME_OVER:
+      screen_game_over_render(state);
+      break;
+    default:
+      break;
     }
-    scene_tick(scene, dt);
-    sdl_clear();
-    sdl_on_key((key_handler_t)handle_key_press);
-    sdl_render_scene(scene);
-    sdl_show();
   }
 
-  scene_free(scene);
+  scene_free(state->scene);
+  free(state);
 }
