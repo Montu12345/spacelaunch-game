@@ -7,11 +7,7 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
 #include "sdl_wrapper.h"
-<<<<<<< HEAD
-// #include "SDL_ttf.h"
-=======
 #include <SDL2/SDL_ttf.h>
->>>>>>> 5eeed1b502326f4780a822dc84430e568820431a
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;

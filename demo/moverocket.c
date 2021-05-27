@@ -5,8 +5,7 @@
 #include "moverocket.h"
 #include "collision.h"
 #include "forces.h"
-#include "SDL_ttf.h"
-
+#include <SDL2/SDL_ttf.h>
 
 // Launch rocket demo
 
@@ -130,19 +129,21 @@ int main(int argc, char *argv[])
   body_set_movable(pacman, true);
   scene_add_body(scene, pacman);
   sdl_init(min, max);
-<<<<<<< HEAD
-  // TTF_Init();
+  TTF_Init();
   // scene_add_camera_management(scene,
   //                             (camera_offset_func_t)camera_offset_func,
   //                             (camera_mover_func_t)camera_mover_func,
   //                             NULL);
-=======
->>>>>>> 5eeed1b502326f4780a822dc84430e568820431a
   double dt;
   double time_until_add = DOT_ADD_PERIOD;
-  // TTF_Font * font = TTF_OpenFont("arial.ttf", 25);
-  // SDL_Color color = { 255, 255, 255 };
-  // SDL_Surface * surface = TTF_RenderText_Solid(font, "Welcome to Gigi Labs", color);
+  SDL_Window * window = SDL_CreateWindow("SDL_ttf in SDL2",
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640,
+        480, 0);
+  SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
+  TTF_Font * font = TTF_OpenFont("Roboto-Black.ttf", 25);
+  SDL_Color color = {255, 255, 255};
+  SDL_Surface * surface = TTF_RenderText_Solid(font, "HELLO", color);
+  SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surface);
   sdl_event_args((void *)pacman);
   while (!sdl_is_done())
   {
@@ -160,6 +161,10 @@ int main(int argc, char *argv[])
     sdl_show();
   }
   scene_free(scene);
-  // SDL_FreeSurface(surface);
-  // TTF_CloseFont(font);
+  SDL_FreeSurface(surface);
+  // SDL_DestroyTexture(texture);
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
+  TTF_CloseFont(font);
+  SDL_Quit();
 }
