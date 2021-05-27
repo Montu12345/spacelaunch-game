@@ -14,7 +14,6 @@
 #include "sdl_wrapper.h"
 #include "sprite.h"
 #include "collision.h"
-// #include "spacelaunch2.h"
 #include "spacelaunch.h"
 #include "game_build.h"
 #include "game_actions.h"
@@ -124,7 +123,7 @@ int continue_game(scene_t *scene, space_aux_t *aux)
 void restart_game_2(double dt, scene_t *scene)
 {
     scene_tick(scene, dt);
-    clear_scene_2(scene);
+    game_actions_clear_scene(scene);
     sdl_clear();
     sdl_render_scene(scene);
     sdl_show();

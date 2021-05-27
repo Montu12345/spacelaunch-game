@@ -12,7 +12,6 @@
 #include "sdl_wrapper.h"
 #include "sprite.h"
 #include "collision.h"
-#include "spacelaunch2.h"
 
 const int GA_SCREEN_SIZE_X = 1000;
 const int GA_SCREEN_SIZE_Y = 500;

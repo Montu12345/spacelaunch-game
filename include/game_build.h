@@ -9,7 +9,7 @@
 #include "sdl_wrapper.h"
 #include "sprite.h"
 #include "collision.h"
-#include "spacelaunch2.h"
+#include "game_actions.h"
 
 const int GB_SCREEN_SIZE_X;
 const int GB_SCREEN_SIZE_Y;
