@@ -134,4 +134,6 @@ void sdl_event_args(void *args);
  */
 double time_since_last_tick(void);
 
+void create_words();
+
 #endif // #ifndef __SDL_WRAPPER_H__
