@@ -105,7 +105,7 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
  * @param focal_body focal_body on the screen
  * @param asteroid asteroid on the screen
  */
-void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid);
+void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid, game_state_t *state);
 
 /**
  * Changes the game state if necessary to GAME_OVER

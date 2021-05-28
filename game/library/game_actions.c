@@ -62,7 +62,7 @@ void game_setup(game_state_t *state)
     scene_t *scene = scene_init();
     game_build_draw_stary_night(scene);
     body_t *rocket = game_build_rocket(scene);
-    game_build_draw_asteroids(scene, rocket);
+    
     body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT, SCORE_DISPLAY_POSITION);
     state->rocket = rocket;
     state->scene = scene;
@@ -70,7 +70,7 @@ void game_setup(game_state_t *state)
     state->score_display = score_display;
     state->score = 0;
     state->timer = 0;
-
+    game_build_draw_asteroids(state, rocket);
     scene_add_camera_management(state->scene,
                               (camera_offset_func_t)game_actions_camera_offset_func,
                               (camera_mover_func_t)game_actions_camera_mover_func,
@@ -135,14 +135,14 @@ void game_actions_new_health(game_state_t *state, int scale){
     vector_t *qwer = (vector_t *)list_get(curr_display_list, 3);
     double max_length = qwer->x - asdf->x;
     vector_t position = body_get_centroid(curr_display);
-    body_t *score_display = game_build_score_keeper(state->scene, SCORE_DISPLAY_HEIGHT, max_length + scale, position);
+    vector_t new_position = {.x = position.x + scale / 2.0, .y = position.y};
     for (int i = 0; i < scene_bodies(state->scene); i++){
         body_t *display = scene_get_body(state->scene, i);
         if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY){
             scene_remove_body(state->scene, i);
         }
     }
-    
+    body_t *score_display = game_build_score_keeper(state->scene, qwer->x + scale, SCORE_DISPLAY_HEIGHT, new_position);
     state->score_display = score_display;
 }
 
@@ -162,13 +162,16 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
     }
 }
 
-void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid)
+
+
+//changed
+void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid, game_state_t *state)
 {
     create_collision(scene,
                      focal_body,
                      asteroid,
                      (collision_handler_t)game_actions_physics_collision,
-                     NULL,
+                     state,
                      NULL);
 }
 

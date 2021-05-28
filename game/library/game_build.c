@@ -76,11 +76,12 @@ void game_build_shooting_star(scene_t *scene)
     scene_add_body(scene, shooting_star);
 }
 
-void game_build_draw_asteroids(scene_t *scene, body_t *rocket)
+//changed
+void game_build_draw_asteroids(game_state_t *state, body_t *rocket)
 {
     for (int i = 0; i < GB_INITIAL_ASTEROIDS; i++)
     {
-        game_build_asteroid(scene, rocket);
+        game_build_asteroid(state, rocket);
     }
 }
 
@@ -143,7 +144,8 @@ void game_build_stars(scene_t *scene)
     }
 }
 
-void game_build_asteroid(scene_t *scene, body_t *rocket)
+// changed
+void game_build_asteroid(game_state_t *state, body_t *rocket)
 {
     list_t *circle = sprite_make_circle(GB_ASTEROID_RADIUS);
     rgb_color_t color;
@@ -162,9 +164,9 @@ void game_build_asteroid(scene_t *scene, body_t *rocket)
     vector_t position = {.x = (rand() % GB_SCREEN_SIZE_X), .y = rand() % GB_SCREEN_SIZE_Y};
     body_set_centroid(asteroid, position);
     body_set_movable(asteroid, false);
-    game_actions_rocket_obstacles_collision(scene, rocket, asteroid);
+    game_actions_rocket_obstacles_collision(state->scene, rocket, asteroid, state);
     body_set_camera_mode(asteroid, SCENE);
-    scene_add_body(scene, asteroid);
+    scene_add_body(state->scene, asteroid);
 }
 
 body_t *game_build_score_keeper(scene_t *scene, double width, double height, vector_t position)
