@@ -16,6 +16,7 @@
 #include "spacelaunch.h"
 #include "game_build.h"
 #include "game_actions.h"
+#include "camerademo.h"
 
 const int SCREEN_SIZE_X = 1000;
 const int SCREEN_SIZE_Y = 500;
@@ -24,6 +25,34 @@ const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
 const int SHOOTING_STAR_TIME = 170;
+
+const int TEXT_WIDTH = 100;
+const int TEXT_HEIGHT = 30;
+
+const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = 5};
+const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
+vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
+vector_t TIMER_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
+vector_t HEALTH_POSITION = {.x = 40, .y = 35};
+vector_t HEALTH_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
+const vector_t FINAL_SCORE_POS = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
+const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
+void display_score(game_state_t *state)
+{
+    sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, "Score: ", state->score);
+}
+
+void display_timer(game_state_t *state){
+    sdl_create_words(TIMER_POSITION, TIMER_DIMENTIONS, "Timer: ", (int)state->timer);
+}
+
+void display_health(game_state_t *state){
+    sdl_create_words(HEALTH_POSITION, HEALTH_DIMENTIONS, "Health: ", (int)state->health);
+}
 
 void screen_game_render(game_state_t *state)
 {
@@ -36,7 +65,14 @@ void screen_game_render(game_state_t *state)
   {
     game_build_shooting_star(state->scene);
   }
+
+  state->timer += 0.1;
   game_actions_check_for_game_over(state);
+  display_score(state);
+  display_timer(state);
+  display_health(state);
+  sdl_render_scene(state->scene);
+  sdl_clear();
 }
 
 void screen_game_over_render(game_state_t *state)
@@ -58,46 +94,46 @@ void screen_game_over_render(game_state_t *state)
     sdl_render_scene(state->scene);
     sdl_clear();
     sdl_render_scene(state->scene);
-    create_words();
+    sdl_create_words(FINAL_SCORE_POS, FINAL_SCORE_DIM, "Score: ", state->score);
   }
   state->ticks += 1;
 }
 
 int main(int argc, char *argv[])
 {
-  // Initialize the game state
-  game_state_t *state = malloc(sizeof(game_state_t));
-  state->current_screen = SCREEN_GAME;
-  state->needs_restart = true;
-
-  // Initialize SDL
-  sdl_init(min, max);
-  sdl_event_args(state);
-  sdl_on_key((key_handler_t)handle_key_press);
-
-  // Render the correct screen each tick.
-  while (!sdl_is_done())
-  {
-    double dt = time_since_last_tick();
-    if (state->needs_restart)
+    // Initialize the game state
+    game_state_t *state = malloc(sizeof(game_state_t));
+    state->current_screen = SCREEN_GAME;
+    state->needs_restart = true;
+    
+    // Initialize SDL
+    sdl_init(min, max);
+    sdl_event_args(state);
+    sdl_on_key((key_handler_t)handle_key_press);
+  
+    // Render the correct screen each tick.
+    while (!sdl_is_done())
     {
-      state->ticks = 0;
+        double dt = time_since_last_tick();
+        if (state->needs_restart)
+        {
+            state->ticks = 0;
+        }
+        switch (state->current_screen)
+        {
+            case SCREEN_GAME:
+            screen_game_render(state);
+            scene_tick(state->scene, dt);
+            sdl_render_scene(state->scene);
+            break;
+            case SCREEN_GAME_OVER:
+            screen_game_over_render(state);
+            break;
+            default:
+            break;
+        }
     }
-    switch (state->current_screen)
-    {
-    case SCREEN_GAME:
-      screen_game_render(state);
-      scene_tick(state->scene, dt);
-      sdl_render_scene(state->scene);
-      break;
-    case SCREEN_GAME_OVER:
-      screen_game_over_render(state);
-      break;
-    default:
-      break;
-    }
-  }
 
-  scene_free(state->scene);
-  free(state);
-}
+    scene_free(state->scene);
+    free(state);
+    }

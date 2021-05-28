@@ -134,6 +134,14 @@ void sdl_event_args(void *args);
  */
 double time_since_last_tick(void);
 
-void create_words();
+/**
+ * Creates words on the screen
+ * 
+ * @param position score position
+ * @param dimentions score dimentions
+ * @param words words
+ * @param number number
+ */
+void sdl_create_words(vector_t position, vector_t dimentions, char *words, int number);
 
 #endif // #ifndef __SDL_WRAPPER_H__
