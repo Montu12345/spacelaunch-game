@@ -298,3 +298,25 @@ void sdl_create_words(vector_t position, vector_t dimentions, int score)
     TTF_CloseFont(font);
     TTF_Quit();
 }
+
+void sdl_create_timer(vector_t position, vector_t dimentions, double time)
+{
+    TTF_Init();
+    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
+    SDL_Color color = {255, 255, 255};
+    char time_print[30];
+    sprintf(time_print, "Time: %d", (int) time);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, time_print, color);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Rect *boundary = malloc(sizeof(*boundary));
+    boundary->w = dimentions.x;
+    boundary->h = dimentions.y; 
+    boundary->x = position.x;
+    boundary->y = position.y;
+    SDL_RenderCopy(renderer, texture, NULL, boundary);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+    TTF_Quit();
+}

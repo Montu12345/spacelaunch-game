@@ -86,16 +86,22 @@ int main(int argc, char *argv[])
   state->needs_restart = true;
   state->score = 0;
   
-
   // Initialize SDL
   sdl_init(min, max);
   sdl_event_args(state);
   sdl_on_key((key_handler_t)handle_key_press);
 
+  // Initialize timer
+  double time = 0;
+  vector_t timer_position = {.x = SCREEN_SIZE_X - TEXT_WIDTH * 1.2, .y = TEXT_HEIGHT / 2.0};
+  vector_t timer_dimentions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
   // Render the correct screen each tick.
   while (!sdl_is_done())
   {
     double dt = time_since_last_tick();
+    time += dt;    
+
     if (state->needs_restart)
     {
       state->ticks = 0;
@@ -106,6 +112,7 @@ int main(int argc, char *argv[])
       screen_game_render(state);
       scene_tick(state->scene, dt);
       sdl_render_scene(state->scene);
+      sdl_create_timer(timer_position, timer_dimentions, time);
       break;
     case SCREEN_GAME_OVER:
       screen_game_over_render(state);
