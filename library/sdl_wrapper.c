@@ -278,7 +278,7 @@ void create_words()
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
     SDL_Color color = {255, 255, 255};
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Welcome to Gigi Labs", color);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Space Is The Place", color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
     vector_t window_center = get_window_center();
@@ -286,11 +286,49 @@ void create_words()
              min = vec_subtract(center, max_diff);
     vector_t max_pixel = get_window_position(max, window_center),
              min_pixel = get_window_position(min, window_center);
-    boundary->x = min_pixel.x;
-    boundary->y = max_pixel.y;
-    boundary->w = max_pixel.x - min_pixel.x;
-    boundary->h = min_pixel.y - max_pixel.y;
-    SDL_RenderCopy(renderer, texture, NULL, boundary);
+    // boundary->x = min_pixel.x;
+    // boundary->y = max_pixel.y;
+    // boundary->w = max_pixel.x - min_pixel.x;
+    // boundary->h = min_pixel.y - max_pixel.y;
+    int texW = 0;
+    int texH = 0;
+    SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
+    SDL_Rect dstrect = { 0, 0, texW, texH };
+    // SDL_RenderCopy(renderer, texture, NULL, boundary);
+    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+    SDL_RenderPresent(renderer);
+    // SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image",
+    // SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+    // SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
+    // SDL_DestroyTexture(texture);
+    // SDL_FreeSurface(surface);
+    // TTF_CloseFont(font);
+    // TTF_Quit();
+}
+
+void create_timer()
+{
+    TTF_Init();
+    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
+    SDL_Color color = {255, 255, 255};
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Space Is The Place", color);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Rect *boundary = malloc(sizeof(*boundary));
+    vector_t window_center = get_window_center();
+    vector_t max = vec_add(center, max_diff),
+             min = vec_subtract(center, max_diff);
+    vector_t max_pixel = get_window_position(max, window_center),
+             min_pixel = get_window_position(min, window_center);
+    // boundary->x = min_pixel.x;
+    // boundary->y = max_pixel.y;
+    // boundary->w = max_pixel.x - min_pixel.x;
+    // boundary->h = min_pixel.y - max_pixel.y;
+    int texW = 0;
+    int texH = 0;
+    SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
+    SDL_Rect dstrect = { 0, 0, texW, texH };
+    // SDL_RenderCopy(renderer, texture, NULL, boundary);
+    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
     SDL_RenderPresent(renderer);
     // SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image",
     // SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
