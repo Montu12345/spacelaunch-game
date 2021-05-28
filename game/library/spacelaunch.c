@@ -109,20 +109,20 @@ int main(int argc, char *argv[])
         double dt = time_since_last_tick();
         if (state->needs_restart)
         {
-        state->ticks = 0;
+            state->ticks = 0;
         }
         switch (state->current_screen)
         {
-        case SCREEN_GAME:
-        screen_game_render(state);
-        scene_tick(state->scene, dt);
-        sdl_render_scene(state->scene);
-        break;
-        case SCREEN_GAME_OVER:
-        screen_game_over_render(state);
-        break;
-        default:
-        break;
+            case SCREEN_GAME:
+            screen_game_render(state);
+            scene_tick(state->scene, dt);
+            sdl_render_scene(state->scene);
+            break;
+            case SCREEN_GAME_OVER:
+            screen_game_over_render(state);
+            break;
+            default:
+            break;
         }
     }
 

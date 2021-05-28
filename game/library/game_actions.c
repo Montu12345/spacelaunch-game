@@ -131,18 +131,29 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 void game_actions_new_health(game_state_t *state, int scale){
     body_t *curr_display = state->score_display;
     list_t *curr_display_list = body_get_shape(curr_display);
-    vector_t *asdf = (vector_t *)list_get(curr_display_list, 0);
-    vector_t *qwer = (vector_t *)list_get(curr_display_list, 3);
-    double max_length = qwer->x - asdf->x;
+    vector_t *curr_length = (vector_t *)list_get(curr_display_list, 3);
     vector_t position = body_get_centroid(curr_display);
-    vector_t new_position = {.x = position.x + scale / 2.0, .y = position.y};
     for (int i = 0; i < scene_bodies(state->scene); i++){
         body_t *display = scene_get_body(state->scene, i);
         if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY){
             scene_remove_body(state->scene, i);
         }
     }
-    body_t *score_display = game_build_score_keeper(state->scene, qwer->x + scale, SCORE_DISPLAY_HEIGHT, new_position);
+    vector_t new_position;
+    body_t *score_display;
+    printf("%f \n", curr_length->x);
+    if(curr_length->x + scale <= 0){
+        printf("need to end game");
+    }
+    // if (curr_length->x + scale >= 200.0){
+        
+    // }
+    // else{
+    //     new_position = (vector_t){.x = (curr_length->x + scale) / 2.0 + 15, .y = position.y};
+    //     score_display = game_build_score_keeper(state->scene, curr_length->x + scale, SCORE_DISPLAY_HEIGHT, new_position);
+    // }
+    new_position = (vector_t){.x = curr_length->x / 2.0, .y = position.y};
+    score_display = game_build_score_keeper(state->scene, curr_length->x, SCORE_DISPLAY_HEIGHT, new_position);
     state->score_display = score_display;
 }
 
@@ -154,7 +165,7 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
     body_add_impulse(asteroid, j2);
     if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE)
     {
-        game_actions_new_health(state, 10);
+        game_actions_new_health(state, 100);
     }
     else if (*(enum space_body_type_t *)body_get_info(asteroid) == BAD_OBSTACLE)
     {
@@ -162,9 +173,6 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
     }
 }
 
-
-
-//changed
 void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid, game_state_t *state)
 {
     create_collision(scene,
