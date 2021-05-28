@@ -36,6 +36,9 @@ const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 // const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
 const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
 
+// const char *BASE_TEXTURE_PATH = "game/textures/";
+const int ROCKET_TEXTURE_COUNT = 4;
+
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
@@ -91,9 +94,35 @@ void game_build_draw_stary_night(scene_t *scene)
     game_build_stars(scene);
 }
 
-body_t *game_build_rocket(scene_t *scene)
+char *rocket_resource_path(game_state_t *state)
 {
-    list_t *rocket_shape = sprite_make_pacman(GB_ROCKET_RADIUS);
+    char *idle_texture = "game/textures/rocket/rocket_idle.png";
+
+    // If the body does not yet exist or it is not moving, return the idle image.
+    if (!state->rocket)
+    {
+        return idle_texture;
+    }
+    else
+    {
+        vector_t velocity = body_get_velocity(state->rocket);
+        if (vec_magnitude(velocity) == 0)
+        {
+            return idle_texture;
+        }
+    }
+
+    // Rocket is moving, get animation frame
+    char *format = "game/textures/rocket/rocket%d.png";
+    int texture_idx = 1 + (state->ticks % ROCKET_TEXTURE_COUNT);
+    char *path = malloc(strlen(format) * sizeof(char));
+    sprintf(path, format, texture_idx);
+    return path;
+}
+
+body_t *game_build_rocket(scene_t *scene, game_state_t *state)
+{
+    list_t *rocket_shape = sprite_make_circle(GB_ROCKET_RADIUS);
     body_t *rocket = body_init_with_info(rocket_shape,
                                          GB_ROCKET_MASS,
                                          GB_ROCKET_COLOR,
@@ -101,6 +130,7 @@ body_t *game_build_rocket(scene_t *scene)
                                          free);
     body_set_centroid(rocket, GB_ROCKET_INITIAL_POS);
     body_set_movable(rocket, true);
+    body_set_texture_path_func(rocket, (texture_path_func_t)rocket_resource_path, state, NULL);
     scene_add_body(scene, rocket);
     body_set_camera_mode(rocket, FOLLOW);
     return rocket;

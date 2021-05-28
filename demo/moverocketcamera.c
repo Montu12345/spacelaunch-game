@@ -123,7 +123,6 @@ void make_dot(scene_t *scene, body_t *pacman)
   body_set_movable(dot, false);
   body_set_camera_mode(dot, SCENE);
   scene_add_body(scene, dot);
-  // create_half_desructive_collision(scene, pacman, dot);
 }
 
 void add_dots(scene_t *scene, body_t *pacman)

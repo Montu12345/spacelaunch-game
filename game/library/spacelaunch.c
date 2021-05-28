@@ -32,26 +32,29 @@ const int TEXT_HEIGHT = 30;
 const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = 5};
 const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
-vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
-vector_t TIMER_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+const vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
+const vector_t TIMER_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
-vector_t HEALTH_POSITION = {.x = 40, .y = 35};
-vector_t HEALTH_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+const vector_t HEALTH_POSITION = {.x = 40, .y = 35};
+const vector_t HEALTH_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
 const vector_t FINAL_SCORE_POS = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
 const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
+
 void display_score(game_state_t *state)
 {
-    sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, "Score: ", state->score);
+  sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, "Score: ", state->score);
 }
 
-void display_timer(game_state_t *state){
-    sdl_create_words(TIMER_POSITION, TIMER_DIMENTIONS, "Timer: ", (int)state->timer);
+void display_timer(game_state_t *state)
+{
+  sdl_create_words(TIMER_POSITION, TIMER_DIMENTIONS, "Timer: ", (int)state->timer);
 }
 
-void display_health(game_state_t *state){
-    sdl_create_words(HEALTH_POSITION, HEALTH_DIMENTIONS, "Health: ", (int)state->health);
+void display_health(game_state_t *state)
+{
+  sdl_create_words(HEALTH_POSITION, HEALTH_DIMENTIONS, "Health: ", (int)state->health);
 }
 
 void screen_game_render(game_state_t *state)
@@ -101,39 +104,39 @@ void screen_game_over_render(game_state_t *state)
 
 int main(int argc, char *argv[])
 {
-    // Initialize the game state
-    game_state_t *state = malloc(sizeof(game_state_t));
-    state->current_screen = SCREEN_GAME;
-    state->needs_restart = true;
-    
-    // Initialize SDL
-    sdl_init(min, max);
-    sdl_event_args(state);
-    sdl_on_key((key_handler_t)handle_key_press);
-  
-    // Render the correct screen each tick.
-    while (!sdl_is_done())
-    {
-        double dt = time_since_last_tick();
-        if (state->needs_restart)
-        {
-            state->ticks = 0;
-        }
-        switch (state->current_screen)
-        {
-            case SCREEN_GAME:
-            screen_game_render(state);
-            scene_tick(state->scene, dt);
-            sdl_render_scene(state->scene);
-            break;
-            case SCREEN_GAME_OVER:
-            screen_game_over_render(state);
-            break;
-            default:
-            break;
-        }
-    }
+  // Initialize the game state
+  game_state_t *state = malloc(sizeof(game_state_t));
+  state->current_screen = SCREEN_GAME;
+  state->needs_restart = true;
 
-    scene_free(state->scene);
-    free(state);
+  // Initialize SDL
+  sdl_init(min, max);
+  sdl_event_args(state);
+  sdl_on_key((key_handler_t)handle_key_press);
+
+  // Render the correct screen each tick.
+  while (!sdl_is_done())
+  {
+    double dt = time_since_last_tick();
+    if (state->needs_restart)
+    {
+      state->ticks = 0;
     }
+    switch (state->current_screen)
+    {
+    case SCREEN_GAME:
+      screen_game_render(state);
+      scene_tick(state->scene, dt);
+      sdl_render_scene(state->scene);
+      break;
+    case SCREEN_GAME_OVER:
+      screen_game_over_render(state);
+      break;
+    default:
+      break;
+    }
+  }
+
+  scene_free(state->scene);
+  free(state);
+}
