@@ -13,6 +13,8 @@ const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 500;
 const double MS_PER_S = 1e3;
+const int TEXT_WIDTH = 150;
+const int TEXT_HEIGHT = 50;
 
 /**
  * The coordinate at the center of the screen.
@@ -276,20 +278,16 @@ double time_since_last_tick(void)
 void sdl_create_words()
 {
     TTF_Init();
-    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
+    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
     SDL_Color color = {255, 255, 255};
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Welcome to Gigi Labs", color);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Score: ", color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
-    vector_t window_center = get_window_center();
-    vector_t max = vec_add(center, max_diff),
-             min = vec_subtract(center, max_diff);
-    vector_t max_pixel = get_window_position(max, window_center),
-             min_pixel = get_window_position(min, window_center);
-    boundary->x = min_pixel.x;
-    boundary->y = max_pixel.y;
-    boundary->w = max_pixel.x - min_pixel.x;
-    boundary->h = min_pixel.y - max_pixel.y;
+    boundary->w = TEXT_WIDTH;
+    boundary->h = TEXT_HEIGHT; 
+    boundary->x = center.x - boundary->w / 2.0;
+    boundary->y = center.y - boundary->h / 2.0;
+    
     SDL_RenderCopy(renderer, texture, NULL, boundary);
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(texture);
