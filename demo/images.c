@@ -21,7 +21,7 @@ const vector_t INITIAL_POS = {.x = SCREEN_SIZE_X / 10, .y = SCREEN_SIZE_Y / 10};
 
 const int PACMAN_STEP = 10;
 const int CIRCLE_PRECISION = 10;
-const int PACMAN_PRECISION = 30;
+const int PACMAN_RADIUS = 30;
 const double PACMAN_VELOCITY_SCALE = 30;
 const int INITIAL_DOTS = 30;
 const double EAT_TOLERANCE = 10.0;

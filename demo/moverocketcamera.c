@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "moverocket.h"
 #include "collision.h"
 #include "forces.h"
@@ -20,7 +22,7 @@ const vector_t INITIAL_POS = {.x = SCREEN_SIZE_X / 10, .y = SCREEN_SIZE_Y / 10};
 
 const int PACMAN_STEP = 10;
 const int CIRCLE_PRECISION = 10;
-const int PACMAN_PRECISION = 30;
+const int PACMAN_RADIUS = 30;
 const double PACMAN_VELOCITY_SCALE = 30;
 const int INITIAL_DOTS = 30;
 const double EAT_TOLERANCE = 10.0;
@@ -67,7 +69,8 @@ void move_rocket(double angle, double scale, body_t *pacman)
   // vector_t pacman_position = body_get_centroid(pacman);
   // vector_t next_position = vec_add(pacman_position, move_vector);
   // body_set_centroid(pacman, next_position);
-  // body_set_rotation(pacman, angle);
+  body_set_rotation(pacman, angle);
+  body_set_texture_path(pacman, "game/textures/rocket1.png");
 
   body_add_impulse(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
   // body_set_velocity(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
@@ -134,7 +137,7 @@ void add_dots(scene_t *scene, body_t *pacman)
 
 body_t *add_pacman(scene_t *scene)
 {
-  list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
+  list_t *pacman_shape = sprite_make_circle(PACMAN_RADIUS);
   body_t *pacman = body_init(pacman_shape, PACMAN_MASS, PACMAN_COLOR);
 
   body_set_centroid(pacman, INITIAL_POS);

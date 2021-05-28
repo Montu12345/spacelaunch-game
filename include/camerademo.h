@@ -29,7 +29,7 @@ extern const double PACMAN_VELOCITY_SCALE;
 
 // Number of points to draw for
 extern const int CIRCLE_PRECISION;
-extern const int PACMAN_PRECISION;
+extern const int PACMAN_RADIUS;
 
 // The distance the center of pac
 extern const double EAT_TOLERANCE;

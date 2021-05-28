@@ -7,6 +7,10 @@
 #include "polygon.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 extern const double BODY_DEFAULT_ANGULAR_VELOCITY;
 extern const double BODY_DEFAULT_ANGULAR_POSITION;
@@ -66,23 +70,6 @@ typedef enum
     FOLLOW,     // Subject of camera movement, used once.
     SCENE       // Elements of the scene which should be left behind
 } camera_mode_t;
-
-body_appearance_t body_appearance_init(
-    list_t *shape,
-    rgb_color_t color);
-
-body_physical_properties_t body_physical_properties_init(
-    double mass,
-    double bounciness,
-    bool movable);
-
-body_kinematic_variables_t body_kinematic_variables_init(
-    vector_t velocity,
-    vector_t position,
-    double angular_velocity,
-    double angular_position,
-    vector_t net_force,
-    vector_t impulse);
 
 /**
  * Allocates memory for a body with the given parameters.
@@ -158,6 +145,32 @@ void body_free(body_t *body);
  * @return the polygon describing the body's current position
  */
 list_t *body_get_shape(body_t *body);
+
+/**
+ * Get the path to the image displayed as the body.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @return the path to the body's image resource
+ */
+char *body_get_texture_path(body_t *body);
+
+/**
+ * Set the path to the image displayed as the body.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @param path the path to the body's image resource
+ */
+void body_set_texture_path(body_t *body, char *path);
+
+/**
+ * Gets the rectangle which the body's shape is bounded by.
+ * The bounds are determined by the minimum and maximum x and
+ * y positions of the shape's verticies. 
+ * 
+ * @param body the body to extract the shape from 
+ * @return pointer to an allocated SDL_Rect representing the bounds
+ */
+SDL_Rect *body_get_bounding_rect(body_t *body);
 
 /**
  * Gets the current center of mass of a body.

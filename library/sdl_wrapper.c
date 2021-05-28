@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
 #include "sdl_wrapper.h"
@@ -14,7 +13,6 @@ const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 500;
 const double MS_PER_S = 1e3;
-
 
 /**
  * The coordinate at the center of the screen.
@@ -141,6 +139,8 @@ void sdl_init(vector_t min, vector_t max)
         WINDOW_HEIGHT,
         SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, -1, 0);
+
+    IMG_Init(IMG_INIT_PNG);
 }
 
 bool sdl_is_done()
@@ -239,6 +239,14 @@ void sdl_show(void)
     SDL_RenderPresent(renderer);
 }
 
+void sdl_draw_img(char *texture_path, SDL_Rect *bounds)
+{
+    SDL_Surface *image = IMG_Load(texture_path);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
+    SDL_RenderCopy(renderer, texture, NULL, bounds);
+    free(bounds);
+}
+
 void sdl_render_scene(scene_t *scene)
 {
     sdl_clear();
@@ -246,9 +254,19 @@ void sdl_render_scene(scene_t *scene)
     for (size_t i = 0; i < body_count; i++)
     {
         body_t *body = scene_get_body(scene, i);
-        list_t *shape = body_get_shape(body);
-        sdl_draw_polygon(shape, body_get_color(body));
-        list_free(shape);
+        char *texture_path = body_get_texture_path(body);
+
+        if (texture_path)
+        {
+            SDL_Rect *bounds = body_get_bounding_rect(body);
+            sdl_draw_img(texture_path, bounds);
+        }
+        else
+        {
+            list_t *shape = body_get_shape(body);
+            sdl_draw_polygon(shape, body_get_color(body));
+            list_free(shape);
+        }
     }
     sdl_show();
 }
@@ -286,7 +304,7 @@ void sdl_create_words(vector_t position, vector_t dimentions, char *words, int n
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
     boundary->w = dimentions.x;
-    boundary->h = dimentions.y; 
+    boundary->h = dimentions.y;
     boundary->x = position.x;
     boundary->y = position.y;
     SDL_RenderCopy(renderer, texture, NULL, boundary);
