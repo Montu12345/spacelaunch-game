@@ -335,6 +335,15 @@ void body_add_force(body_t *body, vector_t force);
 void body_add_impulse(body_t *body, vector_t impulse);
 
 /**
+ * Determines if the body is experiencing a net impulse.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @return bool, true if the body is under an impulse.
+ */
+bool body_has_impulse(body_t *body);
+
+
+/**
  * Returns the body's force.
  *
  * @param body a pointer to a body returned from body_init()

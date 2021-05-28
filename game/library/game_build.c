@@ -99,17 +99,9 @@ char *rocket_resource_path(game_state_t *state)
     char *idle_texture = "game/textures/rocket/rocket_idle.png";
 
     // If the body does not yet exist or it is not moving, return the idle image.
-    if (!state->rocket)
+    if (!state->rocket || !body_has_impulse(state->rocket))
     {
         return idle_texture;
-    }
-    else
-    {
-        vector_t velocity = body_get_velocity(state->rocket);
-        if (vec_magnitude(velocity) == 0)
-        {
-            return idle_texture;
-        }
     }
 
     // Rocket is moving, get animation frame
