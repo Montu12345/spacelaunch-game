@@ -28,14 +28,16 @@ const int SHOOTING_STAR_TIME = 170;
 const int TEXT_WIDTH = 150;
 const int TEXT_HEIGHT = 50;
 
-const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
+const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = 5};
 const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
+vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
+vector_t TIMER_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
 void display_score(game_state_t *state)
 {
     sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, state->score);
 }
-
 
 void screen_game_render(game_state_t *state)
 {
@@ -48,8 +50,15 @@ void screen_game_render(game_state_t *state)
   {
     game_build_shooting_star(state->scene);
   }
+
+  state->timer += 0.1;
   game_actions_check_for_game_over(state);
   display_score(state);
+  
+  sdl_create_timer(TIMER_POSITION, TIMER_DIMENTIONS, (int)state->timer);
+  sdl_render_scene(state->scene);
+  sdl_clear();
+
 }
 
 void screen_game_over_render(game_state_t *state)
@@ -84,18 +93,15 @@ int main(int argc, char *argv[])
   game_state_t *state = malloc(sizeof(game_state_t));
   state->current_screen = SCREEN_GAME;
   state->needs_restart = true;
-  state->score = 0;
+  
   
   // Initialize SDL
   sdl_init(min, max);
   sdl_event_args(state);
   sdl_on_key((key_handler_t)handle_key_press);
 
-  // Initialize timer
   double time = 0;
-  vector_t timer_position = {.x = SCREEN_SIZE_X - TEXT_WIDTH * 1.2, .y = TEXT_HEIGHT / 2.0};
-  vector_t timer_dimentions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-
+  
   // Render the correct screen each tick.
   while (!sdl_is_done())
   {
@@ -112,7 +118,6 @@ int main(int argc, char *argv[])
       screen_game_render(state);
       scene_tick(state->scene, dt);
       sdl_render_scene(state->scene);
-      sdl_create_timer(timer_position, timer_dimentions, time);
       break;
     case SCREEN_GAME_OVER:
       screen_game_over_render(state);

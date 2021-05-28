@@ -54,6 +54,7 @@ typedef struct game_state
   screen_t current_screen;
   int score;
   body_t *score_display;
+  double timer;
 
 } game_state_t;
 

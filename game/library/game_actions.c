@@ -27,6 +27,7 @@ enum space_body_type_t
     BACKGROUND_OBJECT,
     STAR,
     SHOOTING_STAR,
+
 };
 
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
@@ -58,13 +59,14 @@ void game_setup(game_state_t *state)
     game_build_draw_stary_night(scene);
     body_t *rocket = game_build_rocket(scene);
     game_build_draw_asteroids(scene, rocket);
-    void game_actions_display_score(game_state_t *state);
     body_t *score_display = game_build_score_keeper(scene);
 
     state->rocket = rocket;
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
+    state->score = 0;
+    state->timer = 0;
 }
 
 
