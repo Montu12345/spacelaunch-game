@@ -141,7 +141,7 @@ body_t *add_pacman(scene_t *scene)
   body_set_centroid(pacman, INITIAL_POS);
   body_set_movable(pacman, true);
   body_set_camera_mode(pacman, FOLLOW);
-  body_set_static_texture_path(pacman, "game/textures/rocket1.png");
+  body_set_static_texture_path(pacman, "game/textures/rocket/rocket1.png");
   scene_add_body(scene, pacman);
 
   return pacman;

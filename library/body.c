@@ -268,7 +268,8 @@ SDL_Rect *body_get_bounding_rect(body_t *body)
     return rect;
 }
 
-bool body_has_impulse(body_t *body) {
+bool body_has_impulse(body_t *body)
+{
     vector_t impulse = body->kinematic_variables.impulse;
     return vec_magnitude(impulse) != 0;
 }
