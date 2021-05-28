@@ -8,11 +8,13 @@
 #include <SDL2/SDL_image.h>
 #include "sdl_wrapper.h"
 #include <SDL2/SDL_ttf.h>
+#include <stdio.h>
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 500;
 const double MS_PER_S = 1e3;
+
 
 /**
  * The coordinate at the center of the screen.
@@ -273,68 +275,26 @@ double time_since_last_tick(void)
     return difference;
 }
 
-void create_words()
+void sdl_create_words(vector_t position, vector_t dimentions, int score)
 {
     TTF_Init();
-    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
+    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
     SDL_Color color = {255, 255, 255};
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Space Is The Place", color);
+    char score_print[30];
+    sprintf(score_print, "Score: %d", score);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
-    vector_t window_center = get_window_center();
-    vector_t max = vec_add(center, max_diff),
-             min = vec_subtract(center, max_diff);
-    vector_t max_pixel = get_window_position(max, window_center),
-             min_pixel = get_window_position(min, window_center);
-    // boundary->x = min_pixel.x;
-    // boundary->y = max_pixel.y;
-    // boundary->w = max_pixel.x - min_pixel.x;
-    // boundary->h = min_pixel.y - max_pixel.y;
-    int texW = 0;
-    int texH = 0;
-    SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-    SDL_Rect dstrect = { 0, 0, texW, texH };
-    // SDL_RenderCopy(renderer, texture, NULL, boundary);
-    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+    boundary->w = dimentions.x;
+    boundary->h = dimentions.y; 
+    boundary->x = position.x;
+    // center.x - boundary->w / 2.0;
+    boundary->y = position.y;
+    // center.y - boundary->h / 2.0;
+    SDL_RenderCopy(renderer, texture, NULL, boundary);
     SDL_RenderPresent(renderer);
-    // SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image",
-    // SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
-    // SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-    // SDL_DestroyTexture(texture);
-    // SDL_FreeSurface(surface);
-    // TTF_CloseFont(font);
-    // TTF_Quit();
-}
-
-void create_timer()
-{
-    TTF_Init();
-    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 25);
-    SDL_Color color = {255, 255, 255};
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Space Is The Place", color);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect *boundary = malloc(sizeof(*boundary));
-    vector_t window_center = get_window_center();
-    vector_t max = vec_add(center, max_diff),
-             min = vec_subtract(center, max_diff);
-    vector_t max_pixel = get_window_position(max, window_center),
-             min_pixel = get_window_position(min, window_center);
-    // boundary->x = min_pixel.x;
-    // boundary->y = max_pixel.y;
-    // boundary->w = max_pixel.x - min_pixel.x;
-    // boundary->h = min_pixel.y - max_pixel.y;
-    int texW = 0;
-    int texH = 0;
-    SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-    SDL_Rect dstrect = { 0, 0, texW, texH };
-    // SDL_RenderCopy(renderer, texture, NULL, boundary);
-    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-    SDL_RenderPresent(renderer);
-    // SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image",
-    // SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
-    // SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-    // SDL_DestroyTexture(texture);
-    // SDL_FreeSurface(surface);
-    // TTF_CloseFont(font);
-    // TTF_Quit();
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+    TTF_Quit();
 }

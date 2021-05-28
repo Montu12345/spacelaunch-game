@@ -18,6 +18,7 @@ const int A_KEY_VALUE = 1;
 const int Q_KEY_VALUE = 2;
 const double KEY_PRESS_VELOCITY_SCALE = 1.0;
 
+
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
@@ -57,11 +58,15 @@ void game_setup(game_state_t *state)
     game_build_draw_stary_night(scene);
     body_t *rocket = game_build_rocket(scene);
     game_build_draw_asteroids(scene, rocket);
+    void game_actions_display_score(game_state_t *state);
+    body_t *score_display = game_build_score_keeper(scene);
 
     state->rocket = rocket;
     state->scene = scene;
     state->needs_restart = false;
+    state->score_display = score_display;
 }
+
 
 void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)
 {

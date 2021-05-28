@@ -52,6 +52,9 @@ typedef struct game_state
   body_t *rocket;
   bool needs_restart;
   screen_t current_screen;
+  int score;
+  body_t *score_display;
+
 } game_state_t;
 
 void game_setup(game_state_t *state);
