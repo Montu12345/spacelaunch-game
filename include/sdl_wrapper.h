@@ -139,6 +139,6 @@ double time_since_last_tick(void);
  * 
  * @param score score of the game
  */
-void sdl_create_words(int score);
+void sdl_create_words(vector_t position, vector_t dimentions, int score);
 
 #endif // #ifndef __SDL_WRAPPER_H__

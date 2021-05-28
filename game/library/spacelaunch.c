@@ -25,6 +25,18 @@ const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
 const int SHOOTING_STAR_TIME = 170;
 
+const int TEXT_WIDTH = 150;
+const int TEXT_HEIGHT = 50;
+
+const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
+const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
+void display_score(game_state_t *state)
+{
+    sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, state->score);
+}
+
+
 void screen_game_render(game_state_t *state)
 {
   if (state->needs_restart)
@@ -37,6 +49,7 @@ void screen_game_render(game_state_t *state)
     game_build_shooting_star(state->scene);
   }
   game_actions_check_for_game_over(state);
+  display_score(state);
 }
 
 void screen_game_over_render(game_state_t *state)
@@ -58,7 +71,9 @@ void screen_game_over_render(game_state_t *state)
     sdl_render_scene(state->scene);
     sdl_clear();
     sdl_render_scene(state->scene);
-    sdl_create_words(state->score);
+    vector_t end_score_position = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
+    vector_t end_score_dimentions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+    sdl_create_words(end_score_position, end_score_dimentions, state->score);
   }
   state->ticks += 1;
 }
