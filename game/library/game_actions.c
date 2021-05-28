@@ -31,7 +31,6 @@ enum space_body_type_t
     STAR,
     SHOOTING_STAR,
     SCORE_DISPLAY,
-
 };
 
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
@@ -62,13 +61,13 @@ void game_setup(game_state_t *state)
     scene_t *scene = scene_init();
     game_build_draw_stary_night(scene);
     body_t *rocket = game_build_rocket(scene);
-    
     body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT, SCORE_DISPLAY_POSITION);
     state->rocket = rocket;
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
     state->score = 0;
+    state->health = 100;
     state->timer = 0;
     game_build_draw_asteroids(state, rocket);
     scene_add_camera_management(state->scene,
@@ -152,6 +151,7 @@ void game_actions_new_health(game_state_t *state, int scale){
     //     new_position = (vector_t){.x = (curr_length->x + scale) / 2.0 + 15, .y = position.y};
     //     score_display = game_build_score_keeper(state->scene, curr_length->x + scale, SCORE_DISPLAY_HEIGHT, new_position);
     // }
+    state->health += scale;
     new_position = (vector_t){.x = curr_length->x / 2.0, .y = position.y};
     score_display = game_build_score_keeper(state->scene, curr_length->x, SCORE_DISPLAY_HEIGHT, new_position);
     state->score_display = score_display;
