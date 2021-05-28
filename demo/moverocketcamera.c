@@ -70,7 +70,6 @@ void move_rocket(double angle, double scale, body_t *pacman)
   // vector_t next_position = vec_add(pacman_position, move_vector);
   // body_set_centroid(pacman, next_position);
   body_set_rotation(pacman, angle);
-  body_set_texture_path(pacman, "game/textures/rocket1.png");
 
   body_add_impulse(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
   // body_set_velocity(pacman, vec_multiply(PACMAN_VELOCITY_SCALE, move_vector));
@@ -143,6 +142,7 @@ body_t *add_pacman(scene_t *scene)
   body_set_centroid(pacman, INITIAL_POS);
   body_set_movable(pacman, true);
   body_set_camera_mode(pacman, FOLLOW);
+  body_set_static_texture_path(pacman, "game/textures/rocket1.png");
   scene_add_body(scene, pacman);
 
   return pacman;

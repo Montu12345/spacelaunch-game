@@ -36,7 +36,9 @@ typedef struct body_aux_properties
     free_func_t info_freer;
     bool is_removed;
     camera_mode_t camera_mode;
-    char *texture_path;
+    texture_path_func_t texture_path_func;
+    void *texture_path_aux;
+    free_func_t texture_path_freer;
 } body_aux_properties_t;
 
 typedef struct body
@@ -74,14 +76,14 @@ body_aux_properties_t body_aux_properties_init(
     free_func_t info_freer,
     bool is_removed,
     camera_mode_t camera_mode,
-    char *texture_path)
+    texture_path_func_t texture_path_func)
 {
     body_aux_properties_t aux = {
         .info = info,
         .info_freer = info_freer,
         .is_removed = is_removed,
         .camera_mode = camera_mode,
-        .texture_path = texture_path};
+        .texture_path_func = texture_path_func};
     return aux;
 };
 
@@ -155,6 +157,10 @@ void body_free(body_t *body)
     {
         body->aux.info_freer(body->aux.info);
     }
+    if (body->aux.texture_path_freer != NULL)
+    {
+        body->aux.texture_path_freer(body->aux.texture_path_aux);
+    }
     free(body);
 }
 
@@ -203,15 +209,31 @@ list_t *body_get_shape(body_t *body)
 
 char *body_get_texture_path(body_t *body)
 {
-    return body->aux.texture_path;
+    if (body->aux.texture_path_func)
+    {
+        return body->aux.texture_path_func(body->aux.texture_path_aux);
+    }
+    return NULL;
 }
 
-void body_set_texture_path(body_t *body, char *path)
+char *texture_path_for_static(char *path)
 {
-    body->aux.texture_path = path;
+    return path;
 }
 
-SDL_Rect* body_get_bounding_rect(body_t *body)
+void body_set_texture_path_func(body_t *body, texture_path_func_t path_func, void *aux, free_func_t freer)
+{
+    body->aux.texture_path_func = path_func;
+    body->aux.texture_path_aux = aux;
+    body->aux.texture_path_freer = freer;
+}
+
+void body_set_static_texture_path(body_t *body, char *path)
+{
+    body_set_texture_path_func(body, (texture_path_func_t)texture_path_for_static, path, NULL);
+}
+
+SDL_Rect *body_get_bounding_rect(body_t *body)
 {
     list_t *shape = body->appearance.shape;
     double min_x = INFINITY;

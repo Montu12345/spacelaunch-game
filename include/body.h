@@ -34,6 +34,8 @@ typedef struct body_appearance body_appearance_t;
 */
 typedef struct body_physical_properties body_physical_properties_t;
 
+typedef char *(*texture_path_func_t)(void *);
+
 /**
  * Properties describing the motion of the body
  *  position -- vector coordinate the object is placed upon
@@ -160,7 +162,18 @@ char *body_get_texture_path(body_t *body);
  * @param body a pointer to a body returned from body_init()
  * @param path the path to the body's image resource
  */
-void body_set_texture_path(body_t *body, char *path);
+void body_set_static_texture_path(body_t *body, char *path);
+
+/**
+ * Set a function to be called to return the current texture for the body.
+ * Is useful for animations. 
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @param path_func texture_path_func_t to return the path given an aux variable
+ * @param aux information required by the path_func, if necessary
+ * @param freer free_func_t to free the aux
+ */
+void body_set_texture_path_func(body_t *body, texture_path_func_t path_func, void *aux, free_func_t freer);
 
 /**
  * Gets the rectangle which the body's shape is bounded by.
