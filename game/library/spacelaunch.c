@@ -58,7 +58,7 @@ void screen_game_over_render(game_state_t *state)
     sdl_render_scene(state->scene);
     sdl_clear();
     sdl_render_scene(state->scene);
-    sdl_create_words();
+    sdl_create_words(state->score);
   }
   state->ticks += 1;
 }
@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
   game_state_t *state = malloc(sizeof(game_state_t));
   state->current_screen = SCREEN_GAME;
   state->needs_restart = true;
+  state->score = 0;
+  
 
   // Initialize SDL
   sdl_init(min, max);
@@ -97,7 +99,7 @@ int main(int argc, char *argv[])
       break;
     }
   }
-  
+
   scene_free(state->scene);
   free(state);
 }

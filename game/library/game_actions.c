@@ -57,10 +57,12 @@ void game_setup(game_state_t *state)
     game_build_draw_stary_night(scene);
     body_t *rocket = game_build_rocket(scene);
     game_build_draw_asteroids(scene, rocket);
+    body_t *score_display = game_build_score_keeper(scene);
 
     state->rocket = rocket;
     state->scene = scene;
     state->needs_restart = false;
+    state->score_display = score_display;
 }
 
 void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)

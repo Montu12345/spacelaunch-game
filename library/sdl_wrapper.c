@@ -8,6 +8,7 @@
 #include <SDL2/SDL_image.h>
 #include "sdl_wrapper.h"
 #include <SDL2/SDL_ttf.h>
+#include <stdio.h>
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
@@ -275,19 +276,20 @@ double time_since_last_tick(void)
     return difference;
 }
 
-void sdl_create_words()
+void sdl_create_words(int score)
 {
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
     SDL_Color color = {255, 255, 255};
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, "Score: ", color);
+    char score_print[30];
+    sprintf(score_print, "Score: %d", score);
+    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
     boundary->w = TEXT_WIDTH;
     boundary->h = TEXT_HEIGHT; 
     boundary->x = center.x - boundary->w / 2.0;
     boundary->y = center.y - boundary->h / 2.0;
-    
     SDL_RenderCopy(renderer, texture, NULL, boundary);
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(texture);

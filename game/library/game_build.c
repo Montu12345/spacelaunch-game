@@ -39,6 +39,7 @@ enum space_body_type_t
     BACKGROUND_OBJECT,
     STAR,
     SHOOTING_STAR,
+    SCORE_DISPLAY,
 };
 
 enum space_body_type_t *space_body_type_init(enum space_body_type_t b)
@@ -156,4 +157,16 @@ void game_build_asteroid(scene_t *scene, body_t *rocket)
     body_set_movable(asteroid, false);
     game_actions_rocket_obstacles_collision(scene, rocket, asteroid);
     scene_add_body(scene, asteroid);
+}
+
+body_t *game_build_score_keeper(scene_t *scene)
+{
+    list_t *rectangle_list = sprite_make_rect(0, 150, 0, 20);
+    rgb_color_t score_color = (rgb_color_t){.r = 0, .g = 1, .b = 1};
+    body_t *rectangle = body_init_with_info(rectangle_list, INFINITY, score_color, game_build_body_type_init(SCORE_DISPLAY), free);
+    vector_t position = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
+    body_set_centroid(rectangle, position);
+    body_set_movable(rectangle, false);
+    scene_add_body(scene, rectangle);
+    return rectangle;
 }

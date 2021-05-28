@@ -136,7 +136,9 @@ double time_since_last_tick(void);
 
 /**
  * Creates words on the screen
+ * 
+ * @param score score of the game
  */
-void sdl_create_words();
+void sdl_create_words(int score);
 
 #endif // #ifndef __SDL_WRAPPER_H__
