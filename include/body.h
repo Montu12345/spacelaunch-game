@@ -200,7 +200,8 @@ vector_t body_get_velocity(body_t *body);
 double body_get_angular_velocity(body_t *body);
 
 /**
- * Gets the current angular position of a body.
+ * Gets the current angular position of a body. Represents
+ * the amount the body is rotated counterclockwise.
  *
  * @param body a pointer to a body returned from body_init()
  * @return the body's angular position 

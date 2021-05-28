@@ -239,11 +239,11 @@ void sdl_show(void)
     SDL_RenderPresent(renderer);
 }
 
-void sdl_draw_img(char *texture_path, SDL_Rect *bounds)
+void sdl_draw_img(char *texture_path, SDL_Rect *bounds, double rotation)
 {
     SDL_Surface *image = IMG_Load(texture_path);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_RenderCopy(renderer, texture, NULL, bounds);
+    SDL_RenderCopyEx(renderer, texture, NULL, bounds, rotation, NULL, SDL_FLIP_NONE);
     free(bounds);
 }
 
@@ -259,7 +259,10 @@ void sdl_render_scene(scene_t *scene)
         if (texture_path)
         {
             SDL_Rect *bounds = body_get_bounding_rect(body);
-            sdl_draw_img(texture_path, bounds);
+            double rotation_radians = body_get_rotation(body);
+            // Must be converted to clockwise, in degrees
+            double rotation = -180 * rotation_radians / M_PI;
+            sdl_draw_img(texture_path, bounds, rotation);
         }
         else
         {
