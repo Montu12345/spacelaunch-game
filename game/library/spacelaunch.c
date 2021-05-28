@@ -16,6 +16,7 @@
 #include "spacelaunch.h"
 #include "game_build.h"
 #include "game_actions.h"
+#include "camerademo.h"
 
 const int SCREEN_SIZE_X = 1000;
 const int SCREEN_SIZE_Y = 500;
@@ -92,39 +93,39 @@ void screen_game_over_render(game_state_t *state)
 
 int main(int argc, char *argv[])
 {
-  // Initialize the game state
-  game_state_t *state = malloc(sizeof(game_state_t));
-  state->current_screen = SCREEN_GAME;
-  state->needs_restart = true;
+    // Initialize the game state
+    game_state_t *state = malloc(sizeof(game_state_t));
+    state->current_screen = SCREEN_GAME;
+    state->needs_restart = true;
+    
+    // Initialize SDL
+    sdl_init(min, max);
+    sdl_event_args(state);
+    sdl_on_key((key_handler_t)handle_key_press);
   
-  // Initialize SDL
-  sdl_init(min, max);
-  sdl_event_args(state);
-  sdl_on_key((key_handler_t)handle_key_press);
-  
-  // Render the correct screen each tick.
-  while (!sdl_is_done())
-  {
-    double dt = time_since_last_tick();
-    if (state->needs_restart)
+    // Render the correct screen each tick.
+    while (!sdl_is_done())
     {
-      state->ticks = 0;
+        double dt = time_since_last_tick();
+        if (state->needs_restart)
+        {
+        state->ticks = 0;
+        }
+        switch (state->current_screen)
+        {
+        case SCREEN_GAME:
+        screen_game_render(state);
+        scene_tick(state->scene, dt);
+        sdl_render_scene(state->scene);
+        break;
+        case SCREEN_GAME_OVER:
+        screen_game_over_render(state);
+        break;
+        default:
+        break;
+        }
     }
-    switch (state->current_screen)
-    {
-    case SCREEN_GAME:
-      screen_game_render(state);
-      scene_tick(state->scene, dt);
-      sdl_render_scene(state->scene);
-      break;
-    case SCREEN_GAME_OVER:
-      screen_game_over_render(state);
-      break;
-    default:
-      break;
-    }
-  }
 
-  scene_free(state->scene);
-  free(state);
-}
+    scene_free(state->scene);
+    free(state);
+    }

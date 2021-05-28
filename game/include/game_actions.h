@@ -96,7 +96,7 @@ void game_actions_thrust_rocket(double angle, double scale, body_t *focal_body);
  * @param asteroid asteroid on the screen
  * @param axis NOT SURE!!!!!!!!!!
  */
-void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis);
+void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis, game_state_t *state);
 
 /**
  * Adds the collision force to the scene, focal_body, and asteroid
@@ -116,5 +116,5 @@ void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body,
  */
 void game_actions_check_for_game_over(game_state_t *state);
 
-
+void game_actions_new_health(game_state_t *state, int scale);
 #endif // #ifndef __GAME_ACTIONS_H__

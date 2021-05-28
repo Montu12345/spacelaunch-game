@@ -18,6 +18,9 @@ const int A_KEY_VALUE = 1;
 const int Q_KEY_VALUE = 2;
 const double KEY_PRESS_VELOCITY_SCALE = 1.0;
 
+const int SCORE_DISPLAY_HEIGHT = 20;
+const int SCORE_DISPLAY_WIDTH = 150;
+const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GA_SCREEN_SIZE_Y - 25};
 
 enum space_body_type_t
 {
@@ -27,6 +30,7 @@ enum space_body_type_t
     BACKGROUND_OBJECT,
     STAR,
     SHOOTING_STAR,
+    SCORE_DISPLAY,
 
 };
 
@@ -59,14 +63,19 @@ void game_setup(game_state_t *state)
     game_build_draw_stary_night(scene);
     body_t *rocket = game_build_rocket(scene);
     game_build_draw_asteroids(scene, rocket);
-    body_t *score_display = game_build_score_keeper(scene);
-
+    body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT, SCORE_DISPLAY_POSITION);
     state->rocket = rocket;
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
     state->score = 0;
     state->timer = 0;
+
+    scene_add_camera_management(state->scene,
+                              (camera_offset_func_t)game_actions_camera_offset_func,
+                              (camera_mover_func_t)game_actions_camera_mover_func,
+                              NULL);
+    scene_set_focal_body(scene, state->rocket);
 }
 
 
@@ -119,7 +128,25 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
     }
 }
 
-void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis)
+void game_actions_new_health(game_state_t *state, int scale){
+    body_t *curr_display = state->score_display;
+    list_t *curr_display_list = body_get_shape(curr_display);
+    vector_t *asdf = (vector_t *)list_get(curr_display_list, 0);
+    vector_t *qwer = (vector_t *)list_get(curr_display_list, 3);
+    double max_length = qwer->x - asdf->x;
+    vector_t position = body_get_centroid(curr_display);
+    body_t *score_display = game_build_score_keeper(state->scene, SCORE_DISPLAY_HEIGHT, max_length + scale, position);
+    for (int i = 0; i < scene_bodies(state->scene); i++){
+        body_t *display = scene_get_body(state->scene, i);
+        if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY){
+            scene_remove_body(state->scene, i);
+        }
+    }
+    
+    state->score_display = score_display;
+}
+
+void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis, game_state_t *state)
 {
     vector_t j1 = impulse_to_body_1(focal_body, asteroid, axis, GA_ROCKET_ELASTICITY);
     vector_t j2 = vec_negate(j1);
@@ -127,11 +154,11 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
     body_add_impulse(asteroid, j2);
     if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE)
     {
-        body_set_color(focal_body, GA_YELLOW);
+        game_actions_new_health(state, 10);
     }
     else if (*(enum space_body_type_t *)body_get_info(asteroid) == BAD_OBSTACLE)
     {
-        body_set_color(focal_body, GA_RED);
+        game_actions_new_health(state, -50);
     }
 }
 

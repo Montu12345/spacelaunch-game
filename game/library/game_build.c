@@ -31,9 +31,9 @@ const int GB_SHOOTING_STAR_MASS = INFINITY;
 const rgb_color_t GB_SHOOTING_STAR_COLOR = {.r = 1, .g = 1, .b = 1};
 const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 
-const int SCORE_DISPLAY_HIGHT = 20;
-const int SCORE_DISPLAY_WIDTH = 150;
-const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
+// const int SCORE_DISPLAY_HIGHT = 20;
+// const int SCORE_DISPLAY_WIDTH = 150;
+// const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
 const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
 
 enum space_body_type_t
@@ -101,6 +101,7 @@ body_t *game_build_rocket(scene_t *scene)
     body_set_centroid(rocket, GB_ROCKET_INITIAL_POS);
     body_set_movable(rocket, true);
     scene_add_body(scene, rocket);
+    body_set_camera_mode(rocket, FOLLOW);
     return rocket;
 }
 
@@ -136,6 +137,7 @@ void game_build_stars(scene_t *scene)
             vector_t pos = {.x = i * GB_DISTANCE_BETWEEN_STARS,
                             .y = j * GB_DISTANCE_BETWEEN_STARS + (i % 2) * GB_DISTANCE_BETWEEN_STARS / 2.0};
             body_set_centroid(star, pos);
+            body_set_camera_mode(star, SCENE);
             scene_add_body(scene, star);
         }
     }
@@ -161,14 +163,15 @@ void game_build_asteroid(scene_t *scene, body_t *rocket)
     body_set_centroid(asteroid, position);
     body_set_movable(asteroid, false);
     game_actions_rocket_obstacles_collision(scene, rocket, asteroid);
+    body_set_camera_mode(asteroid, SCENE);
     scene_add_body(scene, asteroid);
 }
 
-body_t *game_build_score_keeper(scene_t *scene)
+body_t *game_build_score_keeper(scene_t *scene, double width, double height, vector_t position)
 {
-    list_t *score_display_list = sprite_make_rect(0, SCORE_DISPLAY_WIDTH, 0, SCORE_DISPLAY_HIGHT);
+    list_t *score_display_list = sprite_make_rect(0, width, 0, height);
     body_t *score_display = body_init_with_info(score_display_list, INFINITY, SCORE_DISPLAY_COLOR, game_build_body_type_init(SCORE_DISPLAY), free);
-    body_set_centroid(score_display, SCORE_DISPLAY_POSITION);
+    body_set_centroid(score_display, position);
     body_set_movable(score_display, false);
     scene_add_body(scene, score_display);
     return score_display;
