@@ -31,6 +31,11 @@ const int GB_SHOOTING_STAR_MASS = INFINITY;
 const rgb_color_t GB_SHOOTING_STAR_COLOR = {.r = 1, .g = 1, .b = 1};
 const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 
+const int SCORE_DISPLAY_HIGHT = 20;
+const int SCORE_DISPLAY_WIDTH = 150;
+const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
+const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
+
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
@@ -161,11 +166,9 @@ void game_build_asteroid(scene_t *scene, body_t *rocket)
 
 body_t *game_build_score_keeper(scene_t *scene)
 {
-    list_t *score_display_list = sprite_make_rect(0, 150, 0, 20);
-    rgb_color_t score_display_color = (rgb_color_t){.r = 0, .g = 1, .b = 1};
-    body_t *score_display = body_init_with_info(score_display_list, INFINITY, score_display_color, game_build_body_type_init(SCORE_DISPLAY), free);
-    vector_t position = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
-    body_set_centroid(score_display, position);
+    list_t *score_display_list = sprite_make_rect(0, SCORE_DISPLAY_WIDTH, 0, SCORE_DISPLAY_HIGHT);
+    body_t *score_display = body_init_with_info(score_display_list, INFINITY, SCORE_DISPLAY_COLOR, game_build_body_type_init(SCORE_DISPLAY), free);
+    body_set_centroid(score_display, SCORE_DISPLAY_POSITION);
     body_set_movable(score_display, false);
     scene_add_body(scene, score_display);
     return score_display;

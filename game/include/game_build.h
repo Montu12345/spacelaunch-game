@@ -49,6 +49,11 @@ const int GB_SHOOTING_STAR_MASS;
 const rgb_color_t GB_SHOOTING_STAR_COLOR;
 const vector_t GB_SHOOTING_STAR_VELCOITY;
 
+const int SCORE_DISPLAY_HIGHT;
+const int SCORE_DISPLAY_WIDTH;
+const vector_t SCORE_DISPLAY_POSITION;
+const rgb_color_t SCORE_DISPLAY_COLOR;
+
 /**
  * Makes a shooting star. 
  *

@@ -25,8 +25,8 @@ const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int STARTING_KEY_VALUE = 0;
 const int SHOOTING_STAR_TIME = 170;
 
-const int TEXT_WIDTH = 150;
-const int TEXT_HEIGHT = 50;
+const int TEXT_WIDTH = 100;
+const int TEXT_HEIGHT = 30;
 
 const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = 5};
 const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
@@ -34,9 +34,16 @@ const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
 vector_t TIMER_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
+const vector_t FINAL_SCORE_POS = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
+const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
 void display_score(game_state_t *state)
 {
-    sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, state->score);
+    sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, "Score: ", state->score);
+}
+
+void display_timer(game_state_t *state){
+    sdl_create_words(TIMER_POSITION, TIMER_DIMENTIONS, "Timer: ", (int)state->timer);
 }
 
 void screen_game_render(game_state_t *state)
@@ -54,11 +61,9 @@ void screen_game_render(game_state_t *state)
   state->timer += 0.1;
   game_actions_check_for_game_over(state);
   display_score(state);
-  
-  sdl_create_timer(TIMER_POSITION, TIMER_DIMENTIONS, (int)state->timer);
+  display_timer(state);
   sdl_render_scene(state->scene);
   sdl_clear();
-
 }
 
 void screen_game_over_render(game_state_t *state)
@@ -80,9 +85,7 @@ void screen_game_over_render(game_state_t *state)
     sdl_render_scene(state->scene);
     sdl_clear();
     sdl_render_scene(state->scene);
-    vector_t end_score_position = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
-    vector_t end_score_dimentions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-    sdl_create_words(end_score_position, end_score_dimentions, state->score);
+    sdl_create_words(FINAL_SCORE_POS, FINAL_SCORE_DIM, "Score: ", state->score);
   }
   state->ticks += 1;
 }
@@ -94,20 +97,15 @@ int main(int argc, char *argv[])
   state->current_screen = SCREEN_GAME;
   state->needs_restart = true;
   
-  
   // Initialize SDL
   sdl_init(min, max);
   sdl_event_args(state);
   sdl_on_key((key_handler_t)handle_key_press);
-
-  double time = 0;
   
   // Render the correct screen each tick.
   while (!sdl_is_done())
   {
     double dt = time_since_last_tick();
-    time += dt;    
-
     if (state->needs_restart)
     {
       state->ticks = 0;
