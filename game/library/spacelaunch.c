@@ -67,10 +67,10 @@ void screen_game_over_render(game_state_t *state)
 
     // TODO: Why does this make text rendering work? Reducing redundant calls breaks functionality.
     sdl_render_scene(state->scene);
-    sdl_clear();
-    sdl_render_scene(state->scene);
-    sdl_clear();
-    sdl_render_scene(state->scene);
+    // sdl_clear();
+    // sdl_render_scene(state->scene);
+    // sdl_clear();
+    // sdl_render_scene(state->scene);
     vector_t end_score_position = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
     vector_t end_score_dimentions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
     sdl_create_words(end_score_position, end_score_dimentions, state->score);

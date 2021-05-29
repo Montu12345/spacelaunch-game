@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
   TTF_Font * font = TTF_OpenFont("Roboto-Black.ttf", 25);
   SDL_Color color = {255, 255, 255};
   SDL_Surface * surface = TTF_RenderText_Solid(font, "HELLO", color);
-  SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surface);
+  // SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surface);
   sdl_event_args((void *)pacman);
   while (!sdl_is_done())
   {
