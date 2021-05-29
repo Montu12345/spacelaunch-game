@@ -275,38 +275,14 @@ double time_since_last_tick(void)
     return difference;
 }
 
-void sdl_create_words(vector_t position, vector_t dimentions, int score)
+void sdl_create_words(vector_t position, vector_t dimentions, char *words, int number)
 {
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
     SDL_Color color = {255, 255, 255};
     char score_print[30];
-    sprintf(score_print, "Score: %d", score);
+    sprintf(score_print, "%s%d", words, number);
     SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect *boundary = malloc(sizeof(*boundary));
-    boundary->w = dimentions.x;
-    boundary->h = dimentions.y; 
-    boundary->x = position.x;
-    // center.x - boundary->w / 2.0;
-    boundary->y = position.y;
-    // center.y - boundary->h / 2.0;
-    SDL_RenderCopy(renderer, texture, NULL, boundary);
-    SDL_RenderPresent(renderer);
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
-    TTF_CloseFont(font);
-    TTF_Quit();
-}
-
-void sdl_create_timer(vector_t position, vector_t dimentions, double time)
-{
-    TTF_Init();
-    TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
-    SDL_Color color = {255, 255, 255};
-    char time_print[30];
-    sprintf(time_print, "Time: %d", (int) time);
-    SDL_Surface *surface = TTF_RenderUTF8_Blended(font, time_print, color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect *boundary = malloc(sizeof(*boundary));
     boundary->w = dimentions.x;

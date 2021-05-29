@@ -49,6 +49,13 @@ const int GB_SHOOTING_STAR_MASS;
 const rgb_color_t GB_SHOOTING_STAR_COLOR;
 const vector_t GB_SHOOTING_STAR_VELCOITY;
 
+const int SCORE_DISPLAY_HIGHT;
+const int SCORE_DISPLAY_WIDTH;
+const vector_t SCORE_DISPLAY_POSITION;
+const rgb_color_t SCORE_DISPLAY_COLOR;
+
+typedef struct game_state game_state_t;
+
 /**
  * Makes a shooting star. 
  *
@@ -62,7 +69,7 @@ void game_build_shooting_star(scene_t *scene);
  * @param scene a pointer to a scene returned from scene_init()
  * @param rocket a pointer to the rocket in the scene
  */
-void game_build_draw_asteroids(scene_t *scene, body_t *rocket);
+void game_build_draw_asteroids(game_state_t *state, body_t *rocket);
 
 /**
  * Draws the background and the stars.
@@ -99,8 +106,7 @@ void game_build_stars(scene_t *scene);
  * @param scene a pointer to a scene returned from scene_init()
  * @param rocket a pointer to the rocket in the scene.
  */
-void game_build_asteroid(scene_t *scene, body_t *rocket);
+void game_build_asteroid(game_state_t *state, body_t *rocket);
 
-
-body_t *game_build_score_keeper(scene_t *scene);
+body_t *game_build_score_keeper(scene_t *scene, double height, double width, vector_t position);
 #endif // #ifndef __GAME_BUILD_H__
