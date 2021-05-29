@@ -260,6 +260,7 @@ SDL_Rect *body_get_bounding_rect(body_t *body)
             max_y = vertex->y;
         }
     }
+
     SDL_Rect *rect = malloc(sizeof(SDL_Rect));
     *rect = (SDL_Rect){.x = min_x,
                        .y = min_y,
