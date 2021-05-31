@@ -65,6 +65,15 @@ void display_level(game_state_t *state)
   sdl_create_words(LEVEL_POSITION, LEVEL_DIMENSIONS, "Level: ", (int)state->level);
 }
 
+void update_score(game_state_t *state)
+{
+  int new_score = state->health / 50 - 2;
+  if (new_score < 0) {
+    new_score = 0;
+  }
+  state->score = new_score;
+}
+
 void screen_game_render(game_state_t *state)
 {
   if (state->needs_restart)
@@ -129,6 +138,7 @@ int main(int argc, char *argv[])
   while (!sdl_is_done())
   {
     double dt = time_since_last_tick();
+    update_score(state);
     if (state->needs_restart)
     {
       state->ticks = 0;
