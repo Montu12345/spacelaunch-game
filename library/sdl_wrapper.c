@@ -317,7 +317,7 @@ double time_since_last_tick(void)
   return difference;
 }
 
-void sdl_create_words(vector_t position, vector_t dimentions, char *words, int number)
+void sdl_create_words(vector_t position, vector_t dimensions, char *words, int number)
 {
   TTF_Init();
   TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", 100);
@@ -327,8 +327,8 @@ void sdl_create_words(vector_t position, vector_t dimentions, char *words, int n
   SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_Rect *boundary = malloc(sizeof(*boundary));
-  boundary->w = dimentions.x;
-  boundary->h = dimentions.y;
+  boundary->w = dimensions.x;
+  boundary->h = dimensions.y;
   boundary->x = position.x;
   boundary->y = position.y;
   SDL_RenderCopy(renderer, texture, NULL, boundary);

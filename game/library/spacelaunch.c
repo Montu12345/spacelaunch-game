@@ -30,13 +30,13 @@ const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
 
 const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = 5};
-const vector_t SCORE_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+const vector_t SCORE_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
 const vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
-const vector_t TIMER_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+const vector_t TIMER_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
 const vector_t HEALTH_POSITION = {.x = 40, .y = 35};
-const vector_t HEALTH_DIMENTIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+const vector_t HEALTH_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
 const vector_t FINAL_SCORE_POS = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
 const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
@@ -44,17 +44,17 @@ const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
 void display_score(game_state_t *state)
 {
-  sdl_create_words(SCORE_POSITION, SCORE_DIMENTIONS, "Score: ", state->score);
+  sdl_create_words(SCORE_POSITION, SCORE_DIMENSIONS, "Score: ", state->score);
 }
 
 void display_timer(game_state_t *state)
 {
-  sdl_create_words(TIMER_POSITION, TIMER_DIMENTIONS, "Timer: ", (int)state->timer);
+  sdl_create_words(TIMER_POSITION, TIMER_DIMENSIONS, "Timer: ", (int)state->timer);
 }
 
 void display_health(game_state_t *state)
 {
-  sdl_create_words(HEALTH_POSITION, HEALTH_DIMENTIONS, "Health: ", (int)state->health);
+  sdl_create_words(HEALTH_POSITION, HEALTH_DIMENSIONS, "Health: ", (int)state->health);
 }
 
 void screen_game_render(game_state_t *state)
@@ -93,21 +93,13 @@ void screen_game_over_render(game_state_t *state)
 
     // TODO: Why does this make text rendering work? Reducing redundant calls breaks functionality.
     sdl_render_scene(state->scene);
-<<<<<<< HEAD
     // sdl_clear();
     // sdl_render_scene(state->scene);
     // sdl_clear();
     // sdl_render_scene(state->scene);
     vector_t end_score_position = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
-    vector_t end_score_dimentions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-    sdl_create_words(end_score_position, end_score_dimentions, state->score);
-=======
-    sdl_clear();
-    sdl_render_scene(state->scene);
-    sdl_clear();
-    sdl_render_scene(state->scene);
-    sdl_create_words(FINAL_SCORE_POS, FINAL_SCORE_DIM, "Score: ", state->score);
->>>>>>> 678f23066d3c8684282a09cdb940afdfe5fcb2ab
+    vector_t end_score_dimensions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+    sdl_create_words(end_score_position, end_score_dimensions, "Score: ", state->score);
   }
   state->ticks += 1;
 }
