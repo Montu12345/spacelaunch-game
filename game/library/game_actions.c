@@ -142,11 +142,11 @@ void game_actions_new_health(game_state_t *state, int scale)
     }
     vector_t new_position;
     body_t *score_display;
-    printf("%f \n", curr_length->x);
-    if (curr_length->x + scale <= 0)
-    {
-        printf("need to end game");
-    }
+    // printf("%f \n", curr_length->x);
+    // if (curr_length->x + scale <= 0)
+    // {
+    //     printf("need to end game");
+    // }
     // if (curr_length->x + scale >= 200.0){
 
     // }
