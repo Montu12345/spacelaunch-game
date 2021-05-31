@@ -60,23 +60,22 @@ void game_setup(game_state_t *state)
 {
     scene_t *scene = scene_init();
     game_build_draw_stary_night(scene);
-    body_t *rocket = game_build_rocket(scene);
     body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT, SCORE_DISPLAY_POSITION);
-    state->rocket = rocket;
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
     state->score = 0;
     state->health = 100;
     state->timer = 0;
+    body_t *rocket = game_build_rocket(scene, state);
+    state->rocket = rocket;
     game_build_draw_asteroids(state, rocket);
     scene_add_camera_management(state->scene,
-                              (camera_offset_func_t)game_actions_camera_offset_func,
-                              (camera_mover_func_t)game_actions_camera_mover_func,
-                              NULL);
+                                (camera_offset_func_t)game_actions_camera_offset_func,
+                                (camera_mover_func_t)game_actions_camera_mover_func,
+                                NULL);
     scene_set_focal_body(scene, state->rocket);
 }
-
 
 void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)
 {
@@ -127,25 +126,29 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
     }
 }
 
-void game_actions_new_health(game_state_t *state, int scale){
+void game_actions_new_health(game_state_t *state, int scale)
+{
     body_t *curr_display = state->score_display;
     list_t *curr_display_list = body_get_shape(curr_display);
     vector_t *curr_length = (vector_t *)list_get(curr_display_list, 3);
     vector_t position = body_get_centroid(curr_display);
-    for (int i = 0; i < scene_bodies(state->scene); i++){
+    for (int i = 0; i < scene_bodies(state->scene); i++)
+    {
         body_t *display = scene_get_body(state->scene, i);
-        if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY){
+        if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY)
+        {
             scene_remove_body(state->scene, i);
         }
     }
     vector_t new_position;
     body_t *score_display;
-    printf("%f \n", curr_length->x);
-    if(curr_length->x + scale <= 0){
-        printf("need to end game");
-    }
+    // printf("%f \n", curr_length->x);
+    // if (curr_length->x + scale <= 0)
+    // {
+    //     printf("need to end game");
+    // }
     // if (curr_length->x + scale >= 200.0){
-        
+
     // }
     // else{
     //     new_position = (vector_t){.x = (curr_length->x + scale) / 2.0 + 15, .y = position.y};

@@ -7,6 +7,10 @@
 #include "polygon.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 extern const double BODY_DEFAULT_ANGULAR_VELOCITY;
 extern const double BODY_DEFAULT_ANGULAR_POSITION;
@@ -29,6 +33,8 @@ typedef struct body_appearance body_appearance_t;
  *  movable -- true if a colliding object has the capacity to move the body.
 */
 typedef struct body_physical_properties body_physical_properties_t;
+
+typedef char *(*texture_path_func_t)(void *);
 
 /**
  * Properties describing the motion of the body
@@ -66,23 +72,6 @@ typedef enum
     FOLLOW,     // Subject of camera movement, used once.
     SCENE       // Elements of the scene which should be left behind
 } camera_mode_t;
-
-body_appearance_t body_appearance_init(
-    list_t *shape,
-    rgb_color_t color);
-
-body_physical_properties_t body_physical_properties_init(
-    double mass,
-    double bounciness,
-    bool movable);
-
-body_kinematic_variables_t body_kinematic_variables_init(
-    vector_t velocity,
-    vector_t position,
-    double angular_velocity,
-    double angular_position,
-    vector_t net_force,
-    vector_t impulse);
 
 /**
  * Allocates memory for a body with the given parameters.
@@ -160,6 +149,43 @@ void body_free(body_t *body);
 list_t *body_get_shape(body_t *body);
 
 /**
+ * Get the path to the image displayed as the body.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @return the path to the body's image resource
+ */
+char *body_get_texture_path(body_t *body);
+
+/**
+ * Set the path to the image displayed as the body.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @param path the path to the body's image resource
+ */
+void body_set_static_texture_path(body_t *body, char *path);
+
+/**
+ * Set a function to be called to return the current texture for the body.
+ * Is useful for animations. 
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @param path_func texture_path_func_t to return the path given an aux variable
+ * @param aux information required by the path_func, if necessary
+ * @param freer free_func_t to free the aux
+ */
+void body_set_texture_path_func(body_t *body, texture_path_func_t path_func, void *aux, free_func_t freer);
+
+/**
+ * Gets the rectangle which the body's shape is bounded by.
+ * The bounds are determined by the minimum and maximum x and
+ * y positions of the shape's verticies. 
+ * 
+ * @param body the body to extract the shape from 
+ * @return pointer to an allocated SDL_Rect representing the bounds
+ */
+SDL_Rect *body_get_bounding_rect(body_t *body);
+
+/**
  * Gets the current center of mass of a body.
  * While this could be calculated with polygon_centroid(), that becomes too slow
  * when this function is called thousands of times every tick.
@@ -187,7 +213,8 @@ vector_t body_get_velocity(body_t *body);
 double body_get_angular_velocity(body_t *body);
 
 /**
- * Gets the current angular position of a body.
+ * Gets the current angular position of a body. Represents
+ * the amount the body is rotated counterclockwise.
  *
  * @param body a pointer to a body returned from body_init()
  * @return the body's angular position 
@@ -306,6 +333,15 @@ void body_add_force(body_t *body, vector_t force);
  * @param impulse the impulse vector to apply
  */
 void body_add_impulse(body_t *body, vector_t impulse);
+
+/**
+ * Determines if the body is experiencing a net impulse.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @return bool, true if the body is under an impulse.
+ */
+bool body_has_impulse(body_t *body);
+
 
 /**
  * Returns the body's force.

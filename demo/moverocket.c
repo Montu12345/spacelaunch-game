@@ -21,7 +21,7 @@ const vector_t INITIAL_POS = {.x = SCREEN_SIZE_X / 10, .y = SCREEN_SIZE_Y / 10};
 
 const int PACMAN_STEP = 10;
 const int CIRCLE_PRECISION = 10;
-const int PACMAN_PRECISION = 30;
+const int PACMAN_RADIUS = 30;
 const double PACMAN_VELOCITY_SCALE = 30;
 const int INITIAL_DOTS = 30;
 const double EAT_TOLERANCE = 10.0;
@@ -118,7 +118,7 @@ void make_dot(scene_t *scene, body_t *pacman)
 int main(int argc, char *argv[])
 {
   scene_t *scene = scene_init();
-  list_t *pacman_shape = sprite_make_pacman(PACMAN_PRECISION);
+  list_t *pacman_shape = sprite_make_pacman(PACMAN_RADIUS);
   body_t *pacman = body_init(pacman_shape, PACMAN_MASS, PACMAN_COLOR);
   for (int i = 0; i < INITIAL_DOTS; i++)
   {

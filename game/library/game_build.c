@@ -31,10 +31,15 @@ const int GB_SHOOTING_STAR_MASS = INFINITY;
 const rgb_color_t GB_SHOOTING_STAR_COLOR = {.r = 1, .g = 1, .b = 1};
 const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 
+char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
+char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
+
 // const int SCORE_DISPLAY_HIGHT = 20;
 // const int SCORE_DISPLAY_WIDTH = 150;
 // const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
 const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
+
+const int ROCKET_TEXTURE_COUNT = 4;
 
 enum space_body_type_t
 {
@@ -91,9 +96,27 @@ void game_build_draw_stary_night(scene_t *scene)
     game_build_stars(scene);
 }
 
-body_t *game_build_rocket(scene_t *scene)
+char *rocket_resource_path(game_state_t *state)
 {
-    list_t *rocket_shape = sprite_make_pacman(GB_ROCKET_RADIUS);
+    char *idle_texture = "game/textures/rocket/rocket_idle.png";
+
+    // If the body does not yet exist or it is not moving, return the idle image.
+    if (!state->rocket || !body_has_impulse(state->rocket))
+    {
+        return idle_texture;
+    }
+
+    // Rocket is moving, get animation frame
+    char *format = "game/textures/rocket/rocket%d.png";
+    int texture_idx = 1 + (state->ticks % ROCKET_TEXTURE_COUNT);
+    char *path = malloc(strlen(format) * sizeof(char));
+    sprintf(path, format, texture_idx);
+    return path;
+}
+
+body_t *game_build_rocket(scene_t *scene, game_state_t *state)
+{
+    list_t *rocket_shape = sprite_make_circle(GB_ROCKET_RADIUS);
     body_t *rocket = body_init_with_info(rocket_shape,
                                          GB_ROCKET_MASS,
                                          GB_ROCKET_COLOR,
@@ -101,6 +124,7 @@ body_t *game_build_rocket(scene_t *scene)
                                          free);
     body_set_centroid(rocket, GB_ROCKET_INITIAL_POS);
     body_set_movable(rocket, true);
+    body_set_texture_path_func(rocket, (texture_path_func_t)rocket_resource_path, state, NULL);
     scene_add_body(scene, rocket);
     body_set_camera_mode(rocket, FOLLOW);
     return rocket;
@@ -148,19 +172,23 @@ void game_build_stars(scene_t *scene)
 void game_build_asteroid(game_state_t *state, body_t *rocket)
 {
     list_t *circle = sprite_make_circle(GB_ASTEROID_RADIUS);
+    bool is_good_asteroid = rand() % 2 == 0;
+    char *texture_path = GB_GOOD_ASTEROID_TEXTURE;
     rgb_color_t color;
     enum space_body_type_t *obstacle_type;
-    if (rand() % 2 == 0)
+    if (is_good_asteroid)
     {
         color = GB_BAD_ASTEROID_COLOR;
         obstacle_type = game_build_body_type_init(GOOD_OBSTACLE);
     }
     else
     {
+        texture_path = GB_BAD_ASTEROID_TEXTURE;
         color = GB_GOOD_ASTEROID_COLOR;
         obstacle_type = game_build_body_type_init(BAD_OBSTACLE);
     }
     body_t *asteroid = body_init_with_info(circle, GB_ASTEROID_MASS, color, obstacle_type, free);
+    body_set_static_texture_path(asteroid, texture_path);
     vector_t position = {.x = (rand() % GB_SCREEN_SIZE_X), .y = rand() % GB_SCREEN_SIZE_Y};
     body_set_centroid(asteroid, position);
     body_set_movable(asteroid, false);

@@ -1,6 +1,4 @@
 #include "body.h"
-#include <stdio.h>
-#include <assert.h>
 
 const double BODY_DEFAULT_ANGULAR_VELOCITY = 0.0;
 const double BODY_DEFAULT_ANGULAR_POSITION = 0.0;
@@ -38,6 +36,9 @@ typedef struct body_aux_properties
     free_func_t info_freer;
     bool is_removed;
     camera_mode_t camera_mode;
+    texture_path_func_t texture_path_func;
+    void *texture_path_aux;
+    free_func_t texture_path_freer;
 } body_aux_properties_t;
 
 typedef struct body
@@ -74,13 +75,15 @@ body_aux_properties_t body_aux_properties_init(
     void *info,
     free_func_t info_freer,
     bool is_removed,
-    camera_mode_t camera_mode)
+    camera_mode_t camera_mode,
+    texture_path_func_t texture_path_func)
 {
     body_aux_properties_t aux = {
         .info = info,
         .info_freer = info_freer,
         .is_removed = is_removed,
-        .camera_mode = camera_mode};
+        .camera_mode = camera_mode,
+        .texture_path_func = texture_path_func};
     return aux;
 };
 
@@ -120,7 +123,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color)
         BODY_IS_MOVABLE);
     rgb_color_t color_pointer = rgb_init(color.r, color.g, color.b);
     body_appearance_t appearance = body_appearance_init(shape, color_pointer);
-    body_aux_properties_t aux = body_aux_properties_init(NULL, NULL, false, LOCKED);
+    body_aux_properties_t aux = body_aux_properties_init(NULL, NULL, false, LOCKED, NULL);
     *body = (body_t){
         .kinematic_variables = kinematic,
         .physical_properties = physical,
@@ -153,6 +156,10 @@ void body_free(body_t *body)
     if (body->aux.info_freer != NULL)
     {
         body->aux.info_freer(body->aux.info);
+    }
+    if (body->aux.texture_path_freer != NULL)
+    {
+        body->aux.texture_path_freer(body->aux.texture_path_aux);
     }
     free(body);
 }
@@ -198,6 +205,74 @@ list_t *body_get_shape(body_t *body)
         list_add(new_shape, vec_malloc(current_vector->x, current_vector->y));
     }
     return new_shape;
+}
+
+char *body_get_texture_path(body_t *body)
+{
+    if (body->aux.texture_path_func)
+    {
+        return body->aux.texture_path_func(body->aux.texture_path_aux);
+    }
+    return NULL;
+}
+
+char *texture_path_for_static(char *path)
+{
+    return path;
+}
+
+void body_set_texture_path_func(body_t *body, texture_path_func_t path_func, void *aux, free_func_t freer)
+{
+    body->aux.texture_path_func = path_func;
+    body->aux.texture_path_aux = aux;
+    body->aux.texture_path_freer = freer;
+}
+
+void body_set_static_texture_path(body_t *body, char *path)
+{
+    body_set_texture_path_func(body, (texture_path_func_t)texture_path_for_static, path, NULL);
+}
+
+SDL_Rect *body_get_bounding_rect(body_t *body)
+{
+    list_t *shape = body->appearance.shape;
+    double min_x = INFINITY;
+    double max_x = -INFINITY;
+    double min_y = INFINITY;
+    double max_y = -INFINITY;
+    for (size_t idx = 0; idx < list_size(shape); idx++)
+    {
+        vector_t *vertex = list_get(shape, idx);
+        if (vertex->x < min_x)
+        {
+            min_x = vertex->x;
+        }
+        if (vertex->x > max_x)
+        {
+            max_x = vertex->x;
+        }
+        if (vertex->y < min_y)
+        {
+            min_y = vertex->y;
+        }
+        if (vertex->y > max_y)
+        {
+            max_y = vertex->y;
+        }
+    }
+
+    SDL_Rect *rect = malloc(sizeof(SDL_Rect));
+    *rect = (SDL_Rect){.x = min_x,
+                       .y = min_y,
+                       .w = max_x - min_x,
+                       .h = max_y - min_y};
+    return rect;
+}
+
+bool body_has_impulse(body_t *body)
+{
+    vector_t impulse = body->kinematic_variables.impulse;
+    return vec_magnitude(impulse) != 0;
 }
 
 vector_t body_get_centroid(body_t *body)
