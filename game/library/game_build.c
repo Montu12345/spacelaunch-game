@@ -206,3 +206,4 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height, vec
     scene_add_body(scene, score_display);
     return score_display;
 }
+

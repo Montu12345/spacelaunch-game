@@ -56,6 +56,7 @@ typedef struct game_state
   body_t *score_display;
   double timer;
   int health;
+  int level;
 
 } game_state_t;
 

@@ -41,6 +41,9 @@ const vector_t HEALTH_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 const vector_t FINAL_SCORE_POS = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
 const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
 
+const vector_t LEVEL_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y - TEXT_HEIGHT- 15};
+const vector_t LEVEL_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
+
 
 void display_score(game_state_t *state)
 {
@@ -55,6 +58,11 @@ void display_timer(game_state_t *state)
 void display_health(game_state_t *state)
 {
   sdl_create_words(HEALTH_POSITION, HEALTH_DIMENSIONS, "Health: ", (int)state->health);
+}
+
+void display_level(game_state_t *state)
+{
+  sdl_create_words(LEVEL_POSITION, LEVEL_DIMENSIONS, "Level: ", (int)state->level);
 }
 
 void screen_game_render(game_state_t *state)
@@ -74,6 +82,7 @@ void screen_game_render(game_state_t *state)
   display_score(state);
   display_timer(state);
   display_health(state);
+  display_level(state);
   sdl_render_scene(state->scene);
   sdl_clear();
 }

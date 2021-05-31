@@ -67,6 +67,7 @@ void game_setup(game_state_t *state)
     state->score = 0;
     state->health = 100;
     state->timer = 0;
+    state->level = 1;
     body_t *rocket = game_build_rocket(scene, state);
     state->rocket = rocket;
     game_build_draw_asteroids(state, rocket);
@@ -195,4 +196,16 @@ void game_actions_check_for_game_over(game_state_t *state)
         state->current_screen = SCREEN_GAME_OVER;
         state->needs_restart = true;
     }
+}
+
+// TODO
+void game_actions_check_for_win(game_state_t *state)
+{
+    // vector_t pos = body_get_centroid(state->rocket);
+    // if position is at endzone
+    // increase level
+    // restart game
+    state->current_screen = SCREEN_GAME_OVER;
+    state->needs_restart = true;
+
 }
