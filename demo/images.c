@@ -6,6 +6,7 @@
 #include "collision.h"
 #include "forces.h"
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 // Launch rocket demo
 
@@ -124,6 +125,18 @@ int main(int argc, char *argv[])
   SDL_Window *window = SDL_CreateWindow("SDL2 Displaying Image",
                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
 
+  SDL_Init(SDL_INIT_AUDIO);
+	SDL_AudioSpec wavSpec;
+	Uint32 wavLength;
+	Uint8 *wavBuffer;
+	SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
+
+	SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+  
+	int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+	SDL_PauseAudioDevice(deviceId, 0);
+
+  //images
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
   SDL_Surface *image = SDL_LoadBMP("Rocket.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
@@ -148,6 +161,7 @@ int main(int argc, char *argv[])
   SDL_FreeSurface(image);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
-
+  SDL_CloseAudioDevice(deviceId);
+  SDL_FreeWAV(wavBuffer);
   SDL_Quit();
 }
