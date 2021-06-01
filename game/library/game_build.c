@@ -41,6 +41,24 @@ const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
 
 const int ROCKET_TEXTURE_COUNT = 4;
 
+const int GB_TEXT_WIDTH = 100;
+const int GB_TEXT_HEIGHT = 30;
+
+const vector_t GB_SCORE_POSITION = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = 5};
+const vector_t GB_SCORE_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+
+const vector_t GB_TIMER_POSITION = {.x = GB_SCREEN_SIZE_X - GB_TEXT_WIDTH - 15, .y = 5};
+const vector_t GB_TIMER_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+
+const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
+const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+
+const vector_t GB_FINAL_SCORE_POS = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0 - GB_TEXT_HEIGHT / 2.0};
+const vector_t GB_FINAL_SCORE_DIM = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+
+const vector_t GB_LEVEL_POSITION = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y - GB_TEXT_HEIGHT- 15};
+const vector_t GB_LEVEL_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
@@ -205,5 +223,30 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height, vec
     body_set_movable(score_display, false);
     scene_add_body(scene, score_display);
     return score_display;
+}
+
+void game_build_display_score(game_state_t *state)
+{
+  text_t *score = text_init("Score: ", GB_SCORE_POSITION, 100, state->score, GB_SCORE_DIMENSIONS);
+  scene_add_text(state->scene, score);
+}
+
+void game_build_display_timer(game_state_t *state)
+{
+  text_t *timer = text_init("Timer: ", GB_TIMER_POSITION, 100, state->timer, GB_TIMER_DIMENSIONS);
+  scene_add_text(state->scene, timer);
+}
+
+void game_build_display_health(game_state_t *state)
+{
+  text_t *health = text_init("Health: ", GB_HEALTH_POSITION, 100, (int)state->health, GB_HEALTH_DIMENSIONS);
+  scene_add_text(state->scene, health);
+}
+
+void game_build_display_level(game_state_t *state)
+{
+
+  text_t *score = text_init("Level: ", GB_LEVEL_POSITION, 100, (int)state->level, GB_LEVEL_DIMENSIONS);
+  scene_add_text(state->scene, score);
 }
 

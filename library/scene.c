@@ -9,8 +9,10 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "text.h"
 
 const size_t BODIES_DEFAULT_CAPACITY = 32;
+const size_t TEXT_DEFAULT_CAPACITY = 32;
 const size_t FORCES_DEFAULT_CAPACITY = 64;
 const size_t INVALID_FOCAL_IDX = -1;
 
@@ -56,16 +58,19 @@ typedef struct scene
     camera_mover_func_t camera_mover;
     body_t *focal_body;
     void *camera_aux;
+    list_t *text;
 } scene_t;
 
 scene_t *scene_init()
 {
     list_t *bodies = list_init(BODIES_DEFAULT_CAPACITY, (free_func_t)body_free);
     list_t *forces = list_init(FORCES_DEFAULT_CAPACITY, (free_func_t)force_free);
+    list_t *text = list_init(TEXT_DEFAULT_CAPACITY, (free_func_t)free);
     scene_t *scene = malloc(sizeof(scene_t));
     assert(scene != NULL);
     scene->bodies = bodies;
     scene->forces = forces;
+    scene->text = text;
     scene->camera_aux = NULL;
     scene->focal_body = NULL;
     return scene;
@@ -222,6 +227,19 @@ void move_and_clean_bodies(scene_t *scene, double dt)
             idx--;
         }
     }
+}
+
+void scene_add_text(scene_t *scene, text_t *text){
+    list_add(scene->text, text);
+}
+
+size_t scene_text(scene_t *scene){
+    return list_size(scene->text);
+}
+
+text_t *scene_get_text(scene_t *scene, size_t index){
+    text_t *text = list_get(scene->text, index);
+    return text;
 }
 
 void scene_tick(scene_t *scene, double dt)

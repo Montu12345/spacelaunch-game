@@ -6,6 +6,7 @@
 #include "list.h"
 #include "scene.h"
 #include "vector.h"
+#include "text.h"
 
 // Values passed to a key handler when the given arrow key is pressed
 typedef enum
@@ -142,6 +143,6 @@ double time_since_last_tick(void);
  * @param words words
  * @param number number
  */
-void sdl_create_words(vector_t position, vector_t dimensions, char *words, int number);
+void sdl_create_words(text_t *text);
 
 #endif // #ifndef __SDL_WRAPPER_H__

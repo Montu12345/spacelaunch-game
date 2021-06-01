@@ -109,5 +109,13 @@ void game_build_stars(scene_t *scene);
  */
 void game_build_asteroid(game_state_t *state, body_t *rocket);
 
+void game_build_display_score(game_state_t *state);
+
+void game_build_display_timer(game_state_t *state);
+
+void game_build_display_health(game_state_t *state);
+
+void game_build_display_level(game_state_t *state);
+
 body_t *game_build_score_keeper(scene_t *scene, double height, double width, vector_t position);
 #endif // #ifndef __GAME_BUILD_H__

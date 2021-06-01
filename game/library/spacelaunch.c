@@ -17,6 +17,7 @@
 #include "game_build.h"
 #include "game_actions.h"
 #include "camerademo.h"
+#include "text.h"
 
 const int SCREEN_SIZE_X = 1000;
 const int SCREEN_SIZE_Y = 500;
@@ -28,42 +29,6 @@ const int SHOOTING_STAR_TIME = 170;
 
 const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
-
-const vector_t SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = 5};
-const vector_t SCORE_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-
-const vector_t TIMER_POSITION = {.x = SCREEN_SIZE_X - TEXT_WIDTH - 15, .y = 5};
-const vector_t TIMER_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-
-const vector_t HEALTH_POSITION = {.x = 40, .y = 35};
-const vector_t HEALTH_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-
-const vector_t FINAL_SCORE_POS = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
-const vector_t FINAL_SCORE_DIM = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-
-const vector_t LEVEL_POSITION = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y - TEXT_HEIGHT- 15};
-const vector_t LEVEL_DIMENSIONS = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-
-
-void display_score(game_state_t *state)
-{
-  sdl_create_words(SCORE_POSITION, SCORE_DIMENSIONS, "Score: ", state->score);
-}
-
-void display_timer(game_state_t *state)
-{
-  sdl_create_words(TIMER_POSITION, TIMER_DIMENSIONS, "Timer: ", (int)state->timer);
-}
-
-void display_health(game_state_t *state)
-{
-  sdl_create_words(HEALTH_POSITION, HEALTH_DIMENSIONS, "Health: ", (int)state->health);
-}
-
-void display_level(game_state_t *state)
-{
-  sdl_create_words(LEVEL_POSITION, LEVEL_DIMENSIONS, "Level: ", (int)state->level);
-}
 
 void update_score(game_state_t *state)
 {
@@ -88,10 +53,6 @@ void screen_game_render(game_state_t *state)
 
   state->timer += 0.1;
   game_actions_check_for_game_over(state);
-  display_score(state);
-  display_timer(state);
-  display_health(state);
-  display_level(state);
   sdl_render_scene(state->scene);
   sdl_clear();
 }
@@ -110,14 +71,14 @@ void screen_game_over_render(game_state_t *state)
     scene_add_body(state->scene, background);
 
     // TODO: Why does this make text rendering work? Reducing redundant calls breaks functionality.
-    sdl_render_scene(state->scene);
+    // sdl_render_scene(state->scene);
     // sdl_clear();
     // sdl_render_scene(state->scene);
     // sdl_clear();
     // sdl_render_scene(state->scene);
     vector_t end_score_position = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
     vector_t end_score_dimensions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-    sdl_create_words(end_score_position, end_score_dimensions, "Score: ", state->score);
+    // sdl_create_words(end_score_position, end_score_dimensions, "Score: ", state->score);
   }
   state->ticks += 1;
 }
@@ -125,14 +86,17 @@ void screen_game_over_render(game_state_t *state)
 int main(int argc, char *argv[])
 {
   // Initialize the game state
+  TTF_Init();
   game_state_t *state = malloc(sizeof(game_state_t));
   state->current_screen = SCREEN_GAME;
   state->needs_restart = true;
 
+  
   // Initialize SDL
   sdl_init(min, max);
   sdl_event_args(state);
   sdl_on_key((key_handler_t)handle_key_press);
+  // 
 
   // Render the correct screen each tick.
   while (!sdl_is_done())
@@ -157,7 +121,7 @@ int main(int argc, char *argv[])
       break;
     }
   }
-
+  TTF_Quit();
   scene_free(state->scene);
   free(state);
 }

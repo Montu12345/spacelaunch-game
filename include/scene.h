@@ -3,6 +3,7 @@
 
 #include "body.h"
 #include "list.h"
+#include "text.h"
 
 /**
  * A collection of bodies and force creators.
@@ -169,5 +170,11 @@ void scene_set_focal_body(scene_t *scene, body_t *focal_body);
  * @param dt the time elapsed since the last tick, in seconds
  */
 void scene_tick(scene_t *scene, double dt);
+
+void scene_add_text(scene_t *scene, text_t *text);
+
+size_t scene_text(scene_t *scene);
+
+text_t *scene_get_text(scene_t *scene, size_t index);
 
 #endif // #ifndef __SCENE_H__

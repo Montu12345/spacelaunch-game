@@ -76,6 +76,10 @@ void game_setup(game_state_t *state)
                                 (camera_mover_func_t)game_actions_camera_mover_func,
                                 NULL);
     scene_set_focal_body(scene, state->rocket);
+    // game_build_display_score(state);
+    // game_build_display_timer(state);
+    // game_build_display_health(state);
+    // game_build_display_level(state);
 }
 
 void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)
