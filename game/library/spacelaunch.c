@@ -53,8 +53,8 @@ void screen_game_render(game_state_t *state)
 
   state->timer += 0.1;
   game_actions_check_for_game_over(state);
-  sdl_render_scene(state->scene);
-  sdl_clear();
+  // sdl_render_scene(state->scene);
+  // sdl_clear();
 }
 
 void screen_game_over_render(game_state_t *state)

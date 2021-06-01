@@ -76,10 +76,10 @@ void game_setup(game_state_t *state)
                                 (camera_mover_func_t)game_actions_camera_mover_func,
                                 NULL);
     scene_set_focal_body(scene, state->rocket);
-    // game_build_display_score(state);
-    // game_build_display_timer(state);
-    // game_build_display_health(state);
-    // game_build_display_level(state);
+    game_build_display_score(state);
+    game_build_display_timer(state);
+    game_build_display_health(state);
+    game_build_display_level(state);
 }
 
 void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)
@@ -161,11 +161,11 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
     body_add_impulse(asteroid, j2);
     if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE)
     {
-        game_actions_new_health(state, 50);
+        game_actions_new_health(state, 10);
     }
     else if (*(enum space_body_type_t *)body_get_info(asteroid) == BAD_OBSTACLE)
     {
-        game_actions_new_health(state, -50);
+        game_actions_new_health(state, -10);
     }
 }
 

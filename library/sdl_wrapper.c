@@ -15,6 +15,7 @@ const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 500;
 const double MS_PER_S = 1e3;
 
+
 /**
  * The coordinate at the center of the screen.
  */
@@ -128,7 +129,6 @@ void sdl_init(vector_t min, vector_t max)
   // Check parameters
   assert(min.x < max.x);
   assert(min.y < max.y);
-
   center = vec_multiply(0.5, vec_add(min, max));
   max_diff = vec_subtract(max, center);
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -140,7 +140,7 @@ void sdl_init(vector_t min, vector_t max)
       WINDOW_HEIGHT,
       SDL_WINDOW_RESIZABLE);
   renderer = SDL_CreateRenderer(window, -1, 0);
-
+  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
   IMG_Init(IMG_INIT_PNG);
 }
 
@@ -153,6 +153,7 @@ bool sdl_is_done()
     switch (event->type)
     {
     case SDL_QUIT:
+      
       free(event);
       return true;
     case SDL_KEYDOWN:
@@ -269,21 +270,22 @@ SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds)
 void sdl_create_words(text_t *text)
   // vector_t position, vector_t dimensions, char *words, int number)
 {
-  TTF_Font *font = TTF_OpenFont("Roboto-Black.ttf", text_get_text_size(text));
+  TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
   sprintf(score_print, "%s%f", text_get_words(text), text_get_numbers(text));
   SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-  SDL_Rect *boundary = malloc(sizeof(*boundary));
+  SDL_Rect *boundary = malloc(sizeof(SDL_Rect));
   boundary->w = text_get_text_dimensions(text).x;
   boundary->h = text_get_text_dimensions(text).y;
   boundary->x = text_get_text_position(text).x;
   boundary->y = text_get_text_position(text).y;
   SDL_RenderCopy(renderer, texture, NULL, boundary);
-  SDL_RenderPresent(renderer);
+  // SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);
   SDL_FreeSurface(surface);
+  free(boundary);
   TTF_CloseFont(font);
 }
 
@@ -292,10 +294,7 @@ void sdl_render_scene(scene_t *scene)
   sdl_clear();
   size_t body_count = scene_bodies(scene);
   size_t text_count = scene_text(scene);
-  for(size_t i = 0; i < text_count; i++){
-    text_t *text = scene_get_text(scene, i);
-    sdl_create_words(text);
-  }
+  
   for (size_t i = 0; i < body_count; i++)
   {
     body_t *body = scene_get_body(scene, i);
@@ -318,6 +317,10 @@ void sdl_render_scene(scene_t *scene)
       sdl_draw_polygon(shape, body_get_color(body));
       list_free(shape);
     }
+  }
+  for(size_t i = 0; i < text_count; i++){
+    text_t *text = scene_get_text(scene, i);
+    sdl_create_words(text);
   }
   sdl_show();
 }
