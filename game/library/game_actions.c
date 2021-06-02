@@ -19,7 +19,7 @@ const int Q_KEY_VALUE = 2;
 const double KEY_PRESS_VELOCITY_SCALE = 1.0;
 
 const int SCORE_DISPLAY_HEIGHT = 20;
-const int SCORE_DISPLAY_WIDTH = 150;
+const int SCORE_DISPLAY_WIDTH = 100;
 const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GA_SCREEN_SIZE_Y - 25};
 
 enum space_body_type_t
@@ -149,6 +149,8 @@ void game_actions_new_health(game_state_t *state, int scale)
     body_t *score_display;
     state->health += scale;
     new_position = (vector_t){.x = position.x + scale / 2.0, .y = position.y};
+    printf("new x pos: %f \n", new_position.x);
+    printf("new y pos: %f \n", new_position.y);
     score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT, new_position);
     state->score_display = score_display;
 }
