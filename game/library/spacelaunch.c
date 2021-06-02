@@ -24,8 +24,7 @@ const int SCREEN_SIZE_Y = 500;
 const vector_t min = {.x = 0, .y = 0};
 const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
-const int STARTING_KEY_VALUE = 0;
-const int SHOOTING_STAR_TIME = 170;
+const int SHOOTING_STAR_ADD_INTERVAL = 170;
 
 const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
@@ -44,7 +43,7 @@ void screen_game_render(game_state_t *state)
 {
   if (state->needs_restart)
   {
-    game_setup(state);
+    game_setup(state, min, max);
   }
   state->ticks += 1;
   if (state->thrust_ticks_remaining > 0)
@@ -52,7 +51,7 @@ void screen_game_render(game_state_t *state)
     state->thrust_ticks_remaining -= 1;
   }
 
-  if (state->ticks % SHOOTING_STAR_TIME == 0)
+  if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0)
   {
     game_build_shooting_star(state->scene);
   }
@@ -70,7 +69,7 @@ void screen_game_over_render(game_state_t *state)
     state->rocket = NULL;
     state->needs_restart = false;
 
-    list_t *screen_rect = sprite_make_rect(0, SCREEN_SIZE_X, 0, SCREEN_SIZE_Y);
+    list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
     body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
     scene_add_body(state->scene, background);
 

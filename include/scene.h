@@ -143,7 +143,8 @@ void scene_add_camera_management(
     scene_t *scene,
     camera_offset_func_t camera_offset,
     camera_mover_func_t camera_mover,
-    void *camera_aux);
+    void *camera_aux, 
+    free_func_t camera_aux_free);
 
 /**
  * Sets the focal body for the camera management system.

@@ -1,9 +1,5 @@
 #include "game_actions.h"
 
-const int GA_SCREEN_SIZE_X = 1000;
-const int GA_SCREEN_SIZE_Y = 500;
-const vector_t GA_min = {.x = 0, .y = 0};
-const vector_t GA_max = {.x = GA_SCREEN_SIZE_X, .y = GA_SCREEN_SIZE_Y};
 const int GA_STARTING_KEY_VALUE = 0;
 const double GA_ROCKET_ELASTICITY = 0.5;
 const int GA_ROCKET_STEP = 10;
@@ -11,16 +7,16 @@ const double GA_ROCKET_VELOCITY_SCALE = 30;
 const rgb_color_t GA_RED = {.r = 1, .g = 0, .b = 0};
 const rgb_color_t GA_YELLOW = {.r = 1, .g = 1, .b = 0};
 const int GA_ROCKET_RADIUS = 30;
+
 const int GA_MAX_OBSTACLES_SCREEN_SIZE_X = 2000;
 const int GA_MAX_OBSTACLES_SCREEN_SIZE_Y = 1000;
 const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y = -50;
-const int A_KEY_VALUE = 1;
-const int Q_KEY_VALUE = 2;
 const double KEY_PRESS_VELOCITY_SCALE = 1.0;
 
 const int SCORE_DISPLAY_HEIGHT = 20;
 const int SCORE_DISPLAY_WIDTH = 100;
-const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GA_SCREEN_SIZE_Y - 25};
+
+const vector_t SCORE_DISPLAY_OFFSET = {.x = 90, .y = 25};
 
 const int MAX_THRUST_TICKS = 20;
 
@@ -37,7 +33,8 @@ enum space_body_type_t
 
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
 {
-    vector_t center = vec_multiply(0.5, GA_max);
+    vector_t screen_max = *(vector_t *)aux;
+    vector_t center = vec_multiply(0.5, screen_max);
     return vec_subtract(center, body_get_centroid(focal_body));
 }
 
@@ -58,11 +55,12 @@ vector_t game_actions_camera_mover_func(vector_t offset, body_t *body)
     }
 }
 
-void game_setup(game_state_t *state)
+void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
 {
     scene_t *scene = scene_init();
     game_build_draw_stary_night(scene);
-    body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT, SCORE_DISPLAY_POSITION);
+
+    body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT);
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
@@ -72,11 +70,13 @@ void game_setup(game_state_t *state)
     state->level = 1;
     body_t *rocket = game_build_rocket(scene, state);
     state->rocket = rocket;
-    game_build_draw_asteroids(state, rocket);
+    game_build_draw_asteroids(state, rocket, screen_min, screen_max);
+    vector_t *screen_max_aux = vec_malloc(screen_max.x, screen_max.y);
     scene_add_camera_management(state->scene,
                                 (camera_offset_func_t)game_actions_camera_offset_func,
                                 (camera_mover_func_t)game_actions_camera_mover_func,
-                                NULL);
+                                screen_max_aux,
+                                free);
     scene_set_focal_body(scene, state->rocket);
     game_build_display_score(state);
     game_build_display_timer(state);
@@ -137,8 +137,6 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 void game_actions_new_health(game_state_t *state, int scale)
 {
     body_t *curr_display = state->score_display;
-    // list_t *curr_display_list = body_get_shape(curr_display);
-    // vector_t *curr_length = (vector_t *)list_get(curr_display_list, 3);
     vector_t position = body_get_centroid(curr_display);
     for (int i = 0; i < scene_bodies(state->scene); i++)
     {
@@ -148,13 +146,9 @@ void game_actions_new_health(game_state_t *state, int scale)
             scene_remove_body(state->scene, i);
         }
     }
-    vector_t new_position;
     body_t *score_display;
     state->health += scale;
-    new_position = (vector_t){.x = position.x + scale / 2.0, .y = position.y};
-    printf("new x pos: %f \n", new_position.x);
-    printf("new y pos: %f \n", new_position.y);
-    score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT, new_position);
+    score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT);
     state->score_display = score_display;
 }
 

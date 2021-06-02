@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
   scene_add_camera_management(scene,
                               (camera_offset_func_t)camera_offset_func,
                               (camera_mover_func_t)camera_mover_func,
-                              NULL);
+                              NULL, NULL);
   scene_set_focal_body(scene, pacman);
 
   double dt;

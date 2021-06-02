@@ -58,6 +58,7 @@ typedef struct scene
     camera_mover_func_t camera_mover;
     body_t *focal_body;
     void *camera_aux;
+    free_func_t camera_aux_free;
     list_t *text;
 } scene_t;
 
@@ -80,6 +81,10 @@ void scene_free(scene_t *scene)
 {
     list_free(scene->bodies);
     list_free(scene->forces);
+    if (scene->camera_aux_free)
+    {
+        ((free_func_t)scene->camera_aux_free)(scene->camera_aux);
+    }
     free(scene);
 }
 
@@ -149,11 +154,13 @@ void scene_add_camera_management(
     scene_t *scene,
     camera_offset_func_t camera_offset,
     camera_mover_func_t camera_mover,
-    void *camera_aux)
+    void *camera_aux,
+    free_func_t camera_aux_free)
 {
     scene->camera_aux = camera_aux;
     scene->camera_offset = camera_offset;
     scene->camera_mover = camera_mover;
+    scene->camera_aux_free = camera_aux_free;
 }
 
 void scene_set_focal_body(scene_t *scene, body_t *focal_body)
@@ -229,15 +236,18 @@ void move_and_clean_bodies(scene_t *scene, double dt)
     }
 }
 
-void scene_add_text(scene_t *scene, text_t *text){
+void scene_add_text(scene_t *scene, text_t *text)
+{
     list_add(scene->text, text);
 }
 
-size_t scene_text(scene_t *scene){
+size_t scene_text(scene_t *scene)
+{
     return list_size(scene->text);
 }
 
-text_t *scene_get_text(scene_t *scene, size_t index){
+text_t *scene_get_text(scene_t *scene, size_t index)
+{
     text_t *text = list_get(scene->text, index);
     return text;
 }

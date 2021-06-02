@@ -16,22 +16,22 @@
 #include "collision.h"
 #include "game_build.h"
 
-const int GA_SCREEN_SIZE_X;
-const int GA_SCREEN_SIZE_Y;
-const vector_t GA_min;
-const vector_t GA_max;
-const int GA_STARTING_KEY_VALUE;
-const double GA_ROCKET_ELASTICITY;
-const int GA_ROCKET_STEP;
-const double GA_ROCKET_VELOCITY_SCALE;
-const rgb_color_t GA_RED;
-const rgb_color_t GA_YELLOW;
-const int GA_ROCKET_RADIUS;
-const int GA_MAX_OBSTACLES_SCREEN_SIZE_X;
-const int GA_MAX_OBSTACLES_SCREEN_SIZE_Y;
-const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y;
-const int A_KEY_VALUE;
-const int Q_KEY_VALUE;
+// const int GA_SCREEN_SIZE_X;
+// const int GA_SCREEN_SIZE_Y;
+// const vector_t SCREEN_MIN;
+// const vector_t GA_max;
+// const int GA_STARTING_KEY_VALUE;
+// const double GA_ROCKET_ELASTICITY;
+// const int GA_ROCKET_STEP;
+// const double GA_ROCKET_VELOCITY_SCALE;
+// const rgb_color_t GA_RED;
+// const rgb_color_t GA_YELLOW;
+// const int GA_ROCKET_RADIUS;
+// const int GA_MAX_OBSTACLES_SCREEN_SIZE_X;
+// const int GA_MAX_OBSTACLES_SCREEN_SIZE_Y;
+// const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y;
+// const int A_KEY_VALUE;
+// const int Q_KEY_VALUE;
 
 typedef enum
 {
@@ -62,7 +62,7 @@ typedef struct game_state
   int thrust_ticks_remaining;
 } game_state_t;
 
-void game_setup(game_state_t *state);
+void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max);
 
 void handle_key_press(char key, key_event_type_t type, double held_time, game_state_t *aux);
 

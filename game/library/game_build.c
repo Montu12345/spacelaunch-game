@@ -3,8 +3,8 @@
 const int GB_SCREEN_SIZE_X = 1000;
 const int GB_SCREEN_SIZE_Y = 500;
 
-const int GB_MAX_OBSTACLES_SCREEN_SIZE_X = 2000;
-const int GB_MAX_OBSTACLES_SCREEN_SIZE_Y = 1000;
+const vector_t ARENA_MIN = {.x = 0, .y = 0};
+const vector_t ARENA_MAX = {.x = 2000, .y = 1000};
 
 const double GB_ASTEROID_MASS = INFINITY;
 const rgb_color_t GB_BAD_ASTEROID_COLOR = {.r = 0, .g = 0, .b = 0};
@@ -34,10 +34,8 @@ const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
 char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
 
-// const int SCORE_DISPLAY_HIGHT = 20;
-// const int SCORE_DISPLAY_WIDTH = 150;
-// const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GB_SCREEN_SIZE_Y - 25};
 const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
+const vector_t SCORE_DISPLAY_LEFT = {.x = 40, .y = GB_SCREEN_SIZE_Y - 25};
 
 const int ROCKET_TEXTURE_COUNT = 4;
 
@@ -92,7 +90,7 @@ void game_build_shooting_star(scene_t *scene)
                                                 GB_SHOOTING_STAR_COLOR,
                                                 game_build_body_type_init(STAR),
                                                 free);
-    vector_t pos = {.x = 0, .y = rand() % GB_MAX_OBSTACLES_SCREEN_SIZE_X};
+    vector_t pos = {.x = 0, .y = rand() % (int)ARENA_MAX.x};
     vector_t velocity = GB_SHOOTING_STAR_VELCOITY;
     body_set_velocity(shooting_star, velocity);
     body_set_centroid(shooting_star, pos);
@@ -100,7 +98,7 @@ void game_build_shooting_star(scene_t *scene)
 }
 
 //changed
-void game_build_draw_asteroids(game_state_t *state, body_t *rocket)
+void game_build_draw_asteroids(game_state_t *state, body_t *rocket, vector_t min, vector_t max)
 {
     for (int i = 0; i < GB_INITIAL_ASTEROIDS; i++)
     {
@@ -150,10 +148,10 @@ body_t *game_build_rocket(scene_t *scene, game_state_t *state)
 
 void game_build_sky(scene_t *scene)
 {
-    list_t *background_list = sprite_make_rect(0,
-                                               GB_MAX_OBSTACLES_SCREEN_SIZE_X,
-                                               0,
-                                               GB_MAX_OBSTACLES_SCREEN_SIZE_Y);
+    list_t *background_list = sprite_make_rect((int)ARENA_MIN.x,
+                                               (int)ARENA_MAX.x,
+                                               (int)ARENA_MIN.y,
+                                               (int)ARENA_MAX.y);
     body_t *background = body_init_with_info(background_list,
                                              INFINITY,
                                              GB_BACKGROUND_COLOR,
@@ -165,9 +163,9 @@ void game_build_sky(scene_t *scene)
 void game_build_stars(scene_t *scene)
 {
 
-    for (int i = 0; i < GB_MAX_OBSTACLES_SCREEN_SIZE_Y / GB_FREQUENCY_FOR_STARS; i++)
+    for (double i = ARENA_MIN.y; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
     {
-        for (int j = 0; j < GB_MAX_OBSTACLES_SCREEN_SIZE_X / GB_FREQUENCY_FOR_STARS; j++)
+        for (double j = ARENA_MIN.x; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS; j++)
         {
             list_t *star_list = sprite_make_star(GB_STAR_NUM_OF_POINTS,
                                                  GB_STAR_MIN_LENGTH,
@@ -178,7 +176,7 @@ void game_build_stars(scene_t *scene)
                                                game_build_body_type_init(STAR),
                                                free);
             vector_t pos = {.x = i * GB_DISTANCE_BETWEEN_STARS,
-                            .y = j * GB_DISTANCE_BETWEEN_STARS + (i % 2) * GB_DISTANCE_BETWEEN_STARS / 2.0};
+                            .y = j * GB_DISTANCE_BETWEEN_STARS + ((int)i % 2) * GB_DISTANCE_BETWEEN_STARS / 2.0};
             body_set_centroid(star, pos);
             body_set_camera_mode(star, SCENE);
             scene_add_body(scene, star);
@@ -215,11 +213,18 @@ void game_build_asteroid(game_state_t *state, body_t *rocket)
     scene_add_body(state->scene, asteroid);
 }
 
-body_t *game_build_score_keeper(scene_t *scene, double width, double height, vector_t position)
+body_t *game_build_score_keeper(scene_t *scene, double width, double height)
 {
     list_t *score_display_list = sprite_make_rect(0, width, 0, height);
-    body_t *score_display = body_init_with_info(score_display_list, INFINITY, SCORE_DISPLAY_COLOR, game_build_body_type_init(SCORE_DISPLAY), free);
-    body_set_centroid(score_display, position);
+    body_t *score_display = body_init_with_info(score_display_list,
+                                                INFINITY,
+                                                SCORE_DISPLAY_COLOR,
+                                                game_build_body_type_init(SCORE_DISPLAY),
+                                                free);
+
+    vector_t score_centroid = SCORE_DISPLAY_LEFT;
+    score_centroid.x += width / 2;
+    body_set_centroid(score_display, score_centroid);
     body_set_movable(score_display, false);
     scene_add_body(scene, score_display);
     return score_display;

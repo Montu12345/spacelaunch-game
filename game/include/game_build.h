@@ -69,7 +69,7 @@ void game_build_shooting_star(scene_t *scene);
  * @param scene a pointer to a scene returned from scene_init()
  * @param rocket a pointer to the rocket in the scene
  */
-void game_build_draw_asteroids(game_state_t *state, body_t *rocket);
+void game_build_draw_asteroids(game_state_t *state, body_t *rocket, vector_t min, vector_t max);
 
 /**
  * Draws the background and the stars.
@@ -117,5 +117,5 @@ void game_build_display_health(game_state_t *state);
 
 void game_build_display_level(game_state_t *state);
 
-body_t *game_build_score_keeper(scene_t *scene, double height, double width, vector_t position);
+body_t *game_build_score_keeper(scene_t *scene, double height, double width);
 #endif // #ifndef __GAME_BUILD_H__
