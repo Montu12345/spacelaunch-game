@@ -31,6 +31,15 @@ enum space_body_type_t
     SCORE_DISPLAY,
 };
 
+void game_texts_free(game_texts_t *texts)
+{
+    free(texts->score);
+    free(texts->timer);
+    free(texts->health);
+    free(texts->level);
+    free(texts);
+}
+
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
 {
     vector_t screen_max = *(vector_t *)aux;

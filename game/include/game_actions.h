@@ -32,6 +32,8 @@ typedef struct game_texts
   text_t *level;
 } game_texts_t;
 
+void game_texts_free(game_texts_t *texts);
+
 /**
  * Properties to pass into the handler
  *  focal_body -- the focal_body body
