@@ -31,15 +31,6 @@ enum space_body_type_t
     SCORE_DISPLAY,
 };
 
-void game_texts_free(game_texts_t *texts)
-{
-    free(texts->score);
-    free(texts->timer);
-    free(texts->health);
-    free(texts->level);
-    free(texts);
-}
-
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux)
 {
     vector_t screen_max = *(vector_t *)aux;
@@ -145,20 +136,20 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 
 void game_actions_new_health(game_state_t *state, int scale)
 {
-    // body_t *curr_display = state->score_display;
-    // vector_t position = body_get_centroid(curr_display);
-    for (int i = 0; i < scene_bodies(state->scene); i++)
-    {
-        body_t *display = scene_get_body(state->scene, i);
-        if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY)
-        {
-            scene_remove_body(state->scene, i);
-        }
-    }
-    body_t *score_display;
     state->health += scale;
-    score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT);
-    state->score_display = score_display;
+
+    body_remove(state->score_display);
+    // body_free(state->score_display);
+
+    // for (int i = 0; i < scene_bodies(state->scene); i++)
+    // {
+    //     body_t *display = scene_get_body(state->scene, i);
+    //     if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY)
+    //     {
+    //         scene_remove_body(state->scene, i);
+    //     }
+    // }
+    state->score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT);
 }
 
 void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis, game_state_t *state)

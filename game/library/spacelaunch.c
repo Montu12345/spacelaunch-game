@@ -87,7 +87,7 @@ void screen_game_over_render(game_state_t *state)
 void free_game_state(game_state_t *state)
 {
   scene_free(state->scene);
-  game_texts_free(state->texts);
+  free(state->texts);
   free(state);
 }
 
