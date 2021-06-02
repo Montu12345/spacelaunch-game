@@ -15,23 +15,7 @@
 #include "sprite.h"
 #include "collision.h"
 #include "game_build.h"
-
-// const int GA_SCREEN_SIZE_X;
-// const int GA_SCREEN_SIZE_Y;
-// const vector_t SCREEN_MIN;
-// const vector_t GA_max;
-// const int GA_STARTING_KEY_VALUE;
-// const double GA_ROCKET_ELASTICITY;
-// const int GA_ROCKET_STEP;
-// const double GA_ROCKET_VELOCITY_SCALE;
-// const rgb_color_t GA_RED;
-// const rgb_color_t GA_YELLOW;
-// const int GA_ROCKET_RADIUS;
-// const int GA_MAX_OBSTACLES_SCREEN_SIZE_X;
-// const int GA_MAX_OBSTACLES_SCREEN_SIZE_Y;
-// const int GA_MIN_OBSTACLES_SCREEN_SIZE_Y;
-// const int A_KEY_VALUE;
-// const int Q_KEY_VALUE;
+#include "text.h"
 
 typedef enum
 {
@@ -39,6 +23,14 @@ typedef enum
   SCREEN_GAME,
   SCREEN_QUIT,
 } screen_t;
+
+typedef struct game_texts
+{
+  text_t *score;
+  text_t *timer;
+  text_t *health;
+  text_t *level;
+} game_texts_t;
 
 /**
  * Properties to pass into the handler
@@ -49,6 +41,7 @@ typedef struct game_state
   scene_t *scene;
   body_t *rocket;
   body_t *score_display;
+  game_texts_t *texts;
 
   int ticks;
   double timer;

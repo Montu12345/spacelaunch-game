@@ -193,20 +193,6 @@ void apply_forces(scene_t *scene)
     }
 }
 
-void remove_forces(scene_t *scene)
-{
-    for (size_t idx = 0; idx < scene_forces(scene); idx++)
-    {
-        force_t *force = list_get(scene->forces, idx);
-        if (force->bodies != NULL && force_is_removed(force))
-        {
-            list_remove(scene->forces, idx);
-            force_free(force);
-            idx--;
-        }
-    }
-}
-
 void clean_forces(scene_t *scene)
 {
     for (size_t idx = 0; idx < scene_forces(scene); idx++)

@@ -51,6 +51,8 @@ void screen_game_render(game_state_t *state)
     state->thrust_ticks_remaining -= 1;
   }
 
+  game_update_texts(state);
+
   if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0)
   {
     game_build_shooting_star(state->scene);

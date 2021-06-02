@@ -60,6 +60,9 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     scene_t *scene = scene_init();
     game_build_draw_stary_night(scene);
 
+    game_texts_t *texts = malloc(sizeof(game_texts_t));
+    state->texts = texts;
+
     body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT);
     state->scene = scene;
     state->needs_restart = false;
@@ -78,11 +81,9 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
                                 screen_max_aux,
                                 free);
     scene_set_focal_body(scene, state->rocket);
-    game_build_display_score(state);
-    game_build_display_timer(state);
-    game_build_display_health(state);
-    game_build_display_level(state);
+    game_build_display_text(state);
 }
+
 
 void game_actions_thrust_rocket(double angle, double scale, game_state_t *state)
 {
@@ -136,8 +137,8 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 
 void game_actions_new_health(game_state_t *state, int scale)
 {
-    body_t *curr_display = state->score_display;
-    vector_t position = body_get_centroid(curr_display);
+    // body_t *curr_display = state->score_display;
+    // vector_t position = body_get_centroid(curr_display);
     for (int i = 0; i < scene_bodies(state->scene); i++)
     {
         body_t *display = scene_get_body(state->scene, i);

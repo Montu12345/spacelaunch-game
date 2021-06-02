@@ -290,7 +290,6 @@ void sdl_render_scene(scene_t *scene)
 {
   sdl_clear();
   size_t body_count = scene_bodies(scene);
-  size_t text_count = scene_text(scene);
 
   for (size_t i = 0; i < body_count; i++)
   {
@@ -315,11 +314,14 @@ void sdl_render_scene(scene_t *scene)
       list_free(shape);
     }
   }
+
+  size_t text_count = scene_text(scene);
   for (size_t i = 0; i < text_count; i++)
   {
     text_t *text = scene_get_text(scene, i);
     sdl_create_words(text);
   }
+
   sdl_show();
 }
 
