@@ -45,13 +45,15 @@ void screen_game_render(game_state_t *state)
   {
     game_setup(state, min, max);
   }
+  else
+  {
+    game_update_texts(state);
+  }
   state->ticks += 1;
   if (state->thrust_ticks_remaining > 0)
   {
     state->thrust_ticks_remaining -= 1;
   }
-
-  game_update_texts(state);
 
   if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0)
   {

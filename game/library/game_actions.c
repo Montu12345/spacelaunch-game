@@ -18,7 +18,7 @@ const int SCORE_DISPLAY_WIDTH = 100;
 
 const vector_t SCORE_DISPLAY_OFFSET = {.x = 90, .y = 25};
 
-const int MAX_THRUST_TICKS = 20;
+const int MAX_THRUST_TICKS = 10;
 
 enum space_body_type_t
 {
@@ -83,7 +83,6 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     scene_set_focal_body(scene, state->rocket);
     game_build_display_text(state);
 }
-
 
 void game_actions_thrust_rocket(double angle, double scale, game_state_t *state)
 {

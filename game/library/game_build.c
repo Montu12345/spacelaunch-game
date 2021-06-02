@@ -232,14 +232,14 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height)
 
 void game_build_display_score(game_state_t *state)
 {
-    text_t *score = text_init("Score: ", GB_SCORE_POSITION, GB_TEXT_WIDTH, state->score, GB_SCORE_DIMENSIONS);
-    scene_add_text(state->scene, score);
+    state->texts->score = text_init("Score: ", GB_SCORE_POSITION, GB_TEXT_WIDTH, state->score, GB_SCORE_DIMENSIONS);
+    scene_add_text(state->scene, state->texts->score);
 }
 
 void game_build_display_timer(game_state_t *state)
 {
-    text_t *timer = text_init("Timer: ", GB_TIMER_POSITION, GB_TEXT_WIDTH, state->timer, GB_TIMER_DIMENSIONS);
-    scene_add_text(state->scene, timer);
+    state->texts->timer = text_init("Timer: ", GB_TIMER_POSITION, GB_TEXT_WIDTH, state->timer, GB_TIMER_DIMENSIONS);
+    scene_add_text(state->scene, state->texts->timer);
 }
 
 void game_build_display_health(game_state_t *state)
@@ -250,8 +250,8 @@ void game_build_display_health(game_state_t *state)
 
 void game_build_display_level(game_state_t *state)
 {
-    text_t *score = text_init("Level: ", GB_LEVEL_POSITION, GB_TEXT_WIDTH, state->level, GB_LEVEL_DIMENSIONS);
-    scene_add_text(state->scene, score);
+    state->texts->level = text_init("Level: ", GB_LEVEL_POSITION, GB_TEXT_WIDTH, state->level, GB_LEVEL_DIMENSIONS);
+    scene_add_text(state->scene, state->texts->level);
 }
 
 void game_build_display_text(game_state_t *state)
@@ -264,5 +264,8 @@ void game_build_display_text(game_state_t *state)
 
 void game_update_texts(game_state_t *state)
 {
+    text_set_numbers(state->texts->score, state->score);
+    text_set_numbers(state->texts->timer, state->timer);
     text_set_numbers(state->texts->health, state->health);
+    text_set_numbers(state->texts->level, state->level);
 }
