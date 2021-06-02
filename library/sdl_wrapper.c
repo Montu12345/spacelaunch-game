@@ -15,7 +15,6 @@ const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 500;
 const double MS_PER_S = 1e3;
 
-
 /**
  * The coordinate at the center of the screen.
  */
@@ -153,7 +152,7 @@ bool sdl_is_done()
     switch (event->type)
     {
     case SDL_QUIT:
-      
+
       free(event);
       return true;
     case SDL_KEYDOWN:
@@ -268,7 +267,6 @@ SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds)
 }
 
 void sdl_create_words(text_t *text)
-  // vector_t position, vector_t dimensions, char *words, int number)
 {
   TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
   SDL_Color color = {255, 255, 255};
@@ -282,7 +280,6 @@ void sdl_create_words(text_t *text)
   boundary->x = text_get_text_position(text).x;
   boundary->y = text_get_text_position(text).y;
   SDL_RenderCopy(renderer, texture, NULL, boundary);
-  // SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);
   SDL_FreeSurface(surface);
   free(boundary);
@@ -294,7 +291,7 @@ void sdl_render_scene(scene_t *scene)
   sdl_clear();
   size_t body_count = scene_bodies(scene);
   size_t text_count = scene_text(scene);
-  
+
   for (size_t i = 0; i < body_count; i++)
   {
     body_t *body = scene_get_body(scene, i);
@@ -318,7 +315,8 @@ void sdl_render_scene(scene_t *scene)
       list_free(shape);
     }
   }
-  for(size_t i = 0; i < text_count; i++){
+  for (size_t i = 0; i < text_count; i++)
+  {
     text_t *text = scene_get_text(scene, i);
     sdl_create_words(text);
   }
@@ -346,4 +344,3 @@ double time_since_last_tick(void)
 
   return difference;
 }
-

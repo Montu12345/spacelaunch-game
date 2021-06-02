@@ -46,18 +46,20 @@ typedef enum
 */
 typedef struct game_state
 {
-  body_t *focal_body;
-  int ticks;
   scene_t *scene;
   body_t *rocket;
+  body_t *score_display;
+
+  int ticks;
+  double timer;
+
   bool needs_restart;
   screen_t current_screen;
+
   int score;
-  body_t *score_display;
-  double timer;
   int health;
   int level;
-
+  int thrust_ticks_remaining;
 } game_state_t;
 
 void game_setup(game_state_t *state);
@@ -89,7 +91,7 @@ vector_t game_actions_camera_mover_func(vector_t offset, body_t *body);
  * @param scale the scale to move the focal_body
  * @param focal_body focal_body in the scene
  */
-void game_actions_thrust_rocket(double angle, double scale, body_t *focal_body);
+void game_actions_thrust_rocket(double angle, double scale, game_state_t *state);
 
 /**
  * Creates a collision between the rockey and an asteroid

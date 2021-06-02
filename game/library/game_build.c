@@ -56,7 +56,7 @@ const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 const vector_t GB_FINAL_SCORE_POS = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0 - GB_TEXT_HEIGHT / 2.0};
 const vector_t GB_FINAL_SCORE_DIM = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
-const vector_t GB_LEVEL_POSITION = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y - GB_TEXT_HEIGHT- 15};
+const vector_t GB_LEVEL_POSITION = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y - GB_TEXT_HEIGHT - 15};
 const vector_t GB_LEVEL_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 enum space_body_type_t
@@ -119,7 +119,7 @@ char *rocket_resource_path(game_state_t *state)
     char *idle_texture = "game/textures/rocket/rocket_idle.png";
 
     // If the body does not yet exist or it is not moving, return the idle image.
-    if (!state->rocket || !body_has_impulse(state->rocket))
+    if (!state->rocket || state->thrust_ticks_remaining == 0)
     {
         return idle_texture;
     }
@@ -227,26 +227,25 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height, vec
 
 void game_build_display_score(game_state_t *state)
 {
-  text_t *score = text_init("Score: ", GB_SCORE_POSITION, 100, state->score, GB_SCORE_DIMENSIONS);
-  scene_add_text(state->scene, score);
+    text_t *score = text_init("Score: ", GB_SCORE_POSITION, 100, state->score, GB_SCORE_DIMENSIONS);
+    scene_add_text(state->scene, score);
 }
 
 void game_build_display_timer(game_state_t *state)
 {
-  text_t *timer = text_init("Timer: ", GB_TIMER_POSITION, 100, state->timer, GB_TIMER_DIMENSIONS);
-  scene_add_text(state->scene, timer);
+    text_t *timer = text_init("Timer: ", GB_TIMER_POSITION, 100, state->timer, GB_TIMER_DIMENSIONS);
+    scene_add_text(state->scene, timer);
 }
 
 void game_build_display_health(game_state_t *state)
 {
-  text_t *health = text_init("Health: ", GB_HEALTH_POSITION, 100, (int)state->health, GB_HEALTH_DIMENSIONS);
-  scene_add_text(state->scene, health);
+    text_t *health = text_init("Health: ", GB_HEALTH_POSITION, 100, (int)state->health, GB_HEALTH_DIMENSIONS);
+    scene_add_text(state->scene, health);
 }
 
 void game_build_display_level(game_state_t *state)
 {
 
-  text_t *score = text_init("Level: ", GB_LEVEL_POSITION, 100, (int)state->level, GB_LEVEL_DIMENSIONS);
-  scene_add_text(state->scene, score);
+    text_t *score = text_init("Level: ", GB_LEVEL_POSITION, 100, (int)state->level, GB_LEVEL_DIMENSIONS);
+    scene_add_text(state->scene, score);
 }
-

@@ -22,6 +22,8 @@ const int SCORE_DISPLAY_HEIGHT = 20;
 const int SCORE_DISPLAY_WIDTH = 100;
 const vector_t SCORE_DISPLAY_POSITION = {.x = 90, .y = GA_SCREEN_SIZE_Y - 25};
 
+const int MAX_THRUST_TICKS = 20;
+
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
@@ -82,12 +84,13 @@ void game_setup(game_state_t *state)
     game_build_display_level(state);
 }
 
-void game_actions_thrust_rocket(double angle, double scale, body_t *rocket)
+void game_actions_thrust_rocket(double angle, double scale, game_state_t *state)
 {
     vector_t i = (vector_t){GA_ROCKET_STEP * scale, 0};
     vector_t move_vector = vec_rotate(i, angle);
-    body_set_rotation(rocket, angle);
-    body_add_impulse(rocket, vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
+    body_set_rotation(state->rocket, angle);
+    body_add_impulse(state->rocket, vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
+    state->thrust_ticks_remaining = MAX_THRUST_TICKS;
 }
 
 void handle_key_press(char key, key_event_type_t type, double held_time, game_state_t *state)
@@ -103,19 +106,19 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
         switch (key)
         {
         case SPACEBAR:
-            game_actions_thrust_rocket(M_PI * 1.0 / 4, 1, state->rocket);
+            game_actions_thrust_rocket(M_PI * 1.0 / 4, 1, state);
             break;
         case LEFT_ARROW:
-            game_actions_thrust_rocket(M_PI, boost, state->rocket);
+            game_actions_thrust_rocket(M_PI, boost, state);
             break;
         case RIGHT_ARROW:
-            game_actions_thrust_rocket(0, boost, state->rocket);
+            game_actions_thrust_rocket(0, boost, state);
             break;
         case DOWN_ARROW:
-            game_actions_thrust_rocket(M_PI * 3.0 / 2, boost, state->rocket);
+            game_actions_thrust_rocket(M_PI * 3.0 / 2, boost, state);
             break;
         case UP_ARROW:
-            game_actions_thrust_rocket(M_PI * 1.0 / 2, boost, state->rocket);
+            game_actions_thrust_rocket(M_PI * 1.0 / 2, boost, state);
             break;
         default:
             break;
@@ -134,7 +137,7 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 void game_actions_new_health(game_state_t *state, int scale)
 {
     body_t *curr_display = state->score_display;
-    list_t *curr_display_list = body_get_shape(curr_display);
+    // list_t *curr_display_list = body_get_shape(curr_display);
     // vector_t *curr_length = (vector_t *)list_get(curr_display_list, 3);
     vector_t position = body_get_centroid(curr_display);
     for (int i = 0; i < scene_bodies(state->scene); i++)
@@ -201,5 +204,4 @@ void game_actions_check_for_win(game_state_t *state)
     // restart game
     state->current_screen = SCREEN_GAME_OVER;
     state->needs_restart = true;
-
 }
