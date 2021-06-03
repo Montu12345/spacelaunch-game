@@ -19,6 +19,8 @@ typedef enum
     A_KEY = 6,
     Q_KEY = 7,
     ONE_KEY = 8,
+    H_KEY = 9,
+    ESC_KEY = 10,
 } arrow_key_t;
 
 /**

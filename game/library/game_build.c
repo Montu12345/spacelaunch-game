@@ -48,8 +48,13 @@ const vector_t GB_SCORE_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 const vector_t GB_TIMER_POSITION = {.x = GB_SCREEN_SIZE_X - GB_TEXT_WIDTH - 15, .y = 5};
 const vector_t GB_TIMER_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
+const vector_t GB_HELP_POSITION = {.x = 10, .y = GB_SCREEN_SIZE_Y - 50};
+const vector_t GB_HELP_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+const int GB_HELP_SIZE = 200;
+
 const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
 const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+
 
 const vector_t GB_FINAL_SCORE_POS = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0 - GB_TEXT_HEIGHT / 2.0};
 const vector_t GB_FINAL_SCORE_DIM = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
@@ -268,4 +273,9 @@ void game_update_texts(game_state_t *state)
     text_set_numbers(state->texts->timer, state->timer);
     text_set_numbers(state->texts->health, state->health);
     text_set_numbers(state->texts->level, state->level);
+}
+
+void game_build_help(game_state_t *state){
+    text_t *help = text_words_init("Press H for help", GB_HELP_POSITION, GB_HELP_SIZE, GB_HELP_DIMENSIONS);
+    scene_add_text(state->scene, help);
 }
