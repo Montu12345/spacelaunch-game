@@ -136,20 +136,22 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 
 void game_actions_new_health(game_state_t *state, int scale)
 {
+    for (int i = 0; i < scene_bodies(state->scene); i++)
+    {
+        body_t *display = scene_get_body(state->scene, i);
+        if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY)
+        {
+            scene_remove_body(state->scene, i);
+        }
+    }
     state->health += scale;
-
-    body_remove(state->score_display);
-    // body_free(state->score_display);
-
-    // for (int i = 0; i < scene_bodies(state->scene); i++)
-    // {
-    //     body_t *display = scene_get_body(state->scene, i);
-    //     if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY)
-    //     {
-    //         scene_remove_body(state->scene, i);
-    //     }
-    // }
-    state->score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT);
+    
+    body_t *score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT);
+    state->score_display = score_display;
+    if (state->health <= 0){
+        state->current_screen = SCREEN_GAME_OVER;
+        state->needs_restart = true;
+    }
 }
 
 void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector_t axis, game_state_t *state)
@@ -164,7 +166,7 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
     }
     else if (*(enum space_body_type_t *)body_get_info(asteroid) == BAD_OBSTACLE)
     {
-        game_actions_new_health(state, -10);
+        game_actions_new_health(state, -100);
     }
 }
 

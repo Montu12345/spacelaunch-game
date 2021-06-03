@@ -26,6 +26,15 @@ const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int SHOOTING_STAR_ADD_INTERVAL = 170;
 
+const vector_t END_GAME_SCORE_DIMENTIONS = {.x = 300, .y = 100};
+const int END_GAME_SCORE_SIZE = 100;
+const vector_t END_GAME_SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 100 / 2.0, 
+                                         .y = SCREEN_SIZE_Y / 2.0 - 100 / 2.0};
+const vector_t END_GAME_CONT_DIMENTIONS = {.x = 100, .y = 100};
+const int END_GAME_CONT_SIZE = 100;
+const vector_t END_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 100 / 2.0, 
+                                         .y = SCREEN_SIZE_Y / 2.0 - 100 / 2.0 + 50};
+
 const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
 
@@ -66,20 +75,20 @@ void screen_game_render(game_state_t *state)
 
 void screen_game_over_render(game_state_t *state)
 {
-  if (state->ticks == 0)
+  int ticks = state->ticks;
+  if (ticks == 0)
   {
     scene_free(state->scene);
     state->scene = scene_init();
     state->rocket = NULL;
     state->needs_restart = false;
-
+    text_t *score = text_init("Score: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE, state->score, END_GAME_SCORE_DIMENTIONS);
+    scene_add_text(state->scene, score);
+    text_t *continue_playing = text_init("To continue playing press 'A'", END_GAME_CONT_POSITION, END_GAME_CONT_SIZE, state->score, END_GAME_CONT_DIMENTIONS);
+    scene_add_text(state->scene, continue_playing);
     list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
     body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
     scene_add_body(state->scene, background);
-
-    // vector_t end_score_position = {.x = SCREEN_SIZE_X / 2.0 - TEXT_WIDTH / 2.0, .y = SCREEN_SIZE_Y / 2.0 - TEXT_HEIGHT / 2.0};
-    // vector_t end_score_dimensions = {.x = TEXT_WIDTH, .y = TEXT_HEIGHT};
-    // sdl_create_words(end_score_position, end_score_dimensions, "Score: ", state->score);
   }
   state->ticks += 1;
 }
@@ -125,6 +134,7 @@ int main(int argc, char *argv[])
       break;
     case SCREEN_GAME_OVER:
       screen_game_over_render(state);
+      sdl_render_scene(state->scene);
       break;
     default:
       break;
