@@ -124,10 +124,8 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
 {
     scene_t *scene = scene_init();
     game_build_draw_stary_night(scene);
-
     game_texts_t *texts = malloc(sizeof(game_texts_t));
     state->texts = texts;
-
     body_t *score_display = game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT);
     state->scene = scene;
     state->needs_restart = false;
@@ -138,6 +136,7 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     state->level = 1;
     body_t *rocket = game_build_rocket(scene, state);
     state->rocket = rocket;
+    game_build_help(state);
     game_build_draw_asteroids(state, rocket, screen_min, screen_max);
     vector_t *screen_max_aux = vec_malloc(screen_max.x, screen_max.y);
     scene_add_camera_management(state->scene,
@@ -182,6 +181,10 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
         case UP_ARROW:
             game_actions_thrust_rocket(M_PI * 1.0 / 2, boost, state);
             break;
+        case H_KEY:
+            state->current_screen = SCREEN_START;
+            state->needs_restart = true;
+            break;
         default:
             break;
         }
@@ -193,10 +196,15 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
             state->current_screen = SCREEN_GAME;
             state->needs_restart = true;
         }
-
+        
     }
     else if (state->current_screen == SCREEN_START){
         if (key == SPACEBAR)
+        {
+            state->current_screen = SCREEN_GAME;
+            state->needs_restart = true;
+        }
+        if (key == ESC_KEY)
         {
             state->current_screen = SCREEN_GAME;
             state->needs_restart = true;
@@ -267,3 +275,4 @@ void game_actions_check_for_win(game_state_t *state)
     state->current_screen = SCREEN_GAME_OVER;
     state->needs_restart = true;
 }
+

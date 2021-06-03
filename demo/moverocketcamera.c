@@ -182,7 +182,6 @@ int main(int argc, char *argv[])
       make_dot(scene, pacman);
       time_until_add = DOT_ADD_PERIOD;
     }
-
     scene_tick(scene, dt);
     sdl_on_key((key_handler_t)handle);
     sdl_render_scene(scene);
