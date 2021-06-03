@@ -34,7 +34,7 @@ const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
 char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
 char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
 
-const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 0, .g = 1, .b = 1};
+const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 1, .g = 0, .b = 0};
 const vector_t SCORE_DISPLAY_LEFT = {.x = 40, .y = GB_SCREEN_SIZE_Y - 25};
 
 const int ROCKET_TEXTURE_COUNT = 4;
