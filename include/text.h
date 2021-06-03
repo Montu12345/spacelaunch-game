@@ -10,7 +10,19 @@
 
 typedef struct text text_t;
 
-text_t *text_init(
+enum text_type_t
+{
+    WORDS_ONLY,
+    WORDS_NUMBER,
+};
+
+text_t *text_words_init(
+    char *words, 
+    vector_t text_position, 
+    double text_size,
+    vector_t text_dimensions);
+
+text_t *text_numbers_init(
     char *words, 
     vector_t text_position, 
     double text_size,
@@ -36,5 +48,7 @@ double text_get_text_size(text_t *text);
 double text_get_numbers(text_t *text);
 
 vector_t text_get_text_dimensions(text_t *text);
+
+void *text_get_type(text_t *text);
 
 #endif // #ifndef __TEXT_H__
