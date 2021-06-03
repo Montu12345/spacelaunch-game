@@ -22,6 +22,7 @@ typedef enum
   SCREEN_GAME_OVER,
   SCREEN_GAME,
   SCREEN_QUIT,
+  SCREEN_START,
 } screen_t;
 
 typedef struct game_texts
@@ -115,4 +116,8 @@ void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body,
 void game_actions_check_for_game_over(game_state_t *state);
 
 void game_actions_new_health(game_state_t *state, int scale);
+
+void game_beginning_setup(game_state_t *state);
+
+void create_instructions(game_state_t *state);
 #endif // #ifndef __GAME_ACTIONS_H__

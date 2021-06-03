@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 {
   // Initialize the game state
   game_state_t *state = malloc(sizeof(game_state_t));
-  state->current_screen = SCREEN_GAME;
+  state->current_screen = SCREEN_START;
   state->needs_restart = true;
   state->thrust_ticks_remaining = 0;
 
@@ -126,9 +126,12 @@ int main(int argc, char *argv[])
     }
     switch (state->current_screen)
     {
+    case SCREEN_START:
+      game_beginning_setup(state);
+      sdl_render_scene(state->scene);
+      break;
     case SCREEN_GAME:
       screen_game_render(state);
-
       scene_tick(state->scene, dt);
       sdl_render_scene(state->scene);
       break;
@@ -136,6 +139,7 @@ int main(int argc, char *argv[])
       screen_game_over_render(state);
       sdl_render_scene(state->scene);
       break;
+    
     default:
       break;
     }
