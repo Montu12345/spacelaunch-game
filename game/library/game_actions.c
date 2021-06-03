@@ -126,11 +126,12 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
     }
     else if (state->current_screen == SCREEN_GAME_OVER)
     {
-        if (key == A_KEY)
+        if (key == ONE_KEY)
         {
             state->current_screen = SCREEN_GAME;
             state->needs_restart = true;
         }
+
     }
 }
 

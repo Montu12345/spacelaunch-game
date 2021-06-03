@@ -117,6 +117,8 @@ char get_keycode(SDL_Keycode key)
     return A_KEY;
   case SDLK_q:
     return Q_KEY;
+  case SDLK_1:
+    return ONE_KEY;
   default:
     // Only process 7-bit ASCII characters
     return key == (SDL_Keycode)(char)key ? key : '\0';
@@ -266,12 +268,32 @@ SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds)
   return rect;
 }
 
-void sdl_create_words(text_t *text)
+void sdl_create_words_numbers(text_t *text)
 {
   TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
-  sprintf(score_print, "%s%f", text_get_words(text), text_get_numbers(text));
+  sprintf(score_print, "%s%d", text_get_words(text), (int)text_get_numbers(text));
+  SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+  SDL_Rect *boundary = malloc(sizeof(SDL_Rect));
+  boundary->w = text_get_text_dimensions(text).x;
+  boundary->h = text_get_text_dimensions(text).y;
+  boundary->x = text_get_text_position(text).x;
+  boundary->y = text_get_text_position(text).y;
+  SDL_RenderCopy(renderer, texture, NULL, boundary);
+  SDL_DestroyTexture(texture);
+  SDL_FreeSurface(surface);
+  free(boundary);
+  TTF_CloseFont(font);
+}
+
+void sdl_create_words_only(text_t *text)
+{
+  TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
+  SDL_Color color = {255, 255, 255};
+  char score_print[500];
+  sprintf(score_print, "%s", text_get_words(text));
   SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_Rect *boundary = malloc(sizeof(SDL_Rect));
@@ -318,8 +340,14 @@ void sdl_render_scene(scene_t *scene)
   size_t text_count = scene_text(scene);
   for (size_t i = 0; i < text_count; i++)
   {
+    printf("made it here boiz \n");
     text_t *text = scene_get_text(scene, i);
-    sdl_create_words(text);
+    if (*(enum text_type_t *)text_get_type(text) == WORDS_ONLY){
+      sdl_create_words_only(text);
+    }
+    if (*(enum text_type_t *)text_get_type(text) == WORDS_NUMBER){
+      sdl_create_words_numbers(text);
+    }
   }
 
   sdl_show();

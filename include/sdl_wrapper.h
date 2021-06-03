@@ -17,7 +17,8 @@ typedef enum
     DOWN_ARROW = 4,
     SPACEBAR = 5,
     A_KEY = 6,
-    Q_KEY = 7
+    Q_KEY = 7,
+    ONE_KEY = 8,
 } arrow_key_t;
 
 /**
@@ -143,6 +144,8 @@ double time_since_last_tick(void);
  * @param words words
  * @param number number
  */
-void sdl_create_words(text_t *text);
+void sdl_create_words_only(text_t *text);
+
+void sdl_create_words_numbers(text_t *text);
 
 #endif // #ifndef __SDL_WRAPPER_H__
