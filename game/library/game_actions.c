@@ -214,16 +214,9 @@ void handle_key_press(char key, key_event_type_t type, double held_time, game_st
 
 void game_actions_new_health(game_state_t *state, int scale)
 {
-    for (int i = 0; i < scene_bodies(state->scene); i++)
-    {
-        body_t *display = scene_get_body(state->scene, i);
-        if (*(enum space_body_type_t *)body_get_info(display) == SCORE_DISPLAY)
-        {
-            scene_remove_body(state->scene, i);
-        }
-    }
+    body_remove(state->score_display);
     state->health += scale;
-    
+
     body_t *score_display = game_build_score_keeper(state->scene, state->health, SCORE_DISPLAY_HEIGHT);
     state->score_display = score_display;
     if (state->health <= 0){
