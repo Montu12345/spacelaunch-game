@@ -39,11 +39,13 @@ const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
 
 void update_score(game_state_t *state) {
-  int new_score = state->health / 50 - 2;
-  if (new_score < 0) {
-    new_score = 0;
+  if (!state->needs_restart) {
+    int new_score = state->health/10 - 10;
+    if (new_score < 0) {
+      new_score = 0;
+    }
+    state->score = new_score;
   }
-  state->score = new_score;
 }
 
 void screen_game_render(game_state_t *state) {
