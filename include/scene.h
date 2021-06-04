@@ -18,7 +18,7 @@ typedef struct scene scene_t;
 typedef vector_t (*camera_offset_func_t)(body_t *focal_body, void *aux);
 
 /**
- * Dependent on the camera mode, calculates the amount to move a body to adjust 
+ * Dependent on the camera mode, calculates the amount to move a body to adjust
  * for the desired scene change.
  * Offset is computed by the scene's camera_offset_func_t.
  */
@@ -97,11 +97,8 @@ void scene_remove_body(scene_t *scene, size_t index);
  * @deprecated Use scene_add_bodies_force_creator() instead
  * so the scene knows which bodies the force creator depends on
  */
-void scene_add_force_creator(
-    scene_t *scene,
-    force_creator_t forcer,
-    void *aux,
-    free_func_t freer);
+void scene_add_force_creator(scene_t *scene, force_creator_t forcer, void *aux,
+                             free_func_t freer);
 
 /**
  * Adds a force creator to a scene,
@@ -118,45 +115,43 @@ void scene_add_force_creator(
  *   This list does not own the bodies, so its freer should be NULL.
  * @param freer if non-NULL, a function to call in order to free aux
  */
-void scene_add_bodies_force_creator(
-    scene_t *scene,
-    force_creator_t forcer,
-    void *aux,
-    list_t *bodies,
-    free_func_t freer);
+void scene_add_bodies_force_creator(scene_t *scene, force_creator_t forcer,
+                                    void *aux, list_t *bodies,
+                                    free_func_t freer);
 
 /**
- * Adds a force camera management system to the scene. The camera offset function calculates some
- * vector to base the camera mover funciton on. The camera mover applies that vector dependent on the 
- * body's camera mode. 
- * 
+ * Adds a force camera management system to the scene. The camera offset
+ * function calculates some vector to base the camera mover funciton on. The
+ * camera mover applies that vector dependent on the body's camera mode.
+ *
  * Note:
- * camera_offset and camera_mover run every scene tick. 
+ * camera_offset and camera_mover run every scene tick.
  * Does not run if there is not a focal element.
- * 
+ *
  * @param scene a pointer to a scene returned from scene_init()
- * @param camera_offset function to calculate the offset to input to the camera mover
- * @param camera_mover function to calculate the movement of a given body for the camera
+ * @param camera_offset function to calculate the offset to input to the camera
+ * mover
+ * @param camera_mover function to calculate the movement of a given body for
+ * the camera
  * @param camera_aux additional info for the offset function
  */
-void scene_add_camera_management(
-    scene_t *scene,
-    camera_offset_func_t camera_offset,
-    camera_mover_func_t camera_mover,
-    void *camera_aux, 
-    free_func_t camera_aux_free);
+void scene_add_camera_management(scene_t *scene,
+                                 camera_offset_func_t camera_offset,
+                                 camera_mover_func_t camera_mover,
+                                 void *camera_aux, free_func_t camera_aux_free);
 
 /**
  * Sets the focal body for the camera management system.
- * 
+ *
  * The focal body is the body the camera_offset is most concerned with,
  * which is likely the game character.
- * 
- * Useful for the purpose of resetting scenes. Once the focal body is freed, be sure
- * to set the focal body to an active body_t*.
- * 
+ *
+ * Useful for the purpose of resetting scenes. Once the focal body is freed, be
+ * sure to set the focal body to an active body_t*.
+ *
  * @param scene a pointer to a scene returned from scene_init()
- * @param focal_body function to calculate the offset to input to the camera mover
+ * @param focal_body function to calculate the offset to input to the camera
+ * mover
  */
 void scene_set_focal_body(scene_t *scene, body_t *focal_body);
 

@@ -63,11 +63,11 @@ void read_testname(char *filename, char *testname, size_t testname_size);
  * No ; is needed after the closing ), because again, the macro is a simple
  * text replacement, and the statements already have ;s.
  */
-#define DO_TEST(TEST_FN)                                \
-    if (all_tests || strcmp(testname, #TEST_FN) == 0) { \
-        TEST_FN();                                      \
-        puts(#TEST_FN " PASS");                         \
-    }
+#define DO_TEST(TEST_FN)                                                       \
+  if (all_tests || strcmp(testname, #TEST_FN) == 0) {                          \
+    TEST_FN();                                                                 \
+    puts(#TEST_FN " PASS");                                                    \
+  }
 
 /**
  * Executes function 'run' and returns whether it causes an assertion failure,

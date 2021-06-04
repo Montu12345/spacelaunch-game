@@ -54,7 +54,7 @@ typedef struct game_state
   int score;
   int health;
   int level;
-  
+
 
   int thrust_ticks_remaining;
 } game_state_t;
@@ -107,6 +107,8 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid, vector
  * @param asteroid asteroid on the screen
  */
 void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body, body_t *asteroid, game_state_t *state);
+
+void game_actions_rocket_fence_collision(game_state_t *state, body_t *fence);
 
 /**
  * Changes the game state if necessary to GAME_OVER

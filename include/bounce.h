@@ -1,7 +1,7 @@
 /** @file bounce.h
  *  @brief Function prototypes for a bounce animation
  *
- *  This contains the function prototypes for a polygon bouncing 
+ *  This contains the function prototypes for a polygon bouncing
  *  animation.
  *
  *  @author Alexis Wang, Ian Fowler, Shevali Kadakia, Ezra Johnson
@@ -11,12 +11,12 @@
 #ifndef __BOUNCE_H__
 #define __BOUNCE_H__
 
+#include "color.h"
 #include "list.h"
-#include "vector.h"
+#include "polygon.h"
 #include "sdl_wrapper.h"
 #include "sprite.h"
-#include "color.h"
-#include "polygon.h"
+#include "vector.h"
 
 extern const int SCREEN_SIZE_X;
 extern const int SCREEN_SIZE_Y;
@@ -31,17 +31,16 @@ extern const rgb_color_t STAR_COLOR;
  *
  *  @param object the polygon
  *  @param dt the frame rate
- *  @param velocity the 
+ *  @param velocity the
  *  @return None
-*/
+ */
 void compute_new_positions(list_t *object, double dt, vector_t *velocity);
-
 
 /** @brief Computes the vertices of a n-sided star.
  *
  * @param num_points the number of points of the polygon
  * @return a list of vectors of the star
-*/
+ */
 list_t *make_star(int num_points);
 
 #endif

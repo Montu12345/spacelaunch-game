@@ -1,14 +1,14 @@
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
-#include <time.h>
+#include "sdl_wrapper.h"
+#include "text.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
-#include "sdl_wrapper.h"
 #include <SDL2/SDL_ttf.h>
+#include <assert.h>
+#include <math.h>
 #include <stdio.h>
-#include "text.h"
+#include <stdlib.h>
+#include <time.h>
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
@@ -53,10 +53,8 @@ uint32_t key_start_timestamp;
 clock_t last_clock = 0;
 
 /** Computes the center of the window in pixel coordinates */
-vector_t get_window_center(void)
-{
-  int *width = malloc(sizeof(*width)),
-      *height = malloc(sizeof(*height));
+vector_t get_window_center(void) {
+  int *width = malloc(sizeof(*width)), *height = malloc(sizeof(*height));
   assert(width != NULL);
   assert(height != NULL);
   SDL_GetWindowSize(window, width, height);
@@ -71,8 +69,7 @@ vector_t get_window_center(void)
  * The scene is scaled by the same factor in the x and y dimensions,
  * chosen to maximize the size of the scene while keeping it in the window.
  */
-double get_scene_scale(vector_t window_center)
-{
+double get_scene_scale(vector_t window_center) {
   // Scale scene so it fits entirely in the window
   double x_scale = window_center.x / max_diff.x,
          y_scale = window_center.y / max_diff.y;
@@ -80,17 +77,15 @@ double get_scene_scale(vector_t window_center)
 }
 
 /** Maps a scene coordinate to a window coordinate */
-vector_t get_window_position(vector_t scene_pos, vector_t window_center)
-{
+vector_t get_window_position(vector_t scene_pos, vector_t window_center) {
   // Scale scene coordinates by the scaling factor
   // and map the center of the scene to the center of the window
   vector_t scene_center_offset = vec_subtract(scene_pos, center);
   double scale = get_scene_scale(window_center);
   vector_t pixel_center_offset = vec_multiply(scale, scene_center_offset);
-  vector_t pixel = {
-      .x = round(window_center.x + pixel_center_offset.x),
-      // Flip y axis since positive y is down on the screen
-      .y = round(window_center.y - pixel_center_offset.y)};
+  vector_t pixel = {.x = round(window_center.x + pixel_center_offset.x),
+                    // Flip y axis since positive y is down on the screen
+                    .y = round(window_center.y - pixel_center_offset.y)};
   return pixel;
 }
 
@@ -99,10 +94,8 @@ vector_t get_window_position(vector_t scene_pos, vector_t window_center)
  * 7-bit ASCII characters are just returned
  * and arrow keys are given special character codes.
  */
-char get_keycode(SDL_Keycode key)
-{
-  switch (key)
-  {
+char get_keycode(SDL_Keycode key) {
+  switch (key) {
   case SDLK_LEFT:
     return LEFT_ARROW;
   case SDLK_UP:
@@ -129,34 +122,26 @@ char get_keycode(SDL_Keycode key)
   }
 }
 
-void sdl_init(vector_t min, vector_t max)
-{
+void sdl_init(vector_t min, vector_t max) {
   // Check parameters
   assert(min.x < max.x);
   assert(min.y < max.y);
   center = vec_multiply(0.5, vec_add(min, max));
   max_diff = vec_subtract(max, center);
   SDL_Init(SDL_INIT_EVERYTHING);
-  window = SDL_CreateWindow(
-      WINDOW_TITLE,
-      SDL_WINDOWPOS_CENTERED,
-      SDL_WINDOWPOS_CENTERED,
-      WINDOW_WIDTH,
-      WINDOW_HEIGHT,
-      SDL_WINDOW_RESIZABLE);
+  window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT,
+                            SDL_WINDOW_RESIZABLE);
   renderer = SDL_CreateRenderer(window, -1, 0);
   SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
   IMG_Init(IMG_INIT_PNG);
 }
 
-bool sdl_is_done()
-{
+bool sdl_is_done() {
   SDL_Event *event = malloc(sizeof(*event));
   assert(event != NULL);
-  while (SDL_PollEvent(event))
-  {
-    switch (event->type)
-    {
+  while (SDL_PollEvent(event)) {
+    switch (event->type) {
     case SDL_QUIT:
 
       free(event);
@@ -172,8 +157,7 @@ bool sdl_is_done()
         break;
 
       uint32_t timestamp = event->key.timestamp;
-      if (!event->key.repeat)
-      {
+      if (!event->key.repeat) {
         key_start_timestamp = timestamp;
       }
       key_event_type_t type =
@@ -187,14 +171,12 @@ bool sdl_is_done()
   return false;
 }
 
-void sdl_clear(void)
-{
+void sdl_clear(void) {
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   SDL_RenderClear(renderer);
 }
 
-void sdl_draw_polygon(list_t *points, rgb_color_t color)
-{
+void sdl_draw_polygon(list_t *points, rgb_color_t color) {
   // Check parameters
   size_t n = list_size(points);
   assert(n >= 3);
@@ -209,8 +191,7 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color)
           *y_points = malloc(sizeof(*y_points) * n);
   assert(x_points != NULL);
   assert(y_points != NULL);
-  for (size_t i = 0; i < n; i++)
-  {
+  for (size_t i = 0; i < n; i++) {
     vector_t *vertex = list_get(points, i);
     vector_t pixel = get_window_position(*vertex, window_center);
     x_points[i] = pixel.x;
@@ -218,16 +199,13 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color)
   }
 
   // Draw polygon with the given color
-  filledPolygonRGBA(
-      renderer,
-      x_points, y_points, n,
-      color.r * 255, color.g * 255, color.b * 255, 255);
+  filledPolygonRGBA(renderer, x_points, y_points, n, color.r * 255,
+                    color.g * 255, color.b * 255, 255);
   free(x_points);
   free(y_points);
 }
 
-void sdl_show(void)
-{
+void sdl_show(void) {
   // Draw boundary lines
   vector_t window_center = get_window_center();
   vector_t max = vec_add(center, max_diff),
@@ -246,16 +224,15 @@ void sdl_show(void)
   SDL_RenderPresent(renderer);
 }
 
-void sdl_draw_img(char *texture_path, SDL_Rect *bounds, double rotation)
-{
+void sdl_draw_img(char *texture_path, SDL_Rect *bounds, double rotation) {
   SDL_Surface *image = IMG_Load(texture_path);
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
-  SDL_RenderCopyEx(renderer, texture, NULL, bounds, rotation, NULL, SDL_FLIP_NONE);
+  SDL_RenderCopyEx(renderer, texture, NULL, bounds, rotation, NULL,
+                   SDL_FLIP_NONE);
   free(bounds);
 }
 
-SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds)
-{
+SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds) {
   vector_t min = {.x = bounds->x, .y = bounds->y};
   vector_t max = {.x = bounds->x + bounds->w, .y = bounds->y + bounds->h};
   vector_t window_center = get_window_center();
@@ -272,12 +249,12 @@ SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds)
   return rect;
 }
 
-void sdl_create_words_numbers(text_t *text)
-{
+void sdl_create_words_numbers(text_t *text) {
   TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
-  sprintf(score_print, "%s%d", text_get_words(text), (int)text_get_numbers(text));
+  sprintf(score_print, "%s%d", text_get_words(text),
+          (int)text_get_numbers(text));
   SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_Rect *boundary = malloc(sizeof(SDL_Rect));
@@ -292,8 +269,7 @@ void sdl_create_words_numbers(text_t *text)
   TTF_CloseFont(font);
 }
 
-void sdl_create_words_only(text_t *text)
-{
+void sdl_create_words_only(text_t *text) {
   TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
@@ -312,18 +288,15 @@ void sdl_create_words_only(text_t *text)
   TTF_CloseFont(font);
 }
 
-void sdl_render_scene(scene_t *scene)
-{
+void sdl_render_scene(scene_t *scene) {
   sdl_clear();
   size_t body_count = scene_bodies(scene);
 
-  for (size_t i = 0; i < body_count; i++)
-  {
+  for (size_t i = 0; i < body_count; i++) {
     body_t *body = scene_get_body(scene, i);
     char *texture_path = body_get_texture_path(body);
 
-    if (texture_path)
-    {
+    if (texture_path) {
       SDL_Rect *bounds = body_get_bounding_rect(body);
       SDL_Rect *screen_bounds = transform_bounds_to_screen(bounds);
       free(bounds);
@@ -332,9 +305,7 @@ void sdl_render_scene(scene_t *scene)
       // Must be converted to clockwise, in degrees
       double rotation = -180 * rotation_radians / M_PI;
       sdl_draw_img(texture_path, screen_bounds, rotation);
-    }
-    else
-    {
+    } else {
       list_t *shape = body_get_shape(body);
       sdl_draw_polygon(shape, body_get_color(body));
       list_free(shape);
@@ -342,13 +313,12 @@ void sdl_render_scene(scene_t *scene)
   }
 
   size_t text_count = scene_text(scene);
-  for (size_t i = 0; i < text_count; i++)
-  {
+  for (size_t i = 0; i < text_count; i++) {
     text_t *text = scene_get_text(scene, i);
-    if (*(enum text_type_t *)text_get_type(text) == WORDS_ONLY){
+    if (*(enum text_type_t *)text_get_type(text) == WORDS_ONLY) {
       sdl_create_words_only(text);
     }
-    if (*(enum text_type_t *)text_get_type(text) == WORDS_NUMBER){
+    if (*(enum text_type_t *)text_get_type(text) == WORDS_NUMBER) {
       sdl_create_words_numbers(text);
     }
   }
@@ -356,18 +326,11 @@ void sdl_render_scene(scene_t *scene)
   sdl_show();
 }
 
-void sdl_on_key(key_handler_t handler)
-{
-  key_handler = handler;
-}
+void sdl_on_key(key_handler_t handler) { key_handler = handler; }
 
-void sdl_event_args(void *args)
-{
-  event_args = args;
-}
+void sdl_event_args(void *args) { event_args = args; }
 
-double time_since_last_tick(void)
-{
+double time_since_last_tick(void) {
   clock_t now = clock();
 
   double difference = last_clock

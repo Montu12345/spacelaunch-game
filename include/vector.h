@@ -1,5 +1,5 @@
 /** @file vector.h
- *  @brief Function prototypes for 2D vector operations. 
+ *  @brief Function prototypes for 2D vector operations.
  *
  *  @author Alexis Wang, Ian Fowler, Shevali Kadakia, Ezra Johnson
  *  @bug No known bugs.
@@ -13,10 +13,9 @@
  * Positive x is towards the right; positive y is towards the top.
  * vector_t is defined here instead of vector.c because it is passed *by value*.
  */
-typedef struct vector
-{
-    double x;
-    double y;
+typedef struct vector {
+  double x;
+  double y;
 } vector_t;
 
 /**
@@ -37,7 +36,7 @@ extern const vector_t VEC_ZERO;
 vector_t *vec_malloc(double x, double y);
 
 /** @brief Frees the value of a vector_t
- * 
+ *
  *  @param vector the vector to free
  *  @return none
  */
@@ -130,12 +129,12 @@ vector_t vec_rotate(vector_t v, double angle);
  *
  * @param v1 the first vector
  * @param v2 the second vector
- * @return the angle between the vectors, in radians. 
+ * @return the angle between the vectors, in radians.
  */
 double vec_angle_between(vector_t v1, vector_t v2);
 
 /**
- * Reflects a vector v across a line. 
+ * Reflects a vector v across a line.
  *
  * @param v the vector to reflect across the line
  * @param line the line (vector_t) to reflect v across
@@ -147,8 +146,8 @@ vector_t vec_reflect_across_line(vector_t v, vector_t line);
  * Projects vector v2 onto vector v1
  *
  * @param v1 the vector to be projected onto
- * @param v2 the vector to project onto v1 
- * @return the projection vector 
+ * @param v2 the vector to project onto v1
+ * @return the projection vector
  */
 vector_t vec_project(vector_t v1, vector_t v2);
 

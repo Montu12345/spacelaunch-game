@@ -1,9 +1,9 @@
 #ifndef __SPACELAUNCH_H__
 #define __SPACELAUNCH_H__
 
-#include "sprite.h"
 #include "collision.h"
 #include "forces.h"
+#include "sprite.h"
 
 const double ROCKET_ELASTICITY;
 
@@ -15,6 +15,7 @@ const double ROCKET_ELASTICITY;
  * @param rocket the rocket
  * @param obstacle the obstacle that makes the rocket change its velocity
  */
-void create_gravity_rocket_obstacles(scene_t *scene, body_t *rocket, body_t *obstacle);
+void create_gravity_rocket_obstacles(scene_t *scene, body_t *rocket,
+                                     body_t *obstacle);
 
 #endif // #ifndef __SPACELAUNCH_H__

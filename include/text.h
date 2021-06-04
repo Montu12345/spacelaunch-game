@@ -10,24 +10,16 @@
 
 typedef struct text text_t;
 
-enum text_type_t
-{
-    WORDS_ONLY,
-    WORDS_NUMBER,
+enum text_type_t {
+  WORDS_ONLY,
+  WORDS_NUMBER,
 };
 
-text_t *text_words_init(
-    char *words, 
-    vector_t text_position, 
-    double text_size,
-    vector_t text_dimensions);
+text_t *text_words_init(char *words, vector_t text_position, double text_size,
+                        vector_t text_dimensions);
 
-text_t *text_numbers_init(
-    char *words, 
-    vector_t text_position, 
-    double text_size,
-    double numbers,
-    vector_t text_dimensions);
+text_t *text_numbers_init(char *words, vector_t text_position, double text_size,
+                          double numbers, vector_t text_dimensions);
 
 void text_set_words(text_t *text, char *words);
 

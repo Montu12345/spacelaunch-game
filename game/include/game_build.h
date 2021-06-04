@@ -101,6 +101,8 @@ void game_build_sky(scene_t *scene);
  */
 void game_build_stars(scene_t *scene);
 
+void game_build_fence(game_state_t *state);
+
 /**
  * Makes the asteroids.
  *
