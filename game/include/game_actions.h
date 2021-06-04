@@ -18,6 +18,7 @@
 
 typedef enum {
   SCREEN_GAME_OVER,
+  SCREEN_GAME_WIN,
   SCREEN_GAME,
   SCREEN_QUIT,
   SCREEN_START,
@@ -130,5 +131,7 @@ void game_beginning_setup(game_state_t *state);
 void game_help_setup(game_state_t *state);
 
 void game_actions_help_end(game_state_t *state);
+
+void game_actions_game_win(game_state_t *state);
 
 #endif // #ifndef __GAME_ACTIONS_H__

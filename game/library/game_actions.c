@@ -66,7 +66,7 @@ void game_beginning_setup(game_state_t *state) {
     state->needs_restart = false;
     game_build_draw_stary_night(state->scene);
     game_build_instructions(state);
-    
+    state->level = 1;
   }
   state->ticks += 1;
 }
@@ -105,7 +105,6 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max) {
   state->score = 0;
   state->health = 100;
   state->timer = 0;
-  state->level = 1;
   body_t *rocket = game_build_rocket(scene, state);
   state->rocket = rocket;
   game_build_help(state);
@@ -159,7 +158,7 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
     default:
       break;
     }
-  } else if (state->current_screen == SCREEN_GAME_OVER) {
+  } else if (state->current_screen == SCREEN_GAME_OVER || state->current_screen == SCREEN_GAME_WIN) {
     if (key == A_KEY) {
       state->current_screen = SCREEN_GAME;
       state->needs_restart = true;
@@ -210,6 +209,7 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid,
 void game_actions_end_collision(body_t *focal_body, body_t *asteroid,
                                 vector_t axis, game_state_t *state) {
   printf("reached the end\n");
+  game_actions_game_win(state);
 }
 
 void game_actions_rocket_endzone_collision(game_state_t *state,
@@ -244,8 +244,8 @@ void game_actions_check_for_game_over(game_state_t *state) {
   }
 }
 
-// TODO
-void game_actions_check_for_win(game_state_t *state) {
-  state->current_screen = SCREEN_GAME_OVER;
-  state->needs_restart = true;
+void game_actions_game_win(game_state_t *state) {
+    state->current_screen = SCREEN_GAME_WIN;
+    state->needs_restart = true;
+    state->level++;
 }

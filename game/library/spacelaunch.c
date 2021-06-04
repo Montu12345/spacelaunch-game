@@ -90,6 +90,28 @@ void screen_game_over_render(game_state_t *state) {
   state->ticks += 1;
 }
 
+void screen_game_win_render(game_state_t *state) {
+  int ticks = state->ticks;
+  if (ticks == 0) {
+    scene_free(state->scene);
+    state->scene = scene_init();
+    state->rocket = NULL;
+    state->needs_restart = false;
+    text_t *score = text_numbers_init("Score: ", END_GAME_SCORE_POSITION,
+                                      END_GAME_SCORE_SIZE, state->score,
+                                      END_GAME_SCORE_DIMENTIONS);
+    scene_add_text(state->scene, score);
+    text_t *continue_playing =
+        text_words_init("You won! To continue playing press 'A'", END_GAME_CONT_POSITION,
+                        END_GAME_CONT_SIZE, END_GAME_CONT_DIMENTIONS);
+    scene_add_text(state->scene, continue_playing);
+    list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
+    body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
+    scene_add_body(state->scene, background);
+  }
+  state->ticks += 1;
+}
+
 void free_game_state(game_state_t *state) {
   scene_free(state->scene);
   free(state->texts);
@@ -147,6 +169,10 @@ int main(int argc, char *argv[]) {
       break;
     case SCREEN_GAME_OVER:
       screen_game_over_render(state);
+      sdl_render_scene(state->scene);
+      break;
+    case SCREEN_GAME_WIN:
+      screen_game_win_render(state);
       sdl_render_scene(state->scene);
       break;
 
