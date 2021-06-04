@@ -85,7 +85,7 @@ void screen_game_over_render(game_state_t *state) {
                                       END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
     text_t *continue_playing =
-        text_words_init("To continue playing press 'A'", END_GAME_CONT_POSITION,
+        text_words_init("You Lost. To continue playing press 'A'", END_GAME_CONT_POSITION,
                         END_GAME_CONT_SIZE, END_GAME_CONT_DIMENSIONS);
     scene_add_text(state->scene, continue_playing);
     list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
