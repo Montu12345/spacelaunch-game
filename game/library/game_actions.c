@@ -144,8 +144,9 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max) {
   body_t *rocket = game_build_rocket(scene, state);
   state->rocket = rocket;
   game_build_help(state);
-  game_build_draw_asteroids(state, screen_min, screen_max);
+  game_build_draw_asteroids(state);
   game_build_fence(state);
+  game_build_endzone(state);
   vector_t *screen_max_aux = vec_malloc(screen_max.x, screen_max.y);
   scene_add_camera_management(
       state->scene, (camera_offset_func_t)game_actions_camera_offset_func,
@@ -239,6 +240,19 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid,
   }
 }
 
+void game_actions_end_collision(body_t *focal_body, body_t *asteroid,
+                                vector_t axis, game_state_t *state) {
+  printf("reached the end\n");
+}
+
+void game_actions_rocket_endzone_collision(game_state_t *state,
+                                           body_t *endzone) {
+
+  create_collision(state->scene, state->rocket, endzone,
+                   (collision_handler_t)game_actions_end_collision, state,
+                   NULL);
+}
+
 void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body,
                                              body_t *asteroid,
                                              game_state_t *state) {
@@ -247,6 +261,7 @@ void game_actions_rocket_obstacles_collision(scene_t *scene, body_t *focal_body,
                    NULL);
 }
 
+// TODO: Make this kill the ship
 void game_actions_rocket_fence_collision(game_state_t *state, body_t *fence) {
   create_collision(state->scene, state->rocket, fence,
                    (collision_handler_t)game_actions_physics_collision, state,
