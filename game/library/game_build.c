@@ -18,7 +18,7 @@ const int GB_ASTEROID_RADIUS = 50;
 const int GB_ASTEROID_CONTAINER_LENGTH = 150;
 char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
 char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
-const int GB_ASTEROIDS_PER_LEVEL = 20;
+const int GB_ASTEROIDS_PER_LEVEL = 10;
 
 const rgb_color_t GB_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = .55};
 

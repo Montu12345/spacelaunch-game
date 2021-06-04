@@ -25,13 +25,18 @@ const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int SHOOTING_STAR_ADD_INTERVAL = 170;
 
-const vector_t END_GAME_SCORE_DIMENTIONS = {.x = 300, .y = 100};
+const vector_t END_GAME_SCORE_DIMENSIONS = {.x = 300, .y = 100};
 const int END_GAME_SCORE_SIZE = 100;
 const vector_t END_GAME_SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 300 / 2.0,
                                           .y = SCREEN_SIZE_Y / 2.0 - 100};
-const vector_t END_GAME_CONT_DIMENTIONS = {.x = 500, .y = 100};
+const vector_t END_GAME_CONT_DIMENSIONS = {.x = 500, .y = 100};
 const int END_GAME_CONT_SIZE = 100;
 const vector_t END_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 500 / 2.0,
+                                         .y = SCREEN_SIZE_Y / 2.0 - 100 / 2.0 +
+                                              50};
+
+const vector_t WIN_GAME_CONT_DIMENSIONS = {.x = 700, .y = 100};
+const vector_t WIN_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 700 / 2.0,
                                          .y = SCREEN_SIZE_Y / 2.0 - 100 / 2.0 +
                                               50};
 
@@ -77,11 +82,11 @@ void screen_game_over_render(game_state_t *state) {
     state->needs_restart = false;
     text_t *score = text_numbers_init("Score: ", END_GAME_SCORE_POSITION,
                                       END_GAME_SCORE_SIZE, state->score,
-                                      END_GAME_SCORE_DIMENTIONS);
+                                      END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
     text_t *continue_playing =
         text_words_init("To continue playing press 'A'", END_GAME_CONT_POSITION,
-                        END_GAME_CONT_SIZE, END_GAME_CONT_DIMENTIONS);
+                        END_GAME_CONT_SIZE, END_GAME_CONT_DIMENSIONS);
     scene_add_text(state->scene, continue_playing);
     list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
     body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
@@ -99,11 +104,11 @@ void screen_game_win_render(game_state_t *state) {
     state->needs_restart = false;
     text_t *score = text_numbers_init("Score: ", END_GAME_SCORE_POSITION,
                                       END_GAME_SCORE_SIZE, state->score,
-                                      END_GAME_SCORE_DIMENTIONS);
+                                      END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
     text_t *continue_playing =
-        text_words_init("You won! To continue playing press 'A'", END_GAME_CONT_POSITION,
-                        END_GAME_CONT_SIZE, END_GAME_CONT_DIMENTIONS);
+        text_words_init("You won! To continue playing press 'A'", WIN_GAME_CONT_POSITION,
+                        END_GAME_CONT_SIZE, WIN_GAME_CONT_DIMENSIONS);
     scene_add_text(state->scene, continue_playing);
     list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
     body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
