@@ -28,11 +28,11 @@ const int SHOOTING_STAR_ADD_INTERVAL = 170;
 
 const vector_t END_GAME_SCORE_DIMENTIONS = {.x = 300, .y = 100};
 const int END_GAME_SCORE_SIZE = 100;
-const vector_t END_GAME_SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 300 / 2.0, 
-                                         .y = SCREEN_SIZE_Y / 2.0 - 100};
+const vector_t END_GAME_SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 300 / 2.0,
+                                          .y = SCREEN_SIZE_Y / 2.0 - 100};
 const vector_t END_GAME_CONT_DIMENTIONS = {.x = 500, .y = 100};
 const int END_GAME_CONT_SIZE = 100;
-const vector_t END_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 500 / 2.0, 
+const vector_t END_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 500 / 2.0,
                                          .y = SCREEN_SIZE_Y / 2.0 - 100 / 2.0 + 50};
 
 const int TEXT_WIDTH = 100;
@@ -102,6 +102,9 @@ void free_game_state(game_state_t *state)
 
 int main(int argc, char *argv[])
 {
+  // Initialize random number generator
+  srand(time(NULL));
+
   // Initialize the game state
   game_state_t *state = malloc(sizeof(game_state_t));
   state->current_screen = SCREEN_START;
@@ -116,15 +119,15 @@ int main(int argc, char *argv[])
 
   //Start the music
   SDL_Init(SDL_INIT_AUDIO);
-	SDL_AudioSpec wavSpec;
-	Uint32 wavLength;
-	Uint8 *wavBuffer;
-	SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
+  SDL_AudioSpec wavSpec;
+  Uint32 wavLength;
+  Uint8 *wavBuffer;
+  SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
 
-	SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-  
-	SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-	SDL_PauseAudioDevice(deviceId, 0);
+  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+
+  SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+  SDL_PauseAudioDevice(deviceId, 0);
 
   // Render the correct screen each tick.
   while (!sdl_is_done())
@@ -151,7 +154,7 @@ int main(int argc, char *argv[])
       screen_game_over_render(state);
       sdl_render_scene(state->scene);
       break;
-    
+
     default:
       break;
     }

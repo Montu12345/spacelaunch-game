@@ -137,7 +137,7 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     body_t *rocket = game_build_rocket(scene, state);
     state->rocket = rocket;
     game_build_help(state);
-    game_build_draw_asteroids(state, rocket, screen_min, screen_max);
+    game_build_draw_asteroids(state, screen_min, screen_max);
     vector_t *screen_max_aux = vec_malloc(screen_max.x, screen_max.y);
     scene_add_camera_management(state->scene,
                                 (camera_offset_func_t)game_actions_camera_offset_func,

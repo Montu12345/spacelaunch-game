@@ -11,6 +11,10 @@ const rgb_color_t GB_BAD_ASTEROID_COLOR = {.r = 0, .g = 0, .b = 0};
 const rgb_color_t GB_GOOD_ASTEROID_COLOR = {.r = 0, .g = 1, .b = 0};
 const int GB_INITIAL_ASTEROIDS = 5;
 const int GB_ASTEROID_RADIUS = 50;
+const int GB_ASTEROID_CONTAINER_LENGTH = 150;
+char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
+char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
+const int GB_ASTEROIDS_PER_LEVEL = 20;
 
 const rgb_color_t GB_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = .55};
 
@@ -30,9 +34,6 @@ const int GB_SHOOTING_STAR_RADIUS = 3;
 const int GB_SHOOTING_STAR_MASS = INFINITY;
 const rgb_color_t GB_SHOOTING_STAR_COLOR = {.r = 1, .g = 1, .b = 1};
 const vector_t GB_SHOOTING_STAR_VELCOITY = {.x = 700, .y = 0};
-
-char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
-char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
 
 const rgb_color_t SCORE_DISPLAY_COLOR = {.r = 1, .g = 0, .b = 0};
 const vector_t SCORE_DISPLAY_LEFT = {.x = 40, .y = GB_SCREEN_SIZE_Y - 25};
@@ -54,7 +55,6 @@ const int GB_HELP_SIZE = 200;
 
 const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
 const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
-
 
 const vector_t GB_FINAL_SCORE_POS = {.x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0 - GB_TEXT_HEIGHT / 2.0};
 const vector_t GB_FINAL_SCORE_DIM = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
@@ -100,15 +100,6 @@ void game_build_shooting_star(scene_t *scene)
     body_set_velocity(shooting_star, velocity);
     body_set_centroid(shooting_star, pos);
     scene_add_body(scene, shooting_star);
-}
-
-//changed
-void game_build_draw_asteroids(game_state_t *state, body_t *rocket, vector_t min, vector_t max)
-{
-    for (int i = 0; i < GB_INITIAL_ASTEROIDS; i++)
-    {
-        game_build_asteroid(state, rocket);
-    }
 }
 
 void game_build_draw_stary_night(scene_t *scene)
@@ -189,8 +180,49 @@ void game_build_stars(scene_t *scene)
     }
 }
 
-// changed
-void game_build_asteroid(game_state_t *state, body_t *rocket)
+double get_rand()
+{
+    return (double)rand() / (double)RAND_MAX;
+}
+
+void game_build_draw_asteroids(game_state_t *state, vector_t min, vector_t max)
+{
+
+    double arena_width = ARENA_MAX.x - ARENA_MIN.x;
+    double arena_height = ARENA_MAX.y - ARENA_MIN.y;
+
+    int squares_x = arena_width / GB_ASTEROID_CONTAINER_LENGTH;
+    int squares_y = arena_height / GB_ASTEROID_CONTAINER_LENGTH;
+    int total_squares = squares_x * squares_y;
+
+    // Generated Monte Carlo-style. Number of asteroids is, on average, total_astroids.
+    int total_asteroids = GB_ASTEROIDS_PER_LEVEL * state->level;
+    double density = total_asteroids / (double)total_squares;
+
+    // amount on either side of perfect center the asteroid can move
+    double render_range = GB_ASTEROID_CONTAINER_LENGTH - 2 * GB_ASTEROID_RADIUS;
+
+    for (int x = 0; x < squares_x; x++)
+    {
+        for (int y = 0; y < squares_y; y++)
+        {
+
+            if (get_rand() < density)
+            {
+                double x_offset = get_rand() * render_range;
+                double y_offset = get_rand() * render_range;
+                vector_t centroid = {
+                    .x = x_offset + (x * GB_ASTEROID_CONTAINER_LENGTH),
+                    .y = y_offset + (y * GB_ASTEROID_CONTAINER_LENGTH)};
+
+                // printf("squares %f %f\n", centroid.x, centroid.y);
+                game_build_asteroid(state, centroid);
+            }
+        }
+    }
+}
+
+void game_build_asteroid(game_state_t *state, vector_t centroid)
 {
     list_t *circle = sprite_make_circle(GB_ASTEROID_RADIUS);
     bool is_good_asteroid = rand() % 2 == 0;
@@ -210,10 +242,9 @@ void game_build_asteroid(game_state_t *state, body_t *rocket)
     }
     body_t *asteroid = body_init_with_info(circle, GB_ASTEROID_MASS, color, obstacle_type, free);
     body_set_static_texture_path(asteroid, texture_path);
-    vector_t position = {.x = (rand() % GB_SCREEN_SIZE_X), .y = rand() % GB_SCREEN_SIZE_Y};
-    body_set_centroid(asteroid, position);
+    body_set_centroid(asteroid, centroid);
     body_set_movable(asteroid, false);
-    game_actions_rocket_obstacles_collision(state->scene, rocket, asteroid, state);
+    game_actions_rocket_obstacles_collision(state->scene, state->rocket, asteroid, state);
     body_set_camera_mode(asteroid, SCENE);
     scene_add_body(state->scene, asteroid);
 }
@@ -275,7 +306,8 @@ void game_update_texts(game_state_t *state)
     text_set_numbers(state->texts->level, state->level);
 }
 
-void game_build_help(game_state_t *state){
+void game_build_help(game_state_t *state)
+{
     text_t *help = text_words_init("Press H for help", GB_HELP_POSITION, GB_HELP_SIZE, GB_HELP_DIMENSIONS);
     scene_add_text(state->scene, help);
 }

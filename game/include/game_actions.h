@@ -54,6 +54,8 @@ typedef struct game_state
   int score;
   int health;
   int level;
+  
+
   int thrust_ticks_remaining;
 } game_state_t;
 

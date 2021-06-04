@@ -39,8 +39,6 @@ vector_t camera_offset_func(body_t *focal_body, void *aux)
 {
   vector_t center = vec_multiply(0.5, max);
   vector_t offset = vec_subtract(center, body_get_centroid(focal_body));
-
-  // printf("center: <%f %f>\n", center.x, center.y);
   return offset;
 }
 
