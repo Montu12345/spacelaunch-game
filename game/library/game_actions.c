@@ -23,11 +23,6 @@ const vector_t SCORE_DISPLAY_OFFSET = {.x = 90, .y = 25};
 
 const int MAX_THRUST_TICKS = 10;
 
-const int BEGINNING_GAME_SIZE = 50;
-const vector_t BEGINNING_GAME_DIMENTIONS = {.x = 500, .y = 50};
-const vector_t BEGINNING_GAME_POSITION = {
-    .x = GA_SCREEN_SIZE_X / 2.0 - 300 / 2.0, .y = GA_SCREEN_SIZE_Y / 2.0 - 300};
-
 const vector_t GA_min = {.x = 0, .y = 0};
 const vector_t GA_max = {.x = GA_SCREEN_SIZE_X, .y = GA_SCREEN_SIZE_Y};
 
@@ -39,6 +34,9 @@ enum space_body_type_t {
   STAR,
   SHOOTING_STAR,
   SCORE_DISPLAY,
+  FENCE,
+  ENDZONE,
+  HELP_DISPLAY,
 };
 
 vector_t game_actions_camera_offset_func(body_t *focal_body, void *aux) {
@@ -62,69 +60,34 @@ vector_t game_actions_camera_mover_func(vector_t offset, body_t *body) {
   }
 }
 
-void create_instructions(game_state_t *state) {
-  vector_t line_distance = {.x = 0, .y = BEGINNING_GAME_SIZE};
-  text_t *welcome_1 = text_words_init(
-      "Welcome to SpaceLaunch! These are the instructions: ",
-      BEGINNING_GAME_POSITION, BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_2 =
-      text_words_init("These are the instructions: ",
-                      vec_add(text_get_text_position(welcome_1), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_3 = text_words_init(
-      "1. Use the up, down, left, and right arrows to move the rocket. ",
-      vec_add(text_get_text_position(welcome_2), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_4 =
-      text_words_init("2. Dodge the asteroids on the way! Green asteroids "
-                      "increase your health, and red ones decrease it.",
-                      vec_add(text_get_text_position(welcome_3), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_5 =
-      text_words_init("3. Try to reach the finish line all the way to the "
-                      "right side in the least amount of time!",
-                      vec_add(text_get_text_position(welcome_4), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_6 = text_words_init(
-      "4. If you run out of fuel, you will start over from Level 1.",
-      vec_add(text_get_text_position(welcome_5), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_7 = text_words_init(
-      "5. If you clear level 1, you will move onto the next level.",
-      vec_add(text_get_text_position(welcome_6), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_8 =
-      text_words_init("6. Press H if you need to read the instructions again!",
-                      vec_add(text_get_text_position(welcome_7), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_9 =
-      text_words_init("7. Press the space bar to start! Good Luck!",
-                      vec_add(text_get_text_position(welcome_8), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-
-  scene_add_text(state->scene, welcome_1);
-  scene_add_text(state->scene, welcome_2);
-  scene_add_text(state->scene, welcome_3);
-  scene_add_text(state->scene, welcome_4);
-  scene_add_text(state->scene, welcome_5);
-  scene_add_text(state->scene, welcome_6);
-  scene_add_text(state->scene, welcome_7);
-  scene_add_text(state->scene, welcome_8);
-  scene_add_text(state->scene, welcome_9);
-}
-
 void game_beginning_setup(game_state_t *state) {
   if (state->ticks == 0) {
     state->scene = scene_init();
-    state->rocket = NULL;
     state->needs_restart = false;
     list_t *screen_rect =
         sprite_make_rect(GA_min.x, GA_max.x, GA_min.y, GA_max.y);
-    create_instructions(state);
+    game_build_instructions(state);
     body_t *background = body_init(screen_rect, 0, GA_RED);
     scene_add_body(state->scene, background);
   }
   state->ticks += 1;
+}
+
+void game_help_setup(game_state_t *state){
+  if (state->ticks == 0) {
+    game_build_help_screen(state);
+  }
+  state->ticks += 1;
+}
+
+void game_actions_help_end(game_state_t *state){
+  for (int i = 0; i < scene_bodies(state->scene); i++){
+    if(*(enum space_body_type_t *)body_get_info(scene_get_body(state->scene, i)) == HELP_DISPLAY){
+        printf("gottem \n");
+        scene_remove_body(state->scene, i);
+        break;
+    }
+  }
 }
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max) {
@@ -173,7 +136,7 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
     return;
   }
 
-  if (state->current_screen == SCREEN_GAME) {
+  if (state->current_screen == SCREEN_GAME || state->current_screen == SCREEN_CONTINUE) {
     switch (key) {
     case LEFT_ARROW:
       game_actions_thrust_rocket(M_PI, boost, state);
@@ -188,7 +151,7 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
       game_actions_thrust_rocket(M_PI * 1.0 / 2, boost, state);
       break;
     case H_KEY:
-      state->current_screen = SCREEN_START;
+      state->current_screen = SCREEN_HELP;
       state->needs_restart = true;
       break;
     default:
@@ -205,9 +168,11 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
       state->current_screen = SCREEN_GAME;
       state->needs_restart = true;
     }
-    if (key == ESC_KEY) {
-      state->current_screen = SCREEN_GAME;
-      state->needs_restart = true;
+    
+  } else if (state->current_screen == SCREEN_HELP){
+      if (key == ESC_KEY) {
+        state->current_screen = SCREEN_GAME;
+        state->needs_restart = false;
     }
   }
 }
@@ -236,7 +201,7 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid,
     game_actions_new_health(state, 10);
   } else if (*(enum space_body_type_t *)body_get_info(asteroid) ==
              BAD_OBSTACLE) {
-    game_actions_new_health(state, -100);
+    game_actions_new_health(state, -10);
   }
 }
 

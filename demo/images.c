@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 
   SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
 
-  int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+  // int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
   SDL_PauseAudioDevice(deviceId, 0);
 
   // images

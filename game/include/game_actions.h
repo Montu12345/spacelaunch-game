@@ -21,6 +21,8 @@ typedef enum {
   SCREEN_GAME,
   SCREEN_QUIT,
   SCREEN_START,
+  SCREEN_HELP,
+  SCREEN_CONTINUE,
 } screen_t;
 
 typedef struct game_texts {
@@ -51,6 +53,7 @@ typedef struct game_state {
   int level;
 
   int thrust_ticks_remaining;
+
 } game_state_t;
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max);
@@ -124,5 +127,8 @@ void game_actions_new_health(game_state_t *state, int scale);
 
 void game_beginning_setup(game_state_t *state);
 
-void create_instructions(game_state_t *state);
+void game_help_setup(game_state_t *state);
+
+void game_actions_help_end(game_state_t *state);
+
 #endif // #ifndef __GAME_ACTIONS_H__

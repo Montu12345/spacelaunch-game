@@ -50,6 +50,7 @@ void screen_game_render(game_state_t *state) {
   if (state->needs_restart) {
     game_setup(state, min, max);
   } else {
+    game_actions_help_end(state);
     game_update_texts(state);
   }
   state->ticks += 1;
@@ -110,28 +111,31 @@ int main(int argc, char *argv[]) {
   sdl_on_key((key_handler_t)handle_key_press);
 
   // Start the music
-  SDL_Init(SDL_INIT_AUDIO);
-  SDL_AudioSpec wavSpec;
-  Uint32 wavLength;
-  Uint8 *wavBuffer;
-  SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
+  // SDL_Init(SDL_INIT_AUDIO);
+  // SDL_AudioSpec wavSpec;
+  // Uint32 wavLength;
+  // Uint8 *wavBuffer;
+  // SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
 
-  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+  // SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
 
-  SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-  SDL_PauseAudioDevice(deviceId, 0);
+  // SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+  // SDL_PauseAudioDevice(deviceId, 0);
 
   // Render the correct screen each tick.
   while (!sdl_is_done()) {
     double dt = time_since_last_tick();
     update_score(state);
-
     if (state->needs_restart) {
       state->ticks = 0;
     }
     switch (state->current_screen) {
     case SCREEN_START:
       game_beginning_setup(state);
+      sdl_render_scene(state->scene);
+      break;
+    case SCREEN_HELP:
+      game_help_setup(state);
       sdl_render_scene(state->scene);
       break;
     case SCREEN_GAME:
