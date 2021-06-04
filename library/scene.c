@@ -81,6 +81,7 @@ void scene_free(scene_t *scene)
 {
     list_free(scene->bodies);
     list_free(scene->forces);
+    list_free(scene->text);
     if (scene->camera_aux_free)
     {
         ((free_func_t)scene->camera_aux_free)(scene->camera_aux);

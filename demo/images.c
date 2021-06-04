@@ -6,7 +6,6 @@
 #include "collision.h"
 #include "forces.h"
 #include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
 
 // Launch rocket demo
 
