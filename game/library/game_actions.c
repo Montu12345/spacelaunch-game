@@ -64,11 +64,9 @@ void game_beginning_setup(game_state_t *state) {
   if (state->ticks == 0) {
     state->scene = scene_init();
     state->needs_restart = false;
-    list_t *screen_rect =
-        sprite_make_rect(GA_min.x, GA_max.x, GA_min.y, GA_max.y);
+    game_build_draw_stary_night(state->scene);
     game_build_instructions(state);
-    body_t *background = body_init(screen_rect, 0, GA_RED);
-    scene_add_body(state->scene, background);
+    
   }
   state->ticks += 1;
 }
@@ -83,7 +81,6 @@ void game_help_setup(game_state_t *state){
 void game_actions_help_end(game_state_t *state){
   for (int i = 0; i < scene_bodies(state->scene); i++){
     if(*(enum space_body_type_t *)body_get_info(scene_get_body(state->scene, i)) == HELP_DISPLAY){
-        printf("gottem \n");
         scene_remove_body(state->scene, i);
         break;
     }

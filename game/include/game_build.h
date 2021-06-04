@@ -122,6 +122,8 @@ void game_build_help(game_state_t *state);
 
 void game_build_instructions(game_state_t *state);
 
+void game_build_blue_back(game_state_t *state);
+
 void game_build_help_screen(game_state_t *state);
 
 #endif // #ifndef __GAME_BUILD_H__
