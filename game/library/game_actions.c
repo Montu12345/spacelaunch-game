@@ -85,6 +85,11 @@ void game_actions_help_end(game_state_t *state){
         break;
     }
   }
+  for (int i = 0; i < scene_text(state->scene); i++){
+    if(*(enum text_type_t *)text_get_type(scene_get_text(state->scene, i)) == WORDS_ONLY_ERASE){
+        scene_remove_text(state->scene, i);
+    }
+  }
 }
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max) {

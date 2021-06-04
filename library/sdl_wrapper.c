@@ -315,7 +315,8 @@ void sdl_render_scene(scene_t *scene) {
   size_t text_count = scene_text(scene);
   for (size_t i = 0; i < text_count; i++) {
     text_t *text = scene_get_text(scene, i);
-    if (*(enum text_type_t *)text_get_type(text) == WORDS_ONLY) {
+    if (*(enum text_type_t *)text_get_type(text) == WORDS_ONLY || 
+    *(enum text_type_t *)text_get_type(text) == WORDS_ONLY_ERASE) {
       sdl_create_words_only(text);
     }
     if (*(enum text_type_t *)text_get_type(text) == WORDS_NUMBER) {

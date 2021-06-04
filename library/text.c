@@ -33,6 +33,18 @@ text_t *text_words_init(char *words, vector_t text_position, double text_size,
   return params;
 }
 
+text_t *text_words_erase_init(char *words, vector_t text_position, double text_size,
+                        vector_t text_dimensions) {
+  text_t *params = malloc(sizeof(text_t));
+  *params = (text_t){.words = words,
+                     .text_position = text_position,
+                     .text_size = text_size,
+                     .numbers = 0,
+                     .text_dimensions = text_dimensions,
+                     .info = text_type_init(WORDS_ONLY_ERASE)};
+  return params;
+}
+
 text_t *text_numbers_init(char *words, vector_t text_position, double text_size,
                           double numbers, vector_t text_dimensions) {
   text_t *params = malloc(sizeof(text_t));

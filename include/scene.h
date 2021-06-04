@@ -173,4 +173,7 @@ size_t scene_text(scene_t *scene);
 
 text_t *scene_get_text(scene_t *scene, size_t index);
 
+void scene_remove_text(scene_t *scene, size_t index);
+
+
 #endif // #ifndef __SCENE_H__

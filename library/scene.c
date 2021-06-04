@@ -192,6 +192,10 @@ text_t *scene_get_text(scene_t *scene, size_t index) {
   return text;
 }
 
+void scene_remove_text(scene_t *scene, size_t index){
+  list_remove(scene->text, index);
+}
+
 void scene_tick(scene_t *scene, double dt) {
   apply_forces(scene);
   clean_forces(scene);
