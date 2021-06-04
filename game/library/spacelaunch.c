@@ -80,6 +80,7 @@ void screen_game_over_render(game_state_t *state) {
     state->scene = scene_init();
     state->rocket = NULL;
     state->needs_restart = false;
+    state->level = 1;
     text_t *score = text_numbers_init("Score: ", END_GAME_SCORE_POSITION,
                                       END_GAME_SCORE_SIZE, state->score,
                                       END_GAME_SCORE_DIMENSIONS);

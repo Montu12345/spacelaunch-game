@@ -241,6 +241,7 @@ void game_actions_check_for_game_over(game_state_t *state) {
       pos.y - GA_ROCKET_RADIUS < GA_MIN_OBSTACLES_SCREEN_SIZE_Y) {
     state->current_screen = SCREEN_GAME_OVER;
     state->needs_restart = true;
+    // state->level = 1;
   }
 }
 
