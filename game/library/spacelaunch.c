@@ -107,6 +107,18 @@ int main(int argc, char *argv[])
   sdl_event_args(state);
   sdl_on_key((key_handler_t)handle_key_press);
 
+  //Start the music
+  SDL_Init(SDL_INIT_AUDIO);
+	SDL_AudioSpec wavSpec;
+	Uint32 wavLength;
+	Uint8 *wavBuffer;
+	SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
+
+	SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+  
+	SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+	SDL_PauseAudioDevice(deviceId, 0);
+
   // Render the correct screen each tick.
   while (!sdl_is_done())
   {
