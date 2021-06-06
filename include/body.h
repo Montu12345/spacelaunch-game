@@ -370,4 +370,6 @@ void body_tick(body_t *body, double dt);
  */
 void body_adjust_for_camera(body_t *body, vector_t movement);
 
+void body_set_type(body_t *body, void* type);
+
 #endif // #ifndef __BODY_H__

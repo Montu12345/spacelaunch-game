@@ -59,7 +59,7 @@ const vector_t GB_TIMER_POSITION = {.x = GB_SCREEN_SIZE_X - GB_TEXT_WIDTH - 15,
 const vector_t GB_TIMER_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_HELP_POSITION = {.x = 10, .y = GB_SCREEN_SIZE_Y - 50};
-const vector_t GB_HELP_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
+const vector_t GB_HELP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 50, .y = GB_TEXT_HEIGHT};
 const int GB_HELP_SIZE = 200;
 
 const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
@@ -325,28 +325,28 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height) {
 
 void game_build_display_score(game_state_t *state) {
   state->texts->score =
-      text_numbers_init("Score: ", GB_SCORE_POSITION, GB_TEXT_WIDTH,
+      text_numbers_init("SCORE: ", GB_SCORE_POSITION, GB_TEXT_WIDTH,
                         state->score, GB_SCORE_DIMENSIONS);
   scene_add_text(state->scene, state->texts->score);
 }
 
 void game_build_display_timer(game_state_t *state) {
   state->texts->timer =
-      text_numbers_init("Timer: ", GB_TIMER_POSITION, GB_TEXT_WIDTH,
+      text_numbers_init("TIMER: ", GB_TIMER_POSITION, GB_TEXT_WIDTH,
                         state->timer, GB_TIMER_DIMENSIONS);
   scene_add_text(state->scene, state->texts->timer);
 }
 
 void game_build_display_health(game_state_t *state) {
   state->texts->health =
-      text_numbers_init("Health: ", GB_HEALTH_POSITION, GB_TEXT_WIDTH,
+      text_numbers_init("HEALTH: ", GB_HEALTH_POSITION, GB_TEXT_WIDTH,
                         state->health, GB_HEALTH_DIMENSIONS);
   scene_add_text(state->scene, state->texts->health);
 }
 
 void game_build_display_level(game_state_t *state) {
   state->texts->level =
-      text_numbers_init("Level: ", GB_LEVEL_POSITION, GB_TEXT_WIDTH,
+      text_numbers_init("LEVEL: ", GB_LEVEL_POSITION, GB_TEXT_WIDTH,
                         state->level, GB_LEVEL_DIMENSIONS);
   scene_add_text(state->scene, state->texts->level);
 }
@@ -366,7 +366,7 @@ void game_update_texts(game_state_t *state) {
 }
 
 void game_build_help(game_state_t *state) {
-  text_t *help = text_words_init("Press H for help", GB_HELP_POSITION,
+  text_t *help = text_words_init("PRESS H FOR HELP", GB_HELP_POSITION,
                                  GB_HELP_SIZE, GB_HELP_DIMENSIONS);
   scene_add_text(state->scene, help);
 }
@@ -536,6 +536,7 @@ void game_build_stationary_rockets(game_state_t *state){
   vector_t rocket_position = {.x = 130, .y = GB_SCREEN_SIZE_Y - 65};
   body_set_centroid(rocket, rocket_position);
   body_set_rotation(rocket, M_PI * 1.0 / 2);
+  body_set_type(rocket, game_build_body_type_init(HELP_DISPLAY));
   state->thrust_ticks_remaining = GB_MAX_THRUST_TICKS;
   body_t *rocket_2 = game_build_rocket(state->scene, state);
   vector_t rocket_2_position = {.x = GB_SCREEN_SIZE_X - 130, .y = GB_SCREEN_SIZE_Y - 65};

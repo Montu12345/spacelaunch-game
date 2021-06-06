@@ -303,6 +303,10 @@ void body_tick(body_t *body, double dt) {
   body_set_rotation(body, thetaf);
 }
 
+void body_set_type(body_t *body, void* type){
+  body->aux.info = type;
+}
+
 void body_adjust_for_camera(body_t *body, vector_t movement) {
   vector_t xi = body_get_centroid(body);
   vector_t xf = vec_add(xi, movement);
