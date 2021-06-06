@@ -196,4 +196,7 @@ int main(int argc, char *argv[])
   }
   TTF_Quit();
   game_state_free(state);
+
+  SDL_CloseAudioDevice(deviceId);
+  // SDL_Quit();
 }

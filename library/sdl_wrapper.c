@@ -244,6 +244,8 @@ void sdl_draw_img(char *texture_path, SDL_Rect *bounds, double rotation)
   SDL_RenderCopyEx(renderer, texture, NULL, bounds, rotation, NULL,
                    SDL_FLIP_NONE);
   free(bounds);
+  SDL_DestroyTexture(texture);
+  SDL_FreeSurface(image);
 }
 
 SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds)
