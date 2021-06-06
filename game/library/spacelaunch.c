@@ -198,5 +198,5 @@ int main(int argc, char *argv[])
   game_state_free(state);
 
   SDL_CloseAudioDevice(deviceId);
-  // SDL_Quit();
+  SDL_FreeWAV(wavBuffer);
 }
