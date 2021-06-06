@@ -86,6 +86,8 @@ const vector_t BEGINNING_GAME_POSITION = {
 
 const rgb_color_t GB_RED = {.r = 1, .g = 0, .b = 0};
 
+const int GB_MAX_THRUST_TICKS = 10;
+
 enum space_body_type_t {
   GOOD_OBSTACLE,
   BAD_OBSTACLE,
@@ -518,4 +520,16 @@ void game_build_help_instructions(game_state_t *state){
   scene_add_text(state->scene, welcome_7);
   scene_add_text(state->scene, welcome_8);
   scene_add_text(state->scene, welcome_9);
+}
+
+void game_build_stationary_rockets(game_state_t *state){
+  body_t *rocket = game_build_rocket(state->scene, state);
+  vector_t rocket_position = {.x = 60, .y = GB_SCREEN_SIZE_Y - 60};
+  body_set_centroid(rocket, rocket_position);
+  body_set_rotation(rocket, M_PI * 1.0 / 2);
+  state->thrust_ticks_remaining = GB_MAX_THRUST_TICKS;
+  body_t *rocket_2 = game_build_rocket(state->scene, state);
+  vector_t rocket_2_position = {.x = GB_SCREEN_SIZE_X - 60, .y = GB_SCREEN_SIZE_Y - 60};
+  body_set_centroid(rocket_2, rocket_2_position);
+  body_set_rotation(rocket_2, M_PI * 1.0 / 2);
 }

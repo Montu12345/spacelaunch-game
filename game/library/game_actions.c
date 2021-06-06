@@ -21,7 +21,7 @@ const int SCORE_DISPLAY_WIDTH = 100;
 
 const vector_t SCORE_DISPLAY_OFFSET = {.x = 90, .y = 25};
 
-const int MAX_THRUST_TICKS = 10;
+const int GA_MAX_THRUST_TICKS = 10;
 
 const vector_t GA_min = {.x = 0, .y = 0};
 const vector_t GA_max = {.x = GA_SCREEN_SIZE_X, .y = GA_SCREEN_SIZE_Y};
@@ -65,7 +65,8 @@ void game_beginning_setup(game_state_t *state) {
     state->scene = scene_init();
     state->needs_restart = false;
     game_build_draw_stary_night(state->scene);
-    game_build_instructions(state);
+    game_build_stationary_rockets(state);
+    // game_build_instructions(state);0
     state->level = 1;
   }
   state->ticks += 1;
@@ -127,7 +128,7 @@ void game_actions_thrust_rocket(double angle, double scale,
   body_set_rotation(state->rocket, angle);
   body_add_impulse(state->rocket,
                    vec_multiply(GA_ROCKET_VELOCITY_SCALE, move_vector));
-  state->thrust_ticks_remaining = MAX_THRUST_TICKS;
+  state->thrust_ticks_remaining = GA_MAX_THRUST_TICKS;
 }
 
 void handle_key_press(char key, key_event_type_t type, double held_time,
