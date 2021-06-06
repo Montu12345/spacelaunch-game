@@ -18,6 +18,10 @@ const int GB_ASTEROID_RADIUS = 50;
 const int GB_ASTEROID_CONTAINER_LENGTH = 150;
 char *GB_GOOD_ASTEROID_TEXTURE = "game/textures/good_asteroid.png";
 char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
+char *GB_WELCOME_TEXTURE = "game/textures/welcome.png";
+char *GB_HELP_TEXTURE = "game/textures/help.png";
+char *GB_LOST_TEXTURE = "game/textures/lost.png";
+char *GB_WON_TEXTURE = "game/textures/lost.png";
 const int GB_ASTEROIDS_PER_LEVEL = 10;
 
 const rgb_color_t GB_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = .55};
@@ -446,9 +450,14 @@ void game_build_blue_back(game_state_t *state){
 }
 
 void game_build_help_screen(game_state_t *state){
-    game_build_blue_back(state);
-    game_build_help_instructions(state);
-    state->needs_restart = false;
+  list_t *rectangle = sprite_make_rect(0, GB_SCREEN_SIZE_X, 0, GB_SCREEN_SIZE_Y);
+  body_t *help = body_init_with_info(rectangle, GB_ASTEROID_MASS, GB_RED, game_build_body_type_init(HELP_DISPLAY), free);
+  body_set_static_texture_path(help, GB_HELP_TEXTURE);
+  vector_t centroid = {.x = GB_SCREEN_SIZE_X / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0};
+  body_set_centroid(help, centroid);
+  body_set_movable(help, false);
+  scene_add_body(state->scene, help);
+  state->needs_restart = false;
 }
 
 void game_build_help_instructions(game_state_t *state){
@@ -524,12 +533,42 @@ void game_build_help_instructions(game_state_t *state){
 
 void game_build_stationary_rockets(game_state_t *state){
   body_t *rocket = game_build_rocket(state->scene, state);
-  vector_t rocket_position = {.x = 60, .y = GB_SCREEN_SIZE_Y - 60};
+  vector_t rocket_position = {.x = 130, .y = GB_SCREEN_SIZE_Y - 65};
   body_set_centroid(rocket, rocket_position);
   body_set_rotation(rocket, M_PI * 1.0 / 2);
   state->thrust_ticks_remaining = GB_MAX_THRUST_TICKS;
   body_t *rocket_2 = game_build_rocket(state->scene, state);
-  vector_t rocket_2_position = {.x = GB_SCREEN_SIZE_X - 60, .y = GB_SCREEN_SIZE_Y - 60};
+  vector_t rocket_2_position = {.x = GB_SCREEN_SIZE_X - 130, .y = GB_SCREEN_SIZE_Y - 65};
   body_set_centroid(rocket_2, rocket_2_position);
   body_set_rotation(rocket_2, M_PI * 1.0 / 2);
+}
+
+void game_build_welcome_background(game_state_t *state){
+  list_t *rectangle = sprite_make_rect(0, GB_SCREEN_SIZE_X, 0, GB_SCREEN_SIZE_Y);
+  body_t *welcome = body_init(rectangle, GB_ASTEROID_MASS, GB_RED);
+  body_set_static_texture_path(welcome, GB_WELCOME_TEXTURE);
+  vector_t centroid = {.x = GB_SCREEN_SIZE_X / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0};
+  body_set_centroid(welcome, centroid);
+  body_set_movable(welcome, false);
+  scene_add_body(state->scene, welcome);
+}
+
+void game_build_lost_background(game_state_t *state){
+  list_t *rectangle = sprite_make_rect(0, GB_SCREEN_SIZE_X, 0, GB_SCREEN_SIZE_Y);
+  body_t *lost = body_init(rectangle, GB_ASTEROID_MASS, GB_RED);
+  body_set_static_texture_path(lost, GB_LOST_TEXTURE);
+  vector_t centroid = {.x = GB_SCREEN_SIZE_X / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0};
+  body_set_centroid(lost, centroid);
+  body_set_movable(lost, false);
+  scene_add_body(state->scene, lost);
+}
+
+void game_build_won_background(game_state_t *state){
+  list_t *rectangle = sprite_make_rect(0, GB_SCREEN_SIZE_X, 0, GB_SCREEN_SIZE_Y);
+  body_t *won = body_init(rectangle, GB_ASTEROID_MASS, GB_RED);
+  body_set_static_texture_path(won, GB_WON_TEXTURE);
+  vector_t centroid = {.x = GB_SCREEN_SIZE_X / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0};
+  body_set_centroid(won, centroid);
+  body_set_movable(won, false);
+  scene_add_body(state->scene, won);
 }

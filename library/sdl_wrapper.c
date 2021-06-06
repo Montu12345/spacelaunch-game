@@ -250,7 +250,7 @@ SDL_Rect *transform_bounds_to_screen(SDL_Rect *bounds) {
 }
 
 void sdl_create_words_numbers(text_t *text) {
-  TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
+  TTF_Font *font = font = TTF_OpenFont("CourierPrime-Regular.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
   sprintf(score_print, "%s%d", text_get_words(text),
@@ -270,7 +270,7 @@ void sdl_create_words_numbers(text_t *text) {
 }
 
 void sdl_create_words_only(text_t *text) {
-  TTF_Font *font = font = TTF_OpenFont("Roboto-Black.ttf", 100);
+  TTF_Font *font = font = TTF_OpenFont("CourierPrime-Regular.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
   sprintf(score_print, "%s", text_get_words(text));

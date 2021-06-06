@@ -130,4 +130,10 @@ void game_build_help_instructions(game_state_t *state);
 
 void game_build_stationary_rockets(game_state_t *state);
 
+void game_build_welcome_background(game_state_t *state);
+
+void game_build_won_background(game_state_t *state);
+
+void game_build_lost_background(game_state_t *state);
+
 #endif // #ifndef __GAME_BUILD_H__

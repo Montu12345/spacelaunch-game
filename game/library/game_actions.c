@@ -64,9 +64,8 @@ void game_beginning_setup(game_state_t *state) {
   if (state->ticks == 0) {
     state->scene = scene_init();
     state->needs_restart = false;
-    game_build_draw_stary_night(state->scene);
+    game_build_welcome_background(state);
     game_build_stationary_rockets(state);
-    // game_build_instructions(state);0
     state->level = 1;
   }
   state->ticks += 1;
@@ -75,6 +74,7 @@ void game_beginning_setup(game_state_t *state) {
 void game_help_setup(game_state_t *state){
   if (state->ticks == 0) {
     game_build_help_screen(state);
+    game_build_stationary_rockets(state);
   }
   state->ticks += 1;
 }
