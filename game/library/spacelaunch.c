@@ -43,30 +43,38 @@ const vector_t WIN_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 700 / 2.0,
 const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
 
-void update_score(game_state_t *state) {
-  if (!state->needs_restart) {
-    int new_score = state->health/10 - 10;
-    if (new_score < 0) {
+void update_score(game_state_t *state)
+{
+  if (!state->needs_restart)
+  {
+    int new_score = state->health / 10 - 10;
+    if (new_score < 0)
+    {
       new_score = 0;
     }
     state->score = new_score;
   }
 }
 
-void screen_game_render(game_state_t *state) {
-  if (state->needs_restart) {
+void screen_game_render(game_state_t *state)
+{
+  if (state->needs_restart)
+  {
     game_setup(state, min, max);
-  } else {
+  }
+  else
+  {
     game_actions_help_end(state);
     game_update_texts(state);
-    
   }
   state->ticks += 1;
-  if (state->thrust_ticks_remaining > 0) {
+  if (state->thrust_ticks_remaining > 0)
+  {
     state->thrust_ticks_remaining -= 1;
   }
 
-  if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0) {
+  if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0)
+  {
     game_build_shooting_star(state->scene);
   }
 
@@ -74,46 +82,52 @@ void screen_game_render(game_state_t *state) {
   game_actions_check_for_game_over(state);
 }
 
-void screen_game_over_render(game_state_t *state) {
+void screen_game_over_render(game_state_t *state)
+{
   int ticks = state->ticks;
-  if (ticks == 0) {
+  if (ticks == 0)
+  {
     scene_free(state->scene);
     state->scene = scene_init();
     state->rocket = NULL;
     state->needs_restart = false;
     state->level = 1;
     text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
-                                      END_GAME_SCORE_SIZE, state->score,
-                                      END_GAME_SCORE_DIMENSIONS);
+                              END_GAME_SCORE_SIZE, state->score,
+                              END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
     game_build_lost_background(state);
   }
   state->ticks += 1;
 }
 
-void screen_game_win_render(game_state_t *state) {
+void screen_game_win_render(game_state_t *state)
+{
   int ticks = state->ticks;
-  if (ticks == 0) {
+  if (ticks == 0)
+  {
     scene_free(state->scene);
     state->scene = scene_init();
     game_build_won_background(state);
     state->rocket = NULL;
     state->needs_restart = false;
     text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
-                                      END_GAME_SCORE_SIZE, state->score,
-                                      END_GAME_SCORE_DIMENSIONS);
+                              END_GAME_SCORE_SIZE, state->score,
+                              END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
   }
   state->ticks += 1;
 }
 
-void free_game_state(game_state_t *state) {
+void free_game_state(game_state_t *state)
+{
   scene_free(state->scene);
   free(state->texts);
   free(state);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   // Initialize random number generator
   srand(time(NULL));
 
@@ -143,41 +157,41 @@ int main(int argc, char *argv[]) {
   SDL_PauseAudioDevice(deviceId, 0);
 
   // Render the correct screen each tick.
-  while (!sdl_is_done()) {
-    if(state->quit_game){
+  while (!sdl_is_done())
+  {
+    if (state->quit_game)
+    {
       break;
     }
     double dt = time_since_last_tick();
     update_score(state);
-    if (state->needs_restart) {
+    if (state->needs_restart)
+    {
       state->ticks = 0;
     }
-    switch (state->current_screen) {
+    switch (state->current_screen)
+    {
     case SCREEN_START:
       game_beginning_setup(state);
-      sdl_render_scene(state->scene);
       break;
     case SCREEN_HELP:
       game_help_setup(state);
-      sdl_render_scene(state->scene);
       break;
     case SCREEN_GAME:
       screen_game_render(state);
       scene_tick(state->scene, dt);
-      sdl_render_scene(state->scene);
       break;
     case SCREEN_GAME_OVER:
       screen_game_over_render(state);
-      sdl_render_scene(state->scene);
       break;
     case SCREEN_GAME_WIN:
       screen_game_win_render(state);
-      sdl_render_scene(state->scene);
       break;
 
     default:
       break;
     }
+    sdl_render_scene(state->scene);
   }
   TTF_Quit();
   free_game_state(state);
