@@ -85,14 +85,7 @@ void screen_game_over_render(game_state_t *state) {
                                       END_GAME_SCORE_SIZE, state->score,
                                       END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
-    // text_t *continue_playing =
-    //     text_words_init("You Lost. To continue playing press 'A'", END_GAME_CONT_POSITION,
-    //                     END_GAME_CONT_SIZE, END_GAME_CONT_DIMENSIONS);
-    // scene_add_text(state->scene, continue_playing);
-    // list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
-    // body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
     game_build_lost_background(state);
-    // scene_add_body(state->scene, background);
   }
   state->ticks += 1;
 }
@@ -109,14 +102,6 @@ void screen_game_win_render(game_state_t *state) {
                                       END_GAME_SCORE_SIZE, state->score,
                                       END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
-    // text_t *continue_playing =
-    //     text_words_init("You won! To continue playing press 'A'", WIN_GAME_CONT_POSITION,
-    //                     END_GAME_CONT_SIZE, WIN_GAME_CONT_DIMENSIONS);
-    // scene_add_text(state->scene, continue_playing);
-    // list_t *screen_rect = sprite_make_rect(min.x, max.x, min.y, max.y);
-    // body_t *background = body_init(screen_rect, 0, WAIT_BACKGROUND_COLOR);
-    // scene_add_body(state->scene, background);
-    
   }
   state->ticks += 1;
 }
@@ -136,6 +121,7 @@ int main(int argc, char *argv[]) {
   state->current_screen = SCREEN_START;
   state->needs_restart = true;
   state->thrust_ticks_remaining = 0;
+  state->restart_game = false;
 
   // Initialize SDL
   TTF_Init();
@@ -157,6 +143,9 @@ int main(int argc, char *argv[]) {
 
   // Render the correct screen each tick.
   while (!sdl_is_done()) {
+    if(state->restart_game){
+      break;
+    }
     double dt = time_since_last_tick();
     update_score(state);
     if (state->needs_restart) {

@@ -137,7 +137,9 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
   if (type != KEY_PRESSED) {
     return;
   }
-
+  if(key == Q_KEY){
+    state->restart_game = true;
+  }
   if (state->current_screen == SCREEN_GAME || state->current_screen == SCREEN_CONTINUE) {
     switch (key) {
     case LEFT_ARROW:

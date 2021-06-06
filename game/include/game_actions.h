@@ -55,6 +55,8 @@ typedef struct game_state {
 
   int thrust_ticks_remaining;
 
+  bool restart_game;
+
 } game_state_t;
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max);

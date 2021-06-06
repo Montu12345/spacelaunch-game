@@ -371,77 +371,6 @@ void game_build_help(game_state_t *state) {
   scene_add_text(state->scene, help);
 }
 
-void game_build_instructions(game_state_t *state) {
-  vector_t wecome_line_distance = {.x = 0, .y = BEGINNING_GAME_SIZE + 45};
-  vector_t line_distance = {.x = 0, .y = BEGINNING_GAME_SIZE + 25};
-  text_t *welcome_1 = 
-      text_words_init(
-                      "Welcome to SpaceLaunch! Here are the instructions:  ",
-      BEGINNING_GAME_WELCOME_POSITION, BEGINNING_GAME_WELCOME_SIZE, BEGINNING_GAME_WELCOME_DIMENTIONS);
-  text_t *welcome_2 =
-      text_words_init(
-                      "1. Use the up, down, left, and right arrows to move   ",
-                      vec_add(BEGINNING_GAME_POSITION, wecome_line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_3 = 
-      text_words_init(
-                      "the rocket.                                           ",
-      vec_add(text_get_text_position(welcome_2), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_4 =
-      text_words_init(
-                      "2. Dodge the asteroids on the way! Green asteroids    ",
-                      vec_add(text_get_text_position(welcome_3), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_4_2 =
-      text_words_init(
-                      "increase your health, and red ones decrease it.       ",
-                      vec_add(text_get_text_position(welcome_4), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_5 =
-      text_words_init(
-                      "3. Try to reach the finish line all the way to the    ",
-                      vec_add(text_get_text_position(welcome_4_2), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_5_2 =
-      text_words_init(
-                      "right side in the least amount of time!               ",
-                      vec_add(text_get_text_position(welcome_5), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_6 = 
-      text_words_init(
-                      "4. If fuel runs out, you will restart at Level 1.     ",
-      vec_add(text_get_text_position(welcome_5_2), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_7 = 
-      text_words_init(
-                      "5. If a level is cleared, you will move on to the next.",
-      vec_add(text_get_text_position(welcome_6), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_8 =
-      text_words_init(
-                      "6. Press H if you need to read the instructions again!",
-                      vec_add(text_get_text_position(welcome_7), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_9 =
-      text_words_init(
-                      "7. Press the space bar to start! Good Luck!           ",
-                      vec_add(text_get_text_position(welcome_8), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-
-  scene_add_text(state->scene, welcome_1);
-  scene_add_text(state->scene, welcome_2);
-  scene_add_text(state->scene, welcome_3);
-  scene_add_text(state->scene, welcome_4);
-  scene_add_text(state->scene, welcome_4_2);
-  scene_add_text(state->scene, welcome_5);
-  scene_add_text(state->scene, welcome_5_2);
-  scene_add_text(state->scene, welcome_6);
-  scene_add_text(state->scene, welcome_7);
-  scene_add_text(state->scene, welcome_8);
-  scene_add_text(state->scene, welcome_9);
-}
-
 void game_build_blue_back(game_state_t *state){
   list_t *screen_rect =
         sprite_make_rect(GB_min.x, GB_max.x, GB_min.y, GB_max.y);
@@ -460,77 +389,6 @@ void game_build_help_screen(game_state_t *state){
   state->needs_restart = false;
 }
 
-void game_build_help_instructions(game_state_t *state){
-  vector_t wecome_line_distance = {.x = 0, .y = BEGINNING_GAME_SIZE + 45};
-  vector_t line_distance = {.x = 0, .y = BEGINNING_GAME_SIZE + 25};
-  text_t *welcome_1 = 
-      text_words_erase_init(
-                      "Welcome to the Help Screen! Here are the instructions:  ",
-      BEGINNING_GAME_WELCOME_POSITION, BEGINNING_GAME_WELCOME_SIZE, BEGINNING_GAME_WELCOME_DIMENTIONS);
-  text_t *welcome_2 =
-      text_words_erase_init(
-                      "1. Use the up, down, left, and right arrows to move   ",
-                      vec_add(BEGINNING_GAME_POSITION, wecome_line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_3 = 
-      text_words_erase_init(
-                      "the rocket.                                           ",
-      vec_add(text_get_text_position(welcome_2), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_4 =
-      text_words_erase_init(
-                      "2. Dodge the asteroids on the way! Green asteroids    ",
-                      vec_add(text_get_text_position(welcome_3), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_4_2 =
-      text_words_erase_init(
-                      "increase your health, and red ones decrease it.       ",
-                      vec_add(text_get_text_position(welcome_4), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_5 =
-      text_words_erase_init(
-                      "3. Try to reach the finish line all the way to the    ",
-                      vec_add(text_get_text_position(welcome_4_2), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_5_2 =
-      text_words_erase_init(
-                      "right side in the least amount of time!               ",
-                      vec_add(text_get_text_position(welcome_5), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_6 = 
-      text_words_erase_init(
-                      "4. If fuel runs out, you will restart at Level 1.     ",
-      vec_add(text_get_text_position(welcome_5_2), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_7 = 
-      text_words_erase_init(
-                      "5. If a level is cleared, you will move on to the next.",
-      vec_add(text_get_text_position(welcome_6), line_distance),
-      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_8 =
-      text_words_erase_init(
-                      "6. Press H if you need to read the instructions again!",
-                      vec_add(text_get_text_position(welcome_7), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-  text_t *welcome_9 =
-      text_words_erase_init(
-                      "7. Press the escape button to resume! Good Luck!      ",
-                      vec_add(text_get_text_position(welcome_8), line_distance),
-                      BEGINNING_GAME_SIZE, BEGINNING_GAME_DIMENTIONS);
-
-  scene_add_text(state->scene, welcome_1);
-  scene_add_text(state->scene, welcome_2);
-  scene_add_text(state->scene, welcome_3);
-  scene_add_text(state->scene, welcome_4);
-  scene_add_text(state->scene, welcome_4_2);
-  scene_add_text(state->scene, welcome_5);
-  scene_add_text(state->scene, welcome_5_2);
-  scene_add_text(state->scene, welcome_6);
-  scene_add_text(state->scene, welcome_7);
-  scene_add_text(state->scene, welcome_8);
-  scene_add_text(state->scene, welcome_9);
-}
-
 void game_build_stationary_rockets(game_state_t *state){
   body_t *rocket = game_build_rocket(state->scene, state);
   vector_t rocket_position = {.x = 130, .y = GB_SCREEN_SIZE_Y - 65};
@@ -542,6 +400,7 @@ void game_build_stationary_rockets(game_state_t *state){
   vector_t rocket_2_position = {.x = GB_SCREEN_SIZE_X - 130, .y = GB_SCREEN_SIZE_Y - 65};
   body_set_centroid(rocket_2, rocket_2_position);
   body_set_rotation(rocket_2, M_PI * 1.0 / 2);
+  body_set_type(rocket_2, game_build_body_type_init(HELP_DISPLAY));
 }
 
 void game_build_welcome_background(game_state_t *state){

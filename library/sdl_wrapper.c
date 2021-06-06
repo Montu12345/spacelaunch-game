@@ -143,7 +143,6 @@ bool sdl_is_done() {
   while (SDL_PollEvent(event)) {
     switch (event->type) {
     case SDL_QUIT:
-
       free(event);
       return true;
     case SDL_KEYDOWN:

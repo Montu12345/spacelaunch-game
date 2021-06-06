@@ -120,13 +120,9 @@ body_t *game_build_score_keeper(scene_t *scene, double height, double width);
 
 void game_build_help(game_state_t *state);
 
-void game_build_instructions(game_state_t *state);
-
 void game_build_blue_back(game_state_t *state);
 
 void game_build_help_screen(game_state_t *state);
-
-void game_build_help_instructions(game_state_t *state);
 
 void game_build_stationary_rockets(game_state_t *state);
 
