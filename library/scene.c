@@ -64,7 +64,7 @@ scene_t *scene_init()
 {
   list_t *bodies = list_init(BODIES_DEFAULT_CAPACITY, (free_func_t)body_free);
   list_t *forces = list_init(FORCES_DEFAULT_CAPACITY, (free_func_t)force_free);
-  list_t *text = list_init(TEXT_DEFAULT_CAPACITY, (free_func_t)free);
+  list_t *text = list_init(TEXT_DEFAULT_CAPACITY, (free_func_t)text_free);
   scene_t *scene = malloc(sizeof(scene_t));
   assert(scene != NULL);
   scene->bodies = bodies;

@@ -119,7 +119,7 @@ void screen_game_win_render(game_state_t *state)
   state->ticks += 1;
 }
 
-void free_game_state(game_state_t *state)
+void game_state_free(game_state_t *state)
 {
   scene_free(state->scene);
   free(state->texts);
@@ -194,5 +194,5 @@ int main(int argc, char *argv[])
     sdl_render_scene(state->scene);
   }
   TTF_Quit();
-  free_game_state(state);
+  game_state_free(state);
 }
