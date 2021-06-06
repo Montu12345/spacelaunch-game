@@ -86,11 +86,11 @@ void game_actions_help_end(game_state_t *state){
         break;
     }
   }
-  for (int i = 0; i < scene_text(state->scene); i++){
-    if(*(enum text_type_t *)text_get_type(scene_get_text(state->scene, i)) == WORDS_ONLY_ERASE){
-        scene_remove_text(state->scene, i);
-    }
-  }
+  // for (int i = 0; i < scene_text(state->scene); i++){
+  //   if(*(enum text_type_t *)text_get_type(scene_get_text(state->scene, i)) == WORDS_ONLY_ERASE){
+  //       scene_remove_text(state->scene, i);
+  //   }
+  // }
 }
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max) {
@@ -157,6 +157,10 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
     case H_KEY:
       state->current_screen = SCREEN_HELP;
       state->needs_restart = true;
+      for (size_t i = 0; i < scene_text(state->scene); i++) {
+          text_t *text = scene_get_text(state->scene, i);
+          text_set_type(text, text_type_init(WORDS_ERASE));
+        }
       break;
     default:
       break;
@@ -177,8 +181,12 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
       if (key == ESC_KEY) {
         state->current_screen = SCREEN_GAME;
         state->needs_restart = false;
+        for (size_t i = 0; i < scene_text(state->scene); i++) {
+          text_t *text = scene_get_text(state->scene, i);
+          text_set_type(text, text_type_init(WORDS_STAY));
+        }
+      }
     }
-  }
 }
 
 void game_actions_new_health(game_state_t *state, int scale) {
@@ -211,7 +219,6 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid,
 
 void game_actions_end_collision(body_t *focal_body, body_t *asteroid,
                                 vector_t axis, game_state_t *state) {
-  printf("reached the end\n");
   game_actions_game_win(state);
 }
 

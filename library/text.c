@@ -21,31 +21,7 @@ enum text_type_t *text_type_init(enum text_type_t t) {
   return text_type;
 }
 
-text_t *text_words_init(char *words, vector_t text_position, double text_size,
-                        vector_t text_dimensions) {
-  text_t *params = malloc(sizeof(text_t));
-  *params = (text_t){.words = words,
-                     .text_position = text_position,
-                     .text_size = text_size,
-                     .numbers = 0,
-                     .text_dimensions = text_dimensions,
-                     .info = text_type_init(WORDS_ONLY)};
-  return params;
-}
-
-text_t *text_words_erase_init(char *words, vector_t text_position, double text_size,
-                        vector_t text_dimensions) {
-  text_t *params = malloc(sizeof(text_t));
-  *params = (text_t){.words = words,
-                     .text_position = text_position,
-                     .text_size = text_size,
-                     .numbers = 0,
-                     .text_dimensions = text_dimensions,
-                     .info = text_type_init(WORDS_ONLY_ERASE)};
-  return params;
-}
-
-text_t *text_numbers_init(char *words, vector_t text_position, double text_size,
+text_t *text_init(char *words, vector_t text_position, double text_size,
                           double numbers, vector_t text_dimensions) {
   text_t *params = malloc(sizeof(text_t));
   *params = (text_t){.words = words,
@@ -53,7 +29,7 @@ text_t *text_numbers_init(char *words, vector_t text_position, double text_size,
                      .text_size = text_size,
                      .numbers = numbers,
                      .text_dimensions = text_dimensions,
-                     .info = text_type_init(WORDS_NUMBER)};
+                     .info = text_type_init(WORDS_STAY)};
   return params;
 }
 
@@ -71,6 +47,10 @@ void text_set_numbers(text_t *text, double numbers) { text->numbers = numbers; }
 
 void text_set_text_dimensions(text_t *text, vector_t text_dimensions) {
   text->text_dimensions = text_dimensions;
+}
+
+void text_set_type(text_t *text, void* type){
+  text->info = type;
 }
 
 char *text_get_words(text_t *text) { return text->words; }

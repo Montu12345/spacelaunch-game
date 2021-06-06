@@ -252,8 +252,13 @@ void sdl_create_words_numbers(text_t *text) {
   TTF_Font *font = font = TTF_OpenFont("CourierPrime-Regular.ttf", 100);
   SDL_Color color = {255, 255, 255};
   char score_print[500];
-  sprintf(score_print, "%s%d", text_get_words(text),
+  if (text_get_numbers(text) > -1){
+    sprintf(score_print, "%s%d", text_get_words(text),
           (int)text_get_numbers(text));
+  }   
+  else{
+    sprintf(score_print, "%s", text_get_words(text));
+  }
   SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_Rect *boundary = malloc(sizeof(SDL_Rect));
@@ -314,11 +319,7 @@ void sdl_render_scene(scene_t *scene) {
   size_t text_count = scene_text(scene);
   for (size_t i = 0; i < text_count; i++) {
     text_t *text = scene_get_text(scene, i);
-    if (*(enum text_type_t *)text_get_type(text) == WORDS_ONLY || 
-    *(enum text_type_t *)text_get_type(text) == WORDS_ONLY_ERASE) {
-      sdl_create_words_only(text);
-    }
-    if (*(enum text_type_t *)text_get_type(text) == WORDS_NUMBER) {
+    if (*(enum text_type_t *)text_get_type(text) == WORDS_STAY){
       sdl_create_words_numbers(text);
     }
   }

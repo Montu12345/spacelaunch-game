@@ -11,19 +11,19 @@
 typedef struct text text_t;
 
 enum text_type_t {
-  WORDS_ONLY,
-  WORDS_NUMBER,
-  WORDS_ONLY_ERASE,
+  WORDS_STAY,
+  WORDS_ERASE,
 };
 
-text_t *text_words_init(char *words, vector_t text_position, double text_size,
-                        vector_t text_dimensions);
+enum text_type_t *text_type_init(enum text_type_t t);
+// text_t *text_words_init(char *words, vector_t text_position, double text_size,
+//                         vector_t text_dimensions);
 
-text_t *text_numbers_init(char *words, vector_t text_position, double text_size,
+text_t *text_init(char *words, vector_t text_position, double text_size,
                           double numbers, vector_t text_dimensions);
 
-text_t *text_words_erase_init(char *words, vector_t text_position, double text_size,
-                        vector_t text_dimensions);
+// text_t *text_words_erase_init(char *words, vector_t text_position, double text_size,
+//                         vector_t text_dimensions);
 
 void text_set_words(text_t *text, char *words);
 
@@ -34,6 +34,8 @@ void text_set_text_size(text_t *text, double text_size);
 void text_set_numbers(text_t *text, double numbers);
 
 void text_set_text_dimensions(text_t *text, vector_t text_dimensions);
+
+void text_set_type(text_t *text, void* type);
 
 char *text_get_words(text_t *text);
 

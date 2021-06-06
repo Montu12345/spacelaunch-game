@@ -81,7 +81,7 @@ void screen_game_over_render(game_state_t *state) {
     state->rocket = NULL;
     state->needs_restart = false;
     state->level = 1;
-    text_t *score = text_numbers_init("SCORE: ", END_GAME_SCORE_POSITION,
+    text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
                                       END_GAME_SCORE_SIZE, state->score,
                                       END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
@@ -98,7 +98,7 @@ void screen_game_win_render(game_state_t *state) {
     game_build_won_background(state);
     state->rocket = NULL;
     state->needs_restart = false;
-    text_t *score = text_numbers_init("SCORE: ", END_GAME_SCORE_POSITION,
+    text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
                                       END_GAME_SCORE_SIZE, state->score,
                                       END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
