@@ -31,6 +31,7 @@ typedef struct game_texts {
   text_t *timer;
   text_t *health;
   text_t *level;
+  text_t *power_up;
 } game_texts_t;
 
 /**
@@ -55,8 +56,7 @@ typedef struct game_state {
 
   int thrust_ticks_remaining;
 
-  bool restart_game;
-
+  bool quit_game;
 } game_state_t;
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max);
@@ -135,5 +135,7 @@ void game_help_setup(game_state_t *state);
 void game_actions_help_end(game_state_t *state);
 
 void game_actions_game_win(game_state_t *state);
+
+void game_actions_remove_power_up_text(game_state_t *state, int index);
 
 #endif // #ifndef __GAME_ACTIONS_H__

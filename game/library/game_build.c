@@ -62,6 +62,10 @@ const vector_t GB_HELP_POSITION = {.x = 10, .y = GB_SCREEN_SIZE_Y - 50};
 const vector_t GB_HELP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 50, .y = GB_TEXT_HEIGHT};
 const int GB_HELP_SIZE = 200;
 
+const vector_t GB_POWERUP_POSITION = {.x = GB_SCREEN_SIZE_X / 2 - (GB_TEXT_WIDTH + 100) / 2.0, .y = 50};
+const vector_t GB_POWERUP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 100, .y = GB_TEXT_HEIGHT};
+const int GB_POWERUP_SIZE = 300;
+
 const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
 const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
@@ -323,6 +327,14 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height) {
   return score_display;
 }
 
+void game_build_powerup_text(game_state_t *state, char *words){
+  text_t *power_up_text = text_init(words, GB_POWERUP_POSITION,
+                                 GB_POWERUP_SIZE, -150, GB_POWERUP_DIMENSIONS);
+  text_set_type(power_up_text, text_type_init(WORDS_POWERUP));
+  state->texts->power_up = power_up_text;
+  scene_add_text(state->scene, state->texts->power_up);
+}
+
 void game_build_display_score(game_state_t *state) {
   state->texts->score =
       text_init("SCORE: ", GB_SCORE_POSITION, GB_TEXT_WIDTH,
@@ -356,6 +368,7 @@ void game_build_display_text(game_state_t *state) {
   game_build_display_timer(state);
   game_build_display_health(state);
   game_build_display_level(state);
+  
 }
 
 void game_update_texts(game_state_t *state) {
@@ -363,6 +376,16 @@ void game_update_texts(game_state_t *state) {
   text_set_numbers(state->texts->timer, state->timer);
   text_set_numbers(state->texts->health, state->health);
   text_set_numbers(state->texts->level, state->level);
+  size_t text_count = scene_text(state->scene);
+  for (size_t i = 0; i < text_count; i++) {
+    text_t *text = scene_get_text(state->scene, i);
+    if(*(enum text_type_t *)text_get_type(text) == WORDS_POWERUP){
+      text_set_numbers(state->texts->power_up, text_get_numbers(state->texts->power_up) + 1);
+      game_actions_remove_power_up_text(state, i);
+      break;
+    }
+  }
+  
 }
 
 void game_build_help(game_state_t *state) {
@@ -432,3 +455,4 @@ void game_build_won_background(game_state_t *state){
   body_set_movable(won, false);
   scene_add_body(state->scene, won);
 }
+

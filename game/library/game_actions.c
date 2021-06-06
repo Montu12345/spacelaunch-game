@@ -86,11 +86,6 @@ void game_actions_help_end(game_state_t *state){
         break;
     }
   }
-  // for (int i = 0; i < scene_text(state->scene); i++){
-  //   if(*(enum text_type_t *)text_get_type(scene_get_text(state->scene, i)) == WORDS_ONLY_ERASE){
-  //       scene_remove_text(state->scene, i);
-  //   }
-  // }
 }
 
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max) {
@@ -138,7 +133,7 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
     return;
   }
   if(key == Q_KEY){
-    state->restart_game = true;
+    state->quit_game = true;
   }
   if (state->current_screen == SCREEN_GAME || state->current_screen == SCREEN_CONTINUE) {
     switch (key) {
@@ -210,13 +205,25 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid,
   body_add_impulse(focal_body, j1);
   body_add_impulse(asteroid, j2);
   if (*(enum space_body_type_t *)body_get_info(asteroid) == GOOD_OBSTACLE) {
-    game_actions_new_health(state, 10);
+    if (rand() % 4 == 0){
+      game_build_powerup_text(state, "YOU LOST 75 POINTS");
+      game_actions_new_health(state, -75);
+    }
+    else{
+       game_actions_new_health(state, 10);
+    }
+    
   } else if (*(enum space_body_type_t *)body_get_info(asteroid) ==
              BAD_OBSTACLE) {
     game_actions_new_health(state, -10);
   }
 }
 
+void game_actions_remove_power_up_text(game_state_t *state, int index){
+  if (text_get_numbers(state->texts->power_up) > -10){
+    scene_remove_text(state->scene, index);
+  }
+}
 void game_actions_end_collision(body_t *focal_body, body_t *asteroid,
                                 vector_t axis, game_state_t *state) {
   game_actions_game_win(state);

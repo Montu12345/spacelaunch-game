@@ -59,6 +59,7 @@ void screen_game_render(game_state_t *state) {
   } else {
     game_actions_help_end(state);
     game_update_texts(state);
+    
   }
   state->ticks += 1;
   if (state->thrust_ticks_remaining > 0) {
@@ -121,7 +122,7 @@ int main(int argc, char *argv[]) {
   state->current_screen = SCREEN_START;
   state->needs_restart = true;
   state->thrust_ticks_remaining = 0;
-  state->restart_game = false;
+  state->quit_game = false;
 
   // Initialize SDL
   TTF_Init();
@@ -143,7 +144,7 @@ int main(int argc, char *argv[]) {
 
   // Render the correct screen each tick.
   while (!sdl_is_done()) {
-    if(state->restart_game){
+    if(state->quit_game){
       break;
     }
     double dt = time_since_last_tick();

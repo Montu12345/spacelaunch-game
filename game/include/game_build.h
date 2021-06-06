@@ -132,4 +132,8 @@ void game_build_won_background(game_state_t *state);
 
 void game_build_lost_background(game_state_t *state);
 
+void game_build_powerup_text(game_state_t *state, char *words);
+
+void game_build_display_level(game_state_t *state);
+
 #endif // #ifndef __GAME_BUILD_H__

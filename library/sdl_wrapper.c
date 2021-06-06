@@ -322,6 +322,9 @@ void sdl_render_scene(scene_t *scene) {
     if (*(enum text_type_t *)text_get_type(text) == WORDS_STAY){
       sdl_create_words_numbers(text);
     }
+    if(*(enum text_type_t *)text_get_type(text) == WORDS_POWERUP){
+      sdl_create_words_numbers(text);
+    }
   }
 
   sdl_show();
