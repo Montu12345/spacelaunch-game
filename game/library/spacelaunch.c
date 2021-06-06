@@ -121,7 +121,6 @@ void screen_game_win_render(game_state_t *state)
 
 void game_state_free(game_state_t *state)
 {
-  printf("scene free\n");
   scene_free(state->scene);
   free(state->texts);
   free(state);

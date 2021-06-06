@@ -145,21 +145,57 @@ void game_build_draw_stary_night(scene_t *scene)
 
 char *rocket_resource_path(game_state_t *state)
 {
-    char *idle_texture = "game/textures/rocket/rocket_idle.png";
-
     // If the body does not yet exist or it is not moving, return the idle image.
     if (!state->rocket || state->thrust_ticks_remaining == 0)
     {
-        return idle_texture;
+        return "game/textures/rocket/rocket_idle.png\0";
     }
 
     // Rocket is moving, get animation frame
-    char *format = "game/textures/rocket/rocket%d.png";
+    // char *format = "game/textures/rocket/rocket%d.png";
     int texture_idx = 1 + (state->ticks % ROCKET_TEXTURE_COUNT);
-    char *path = malloc(strlen(format) * sizeof(char));
-    sprintf(path, format, texture_idx);
-    return path;
+    // char *path = malloc(strlen(format) * sizeof(char));
+    // sprintf(path, format, texture_idx);
+
+    switch (texture_idx)
+    {
+    case 1:
+        return "game/textures/rocket/rocket1.png\0";
+        break;
+    case 2:
+        return "game/textures/rocket/rocket2.png\0";
+        break;
+    case 3:
+        return "game/textures/rocket/rocket3.png\0";
+        break;
+    default:
+        return "game/textures/rocket/rocket4.png\0";
+        break;
+    }
+
+    // return path;
 }
+
+// char *rocket_resource_path(game_state_t *state)
+// {
+
+//     char *path = malloc(37 * sizeof(char));
+
+//     // If the body does not yet exist or it is not moving, return the idle image.
+//     // if (!state->rocket || state->thrust_ticks_remaining == 0)
+//     // {
+//     path = "game/textures/rocket/rocket_idle.png\0";
+//     // }
+//     // else
+//     // {
+//     //     // Rocket is moving, get animation frame
+//     //     int texture_idx = 1 + (state->ticks % ROCKET_TEXTURE_COUNT);
+//     //     sprintf(path, "game/textures/rocket/rocket%d.png\0", texture_idx);
+//     // }
+
+//     return path;
+//     // return path;
+// }
 
 body_t *game_build_rocket(scene_t *scene, game_state_t *state)
 {
@@ -456,7 +492,6 @@ void game_build_stationary_rocket(game_state_t *state, vector_t rocket_position)
 
 void game_build_stationary_rockets(game_state_t *state)
 {
-    printf("build stationary rockets\n");
     state->thrust_ticks_remaining = GB_MAX_THRUST_TICKS;
     vector_t rocket_1_position = {.x = 130, .y = GB_SCREEN_SIZE_Y - 65};
     vector_t rocket_2_position = {.x = GB_SCREEN_SIZE_X - 130, .y = GB_SCREEN_SIZE_Y - 65};

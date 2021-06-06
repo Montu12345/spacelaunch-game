@@ -68,7 +68,6 @@ void game_beginning_setup(game_state_t *state)
 {
     if (state->ticks == 0)
     {
-        printf("Set scene to scene_init\n");
         state->scene = scene_init();
         state->needs_restart = false;
         game_build_welcome_background(state);
@@ -108,7 +107,6 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     state->texts = texts;
     body_t *score_display =
         game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT);
-    printf("set scene to screen_init\n");
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
