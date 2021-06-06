@@ -21,7 +21,7 @@ char *GB_BAD_ASTEROID_TEXTURE = "game/textures/bad_asteroid.png";
 char *GB_WELCOME_TEXTURE = "game/textures/welcome.png";
 char *GB_HELP_TEXTURE = "game/textures/help.png";
 char *GB_LOST_TEXTURE = "game/textures/lost.png";
-char *GB_WON_TEXTURE = "game/textures/lost.png";
+char *GB_WON_TEXTURE = "game/textures/won.png";
 const int GB_ASTEROIDS_PER_LEVEL = 10;
 
 const rgb_color_t GB_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = .55};

@@ -74,7 +74,7 @@ void game_beginning_setup(game_state_t *state) {
 void game_help_setup(game_state_t *state){
   if (state->ticks == 0) {
     game_build_help_screen(state);
-    game_build_stationary_rockets(state);
+    // game_build_stationary_rockets(state);
   }
   state->ticks += 1;
 }
