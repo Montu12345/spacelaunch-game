@@ -342,7 +342,6 @@ void body_add_impulse(body_t *body, vector_t impulse);
  */
 bool body_has_impulse(body_t *body);
 
-
 /**
  * Returns the body's force.
  *
@@ -369,7 +368,5 @@ void body_tick(body_t *body, double dt);
  * @param movement the result of the camera_mover_func_t on offset
  */
 void body_adjust_for_camera(body_t *body, vector_t movement);
-
-void body_set_type(body_t *body, void* type);
 
 #endif // #ifndef __BODY_H__

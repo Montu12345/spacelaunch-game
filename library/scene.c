@@ -77,6 +77,7 @@ scene_t *scene_init()
 
 void scene_free(scene_t *scene)
 {
+  printf("number of bodies in scene free:%zu\n", list_size(scene->bodies));
   list_free(scene->bodies);
   list_free(scene->forces);
   list_free(scene->text);

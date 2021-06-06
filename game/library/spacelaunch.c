@@ -121,6 +121,7 @@ void screen_game_win_render(game_state_t *state)
 
 void game_state_free(game_state_t *state)
 {
+  printf("scene free\n");
   scene_free(state->scene);
   free(state->texts);
   free(state);
@@ -133,6 +134,7 @@ int main(int argc, char *argv[])
 
   // Initialize the game state
   game_state_t *state = malloc(sizeof(game_state_t));
+  state->texts = NULL;
   state->current_screen = SCREEN_START;
   state->needs_restart = true;
   state->thrust_ticks_remaining = 0;
