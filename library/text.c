@@ -61,6 +61,10 @@ void text_set_text_dimensions(text_t *text, vector_t text_dimensions)
 
 void text_set_type(text_t *text, void *type)
 {
+  if (text->info)
+  {
+    free(text->info);
+  }
   text->info = type;
 }
 

@@ -333,11 +333,7 @@ void sdl_render_scene(scene_t *scene)
       double rotation_radians = body_get_rotation(body);
       // Must be converted to clockwise, in degrees
       double rotation = -180 * rotation_radians / M_PI;
-      // sdl_draw_img(SDL_strdup(texture_path), screen_bounds, rotation);
-      // sdl_draw_img(strdup(texture_path), screen_bounds, rotation);
       sdl_draw_img(texture_path, screen_bounds, rotation);
-      // printf("Texture path: %s\n", texture_path);
-      // free(texture_path);
     }
     else
     {

@@ -185,6 +185,7 @@ void handle_key_press(char key, key_event_type_t type, double held_time,
         if (key == A_KEY)
         {
             state->current_screen = SCREEN_GAME;
+            scene_free(state->scene);
             state->needs_restart = true;
         }
     }
