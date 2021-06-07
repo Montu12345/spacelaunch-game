@@ -130,7 +130,7 @@ void game_build_shooting_star(scene_t *scene)
     scene_add_body(scene, shooting_star);
 }
 
-void game_build_draw_stary_night(scene_t *scene)
+void game_build_draw_starry_night(scene_t *scene)
 {
     game_build_sky(scene);
     game_build_stars(scene);
@@ -226,8 +226,7 @@ void game_build_draw_asteroids(game_state_t *state)
     int squares_y = arena_height / GB_ASTEROID_CONTAINER_LENGTH;
     int total_squares = squares_x * squares_y;
 
-    // Generated Monte Carlo-style. Number of asteroids is, on average,
-    // total_astroids.
+    // Generated Monte Carlo-style. Average number of asteroids is total_astroids
     int total_asteroids = GB_ASTEROIDS_PER_LEVEL * state->level;
     double density = total_asteroids / (double)total_squares;
 
@@ -247,7 +246,6 @@ void game_build_draw_asteroids(game_state_t *state)
                                      .y =
                                          y_offset + (y * GB_ASTEROID_CONTAINER_LENGTH)};
 
-                // printf("squares %f %f\n", centroid.x, centroid.y);
                 game_build_asteroid(state, centroid);
             }
         }
@@ -342,9 +340,9 @@ void game_build_asteroid(game_state_t *state, vector_t centroid)
 
 body_t *game_build_score_keeper(scene_t *scene, double width, double height)
 {
-    list_t *score_display_list = sprite_make_rect(0, width, 0, height);
+    list_t *score_display_rect = sprite_make_rect(0, width, 0, height);
     body_t *score_display =
-        body_init_with_info(score_display_list, INFINITY, SCORE_DISPLAY_COLOR,
+        body_init_with_info(score_display_rect, INFINITY, SCORE_DISPLAY_COLOR,
                             space_body_type_init(SCORE_DISPLAY), free);
 
     vector_t score_centroid = SCORE_DISPLAY_LEFT;
