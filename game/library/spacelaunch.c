@@ -138,6 +138,7 @@ int main(int argc, char *argv[])
   state->needs_restart = true;
   state->thrust_ticks_remaining = 0;
   state->quit_game = false;
+  state->texts = malloc(sizeof(game_texts_t));
 
   // Initialize SDL
   TTF_Init();
