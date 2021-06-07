@@ -16,6 +16,8 @@ enum text_type_t {
   WORDS_POWERUP,
 };
 
+void text_free(text_t *text);
+
 enum text_type_t *text_type_init(enum text_type_t t);
 // text_t *text_words_init(char *words, vector_t text_position, double text_size,
 //                         vector_t text_dimensions);

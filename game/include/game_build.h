@@ -17,43 +17,10 @@
 #include "sdl_wrapper.h"
 #include "sprite.h"
 
-const int GB_SCREEN_SIZE_X;
-const int GB_SCREEN_SIZE_Y;
-
-const int GB_MAX_OBSTACLES_SCREEN_SIZE_X;
-const int GB_MAX_OBSTACLES_SCREEN_SIZE_Y;
-
-const double GB_ASTEROID_MASS;
-const rgb_color_t GB_BAD_ASTEROID_COLOR;
-const rgb_color_t GB_GOOD_ASTEROID_COLOR;
-const int GB_INITIAL_ASTEROIDS;
-const int GB_ASTEROID_RADIUS;
-
-const rgb_color_t GB_BACKGROUND_COLOR;
-
-const int GB_DISTANCE_BETWEEN_STARS;
-const double GB_FREQUENCY_FOR_STARS;
-const rgb_color_t GB_STAR_COLOR;
-const int GB_STAR_NUM_OF_POINTS;
-const int GB_STAR_MIN_LENGTH;
-const int GB_STAR_MAX_LENGTH;
-
-const vector_t GB_ROCKET_INITIAL_POS;
-const int GB_ROCKET_RADIUS;
-const double GB_ROCKET_MASS;
-const rgb_color_t GB_ROCKET_COLOR;
-
-const int GB_SHOOTING_STAR_RADIUS;
-const int GB_SHOOTING_STAR_MASS;
-const rgb_color_t GB_SHOOTING_STAR_COLOR;
-const vector_t GB_SHOOTING_STAR_VELCOITY;
-
-const int SCORE_DISPLAY_HIGHT;
-const int SCORE_DISPLAY_WIDTH;
-const vector_t SCORE_DISPLAY_POSITION;
-const rgb_color_t SCORE_DISPLAY_COLOR;
-
 typedef struct game_state game_state_t;
+
+
+enum space_body_type_t *space_body_type_init(enum space_body_type_t b);
 
 /**
  * Makes a shooting star.
@@ -84,7 +51,7 @@ void game_build_draw_stary_night(scene_t *scene);
  * @param state the game state
  * @return pointer to the rocket
  */
-body_t *game_build_rocket(scene_t *scene, game_state_t *state);
+body_t *game_build_rocket(scene_t *scene, game_state_t *state, void* type);
 
 /**
  * Creates the sky.
