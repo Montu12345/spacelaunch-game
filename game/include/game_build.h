@@ -19,6 +19,9 @@
 
 typedef struct game_state game_state_t;
 
+
+enum space_body_type_t *space_body_type_init(enum space_body_type_t b);
+
 /**
  * Makes a shooting star.
  *
@@ -48,7 +51,7 @@ void game_build_draw_stary_night(scene_t *scene);
  * @param state the game state
  * @return pointer to the rocket
  */
-body_t *game_build_rocket(scene_t *scene, game_state_t *state);
+body_t *game_build_rocket(scene_t *scene, game_state_t *state, void* type);
 
 /**
  * Creates the sky.

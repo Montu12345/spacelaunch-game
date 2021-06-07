@@ -111,7 +111,7 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     state->score = 0;
     state->health = 100;
     state->timer = 0;
-    body_t *rocket = game_build_rocket(scene, state);
+    body_t *rocket = game_build_rocket(scene, state, space_body_type_init(ROCKET));
     state->rocket = rocket;
     game_build_help(state);
     game_build_draw_asteroids(state);

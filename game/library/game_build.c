@@ -117,19 +117,12 @@ enum space_body_type_t *space_body_type_init(enum space_body_type_t b)
     return body_type;
 }
 
-enum space_body_type_t *game_build_body_type_init(enum space_body_type_t b)
-{
-    enum space_body_type_t *body_type = malloc(sizeof(enum space_body_type_t));
-    *body_type = b;
-    return body_type;
-}
-
 void game_build_shooting_star(scene_t *scene)
 {
     list_t *shooting_star_list = sprite_make_circle(GB_SHOOTING_STAR_RADIUS);
     body_t *shooting_star = body_init_with_info(
         shooting_star_list, GB_SHOOTING_STAR_MASS, GB_SHOOTING_STAR_COLOR,
-        game_build_body_type_init(STAR), free);
+        space_body_type_init(STAR), free);
     vector_t pos = {.x = 0, .y = rand() % (int)ARENA_MAX.x};
     vector_t velocity = GB_SHOOTING_STAR_VELCOITY;
     body_set_velocity(shooting_star, velocity);
@@ -171,13 +164,12 @@ char *rocket_resource_path(game_state_t *state)
     }
 }
 
-
-body_t *game_build_rocket(scene_t *scene, game_state_t *state)
+body_t *game_build_rocket(scene_t *scene, game_state_t *state, void *type)
 {
     list_t *rocket_shape = sprite_make_circle(GB_ROCKET_RADIUS);
     body_t *rocket =
         body_init_with_info(rocket_shape, GB_ROCKET_MASS, GB_ROCKET_COLOR,
-                            game_build_body_type_init(ROCKET), free);
+                            type, free);
     body_set_centroid(rocket, GB_ROCKET_INITIAL_POS);
     body_set_movable(rocket, true);
     body_set_texture_path_func(rocket, (texture_path_func_t)rocket_resource_path,
@@ -193,7 +185,7 @@ void game_build_sky(scene_t *scene)
         (int)ARENA_MIN.x, (int)ARENA_MAX.x, (int)ARENA_MIN.y, (int)ARENA_MAX.y);
     body_t *background =
         body_init_with_info(background_list, INFINITY, GB_BACKGROUND_COLOR,
-                            game_build_body_type_init(BACKGROUND_OBJECT), free);
+                            space_body_type_init(BACKGROUND_OBJECT), free);
     scene_add_body(scene, background);
 }
 
@@ -208,7 +200,7 @@ void game_build_stars(scene_t *scene)
             list_t *star_list = sprite_make_star(
                 GB_STAR_NUM_OF_POINTS, GB_STAR_MIN_LENGTH, GB_STAR_MAX_LENGTH);
             body_t *star = body_init_with_info(star_list, INFINITY, GB_STAR_COLOR,
-                                               game_build_body_type_init(STAR), free);
+                                               space_body_type_init(STAR), free);
             vector_t pos = {.x = i * GB_DISTANCE_BETWEEN_STARS,
                             .y = j * GB_DISTANCE_BETWEEN_STARS +
                                  ((int)i % 2) * GB_DISTANCE_BETWEEN_STARS / 2.0};
@@ -270,7 +262,7 @@ void game_build_endzone(game_state_t *state)
     vector_t centroid = {.x = ARENA_MAX.x - (GB_FENCE_DEPTH / 2),
                          .y = ARENA_MIN.y - (GB_FENCE_DEPTH / 2) +
                               arena_height / 2.0};
-    enum space_body_type_t *obstacle_type = game_build_body_type_init(ENDZONE);
+    enum space_body_type_t *obstacle_type = space_body_type_init(ENDZONE);
     body_t *endzone = body_init_with_info(shape, INFINITY,
                                           (rgb_color_t){.r = 1, .g = 1, .b = 1},
                                           obstacle_type, free);
@@ -283,7 +275,7 @@ void game_build_endzone(game_state_t *state)
 
 void add_fence_to_scene(game_state_t *state, list_t *shape, vector_t centroid)
 {
-    enum space_body_type_t *obstacle_type = game_build_body_type_init(FENCE);
+    enum space_body_type_t *obstacle_type = space_body_type_init(FENCE);
     body_t *fence =
         body_init_with_info(shape, INFINITY, FENCE_COLOR, obstacle_type, free);
     body_set_centroid(fence, centroid);
@@ -329,13 +321,13 @@ void game_build_asteroid(game_state_t *state, vector_t centroid)
     if (is_good_asteroid)
     {
         color = GB_BAD_ASTEROID_COLOR;
-        obstacle_type = game_build_body_type_init(GOOD_OBSTACLE);
+        obstacle_type = space_body_type_init(GOOD_OBSTACLE);
     }
     else
     {
         texture_path = GB_BAD_ASTEROID_TEXTURE;
         color = GB_GOOD_ASTEROID_COLOR;
-        obstacle_type = game_build_body_type_init(BAD_OBSTACLE);
+        obstacle_type = space_body_type_init(BAD_OBSTACLE);
     }
     body_t *asteroid =
         body_init_with_info(circle, GB_ASTEROID_MASS, color, obstacle_type, free);
@@ -353,7 +345,7 @@ body_t *game_build_score_keeper(scene_t *scene, double width, double height)
     list_t *score_display_list = sprite_make_rect(0, width, 0, height);
     body_t *score_display =
         body_init_with_info(score_display_list, INFINITY, SCORE_DISPLAY_COLOR,
-                            game_build_body_type_init(SCORE_DISPLAY), free);
+                            space_body_type_init(SCORE_DISPLAY), free);
 
     vector_t score_centroid = SCORE_DISPLAY_LEFT;
     score_centroid.x += width / 2;
@@ -442,14 +434,14 @@ void game_build_blue_back(game_state_t *state)
 {
     list_t *screen_rect =
         sprite_make_rect(GB_min.x, GB_max.x, GB_min.y, GB_max.y);
-    body_t *background = body_init_with_info(screen_rect, 0, GB_BACKGROUND_COLOR, game_build_body_type_init(HELP_DISPLAY), free);
+    body_t *background = body_init_with_info(screen_rect, 0, GB_BACKGROUND_COLOR, space_body_type_init(HELP_DISPLAY), free);
     scene_add_body(state->scene, background);
 }
 
 void game_build_help_screen(game_state_t *state)
 {
     list_t *rectangle = sprite_make_rect(0, GB_SCREEN_SIZE_X, 0, GB_SCREEN_SIZE_Y);
-    body_t *help = body_init_with_info(rectangle, GB_ASTEROID_MASS, GB_RED, game_build_body_type_init(HELP_DISPLAY), free);
+    body_t *help = body_init_with_info(rectangle, GB_ASTEROID_MASS, GB_RED, space_body_type_init(HELP_DISPLAY), free);
     body_set_static_texture_path(help, GB_HELP_TEXTURE);
     vector_t centroid = {.x = GB_SCREEN_SIZE_X / 2.0, .y = GB_SCREEN_SIZE_Y / 2.0};
     body_set_centroid(help, centroid);
@@ -460,7 +452,7 @@ void game_build_help_screen(game_state_t *state)
 
 void game_build_stationary_rocket(game_state_t *state, vector_t rocket_position)
 {
-    body_t *rocket = game_build_rocket(state->scene, state);
+    body_t *rocket = game_build_rocket(state->scene, state, (enum space_body_type_t *)space_body_type_init(HELP_DISPLAY));
     body_set_centroid(rocket, rocket_position);
     body_set_rotation(rocket, M_PI / 2.0);
 }
