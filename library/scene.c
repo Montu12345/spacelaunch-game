@@ -227,7 +227,8 @@ text_t *scene_get_text(scene_t *scene, size_t index)
 
 void scene_remove_text(scene_t *scene, size_t index)
 {
-  list_remove(scene->text, index);
+  text_t *text = list_remove(scene->text, index);
+  text_free(text);
 }
 
 void scene_tick(scene_t *scene, double dt)
