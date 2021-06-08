@@ -107,7 +107,7 @@ void game_actions_help_end(game_state_t *state)
 void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
 {
     scene_t *scene = scene_init();
-    game_build_draw_stary_night(scene);
+    game_build_draw_starry_night(scene);
     body_t *score_display =
         game_build_score_keeper(scene, SCORE_DISPLAY_WIDTH, SCORE_DISPLAY_HEIGHT);
     state->scene = scene;

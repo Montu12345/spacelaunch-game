@@ -92,9 +92,9 @@ void screen_game_over_render(game_state_t *state)
     state->rocket = NULL;
     state->needs_restart = false;
     state->level = 1;
-    text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
-                              END_GAME_SCORE_SIZE, state->score,
-                              END_GAME_SCORE_DIMENSIONS);
+    text_t *score =
+        text_init("SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
+                  state->score, END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
     game_build_lost_background(state);
   }
@@ -111,9 +111,9 @@ void screen_game_win_render(game_state_t *state)
     game_build_won_background(state);
     state->rocket = NULL;
     state->needs_restart = false;
-    text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
-                              END_GAME_SCORE_SIZE, state->score,
-                              END_GAME_SCORE_DIMENSIONS);
+    text_t *score =
+        text_init("SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
+                  state->score, END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
   }
   state->ticks += 1;
@@ -147,15 +147,17 @@ int main(int argc, char *argv[])
   sdl_on_key((key_handler_t)handle_key_press);
 
   // Start the music
+
+  // Used resource:
+  // https://gigi.nullneuron.net/gigilabs/playing-a-wav-file-using-sdl2/
   SDL_Init(SDL_INIT_AUDIO);
-  SDL_AudioSpec wavSpec;
-  Uint32 wavLength;
-  Uint8 *wavBuffer;
-  SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
-
-  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-
-  SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+  SDL_AudioSpec *wavSpec = malloc(sizeof(SDL_AudioSpec));
+  Uint32 *wavLength = malloc(sizeof(Uint32));
+  Uint8 **wavBuffer = malloc(sizeof(Uint8 *));
+  SDL_RWops *src = SDL_RWFromFile("Interlude.wav", "rb");
+  SDL_LoadWAV_RW(src, 1, wavSpec, wavBuffer, wavLength);
+  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, wavSpec, NULL, 0);
+  SDL_QueueAudio(deviceId, *wavBuffer, *wavLength);
   SDL_PauseAudioDevice(deviceId, 0);
 
   // Render the correct screen each tick.
@@ -199,5 +201,8 @@ int main(int argc, char *argv[])
   game_state_free(state);
 
   SDL_CloseAudioDevice(deviceId);
-  SDL_FreeWAV(wavBuffer);
+  SDL_FreeWAV(*wavBuffer);
+  free(wavLength);
+  free(wavBuffer);
+  free(wavSpec);
 }
