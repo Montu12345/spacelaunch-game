@@ -192,9 +192,9 @@ void game_build_sky(scene_t *scene)
 void game_build_stars(scene_t *scene)
 {
 
-    for (double i = ARENA_MIN.y; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
+    for (double i = ARENA_MIN.y - 5 ; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
     {
-        for (double j = ARENA_MIN.x; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
+        for (double j = ARENA_MIN.x- 10; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
              j++)
         {
             list_t *star_list = sprite_make_star(
