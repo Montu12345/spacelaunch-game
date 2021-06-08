@@ -43,38 +43,29 @@ const vector_t WIN_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 700 / 2.0,
 const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
 
-void update_score(game_state_t *state)
-{
-  if (!state->needs_restart)
-  {
+void update_score(game_state_t *state) {
+  if (!state->needs_restart) {
     int new_score = state->health / 10 - 10;
-    if (new_score < 0)
-    {
+    if (new_score < 0) {
       new_score = 0;
     }
     state->score = new_score;
   }
 }
 
-void screen_game_render(game_state_t *state)
-{
-  if (state->needs_restart)
-  {
+void screen_game_render(game_state_t *state) {
+  if (state->needs_restart) {
     game_setup(state, min, max);
-  }
-  else
-  {
+  } else {
     game_actions_help_end(state);
     game_update_texts(state);
   }
   state->ticks += 1;
-  if (state->thrust_ticks_remaining > 0)
-  {
+  if (state->thrust_ticks_remaining > 0) {
     state->thrust_ticks_remaining -= 1;
   }
 
-  if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0)
-  {
+  if (state->ticks % SHOOTING_STAR_ADD_INTERVAL == 0) {
     game_build_shooting_star(state->scene);
   }
 
@@ -82,52 +73,46 @@ void screen_game_render(game_state_t *state)
   game_actions_check_for_game_over(state);
 }
 
-void screen_game_over_render(game_state_t *state)
-{
+void screen_game_over_render(game_state_t *state) {
   int ticks = state->ticks;
-  if (ticks == 0)
-  {
+  if (ticks == 0) {
     scene_free(state->scene);
     state->scene = scene_init();
     state->rocket = NULL;
     state->needs_restart = false;
     state->level = 1;
-    text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
-                              END_GAME_SCORE_SIZE, state->score,
-                              END_GAME_SCORE_DIMENSIONS);
+    text_t *score =
+        text_init("SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
+                  state->score, END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
     game_build_lost_background(state);
   }
   state->ticks += 1;
 }
 
-void screen_game_win_render(game_state_t *state)
-{
+void screen_game_win_render(game_state_t *state) {
   int ticks = state->ticks;
-  if (ticks == 0)
-  {
+  if (ticks == 0) {
     scene_free(state->scene);
     state->scene = scene_init();
     game_build_won_background(state);
     state->rocket = NULL;
     state->needs_restart = false;
-    text_t *score = text_init("SCORE: ", END_GAME_SCORE_POSITION,
-                              END_GAME_SCORE_SIZE, state->score,
-                              END_GAME_SCORE_DIMENSIONS);
+    text_t *score =
+        text_init("SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
+                  state->score, END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
   }
   state->ticks += 1;
 }
 
-void game_state_free(game_state_t *state)
-{
+void game_state_free(game_state_t *state) {
   scene_free(state->scene);
   free(state->texts);
   free(state);
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   // Initialize random number generator
   srand(time(NULL));
 
@@ -147,32 +132,30 @@ int main(int argc, char *argv[])
   sdl_on_key((key_handler_t)handle_key_press);
 
   // Start the music
+
+  // Used resource:
+  // https://gigi.nullneuron.net/gigilabs/playing-a-wav-file-using-sdl2/
   SDL_Init(SDL_INIT_AUDIO);
-  SDL_AudioSpec wavSpec;
-  Uint32 wavLength;
-  Uint8 *wavBuffer;
-  SDL_LoadWAV("Interlude.wav", &wavSpec, &wavBuffer, &wavLength);
-
-  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-
-  SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+  SDL_AudioSpec *wavSpec = malloc(sizeof(SDL_AudioSpec));
+  Uint32 *wavLength = malloc(sizeof(Uint32));
+  Uint8 **wavBuffer = malloc(sizeof(Uint8 *));
+  SDL_RWops *src = SDL_RWFromFile("Interlude.wav", "rb");
+  SDL_LoadWAV_RW(src, 1, wavSpec, wavBuffer, wavLength);
+  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, wavSpec, NULL, 0);
+  SDL_QueueAudio(deviceId, *wavBuffer, *wavLength);
   SDL_PauseAudioDevice(deviceId, 0);
 
   // Render the correct screen each tick.
-  while (!sdl_is_done())
-  {
-    if (state->quit_game)
-    {
+  while (!sdl_is_done()) {
+    if (state->quit_game) {
       break;
     }
     double dt = time_since_last_tick();
     update_score(state);
-    if (state->needs_restart)
-    {
+    if (state->needs_restart) {
       state->ticks = 0;
     }
-    switch (state->current_screen)
-    {
+    switch (state->current_screen) {
     case SCREEN_START:
       game_beginning_setup(state);
       break;
@@ -199,5 +182,5 @@ int main(int argc, char *argv[])
   game_state_free(state);
 
   SDL_CloseAudioDevice(deviceId);
-  SDL_FreeWAV(wavBuffer);
+  SDL_FreeWAV(*wavBuffer);
 }
