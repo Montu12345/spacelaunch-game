@@ -26,6 +26,9 @@ const int GA_MAX_THRUST_TICKS = 10;
 const vector_t GA_min = {.x = 0, .y = 0};
 const vector_t GA_max = {.x = GA_SCREEN_SIZE_X, .y = GA_SCREEN_SIZE_Y};
 
+const int INITIAL_TIME = 60;
+const int TIME_LEVEL_SCALE = 10;
+
 enum space_body_type_t
 {
     GOOD_OBSTACLE,
@@ -73,6 +76,8 @@ void game_beginning_setup(game_state_t *state)
         game_build_welcome_background(state);
         game_build_stationary_rockets(state);
         state->level = 1;
+        state->timer = INITIAL_TIME;
+        state->score = 0;
     }
     state->ticks += 1;
 }
@@ -108,9 +113,7 @@ void game_setup(game_state_t *state, vector_t screen_min, vector_t screen_max)
     state->scene = scene;
     state->needs_restart = false;
     state->score_display = score_display;
-    state->score = 0;
     state->health = 100;
-    state->timer = 0;
     body_t *rocket = game_build_rocket(scene, state, space_body_type_init(ROCKET));
     state->rocket = rocket;
     game_build_help(state);
@@ -238,7 +241,7 @@ void game_actions_physics_collision(body_t *focal_body, body_t *asteroid,
     {
         if (rand() % 4 == 0)
         {
-            game_build_powerup_text(state, "YOU LOST 75 POINTS");
+            game_build_powerup_text(state, "YOU LOST 75 HEALTH");
             game_actions_new_health(state, -75);
         }
         else
@@ -300,7 +303,6 @@ void game_actions_check_for_game_over(game_state_t *state)
     {
         state->current_screen = SCREEN_GAME_OVER;
         state->needs_restart = true;
-        // state->level = 1;
     }
 }
 
@@ -309,4 +311,5 @@ void game_actions_game_win(game_state_t *state)
     state->current_screen = SCREEN_GAME_WIN;
     state->needs_restart = true;
     state->level++;
+    state->timer = INITIAL_TIME + state->level * TIME_LEVEL_SCALE;
 }

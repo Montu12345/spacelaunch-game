@@ -53,6 +53,7 @@ typedef struct game_state {
   int score;
   int health;
   int level;
+  vector_t arena_max;
 
   int thrust_ticks_remaining;
 

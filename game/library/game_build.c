@@ -7,7 +7,10 @@ const vector_t GB_min = {.x = 0, .y = 0};
 const vector_t GB_max = {.x = GB_SCREEN_SIZE_X, .y = GB_SCREEN_SIZE_Y};
 
 const vector_t ARENA_MIN = {.x = 0, .y = 0};
-const vector_t ARENA_MAX = {.x = 2000, .y = 1000};
+// endzone + borders width/height
+// const vector_t ARENA_MAX = {.x = 2000, .y = 1000};
+const vector_t INITIAL_ARENA_MAX = {.x = 2000, .y = 1000};
+
 const vector_t GB_ROCKET_INITIAL_POS = {.x = 50, .y = 500};
 
 const double GB_ASTEROID_MASS = INFINITY;
@@ -123,7 +126,7 @@ void game_build_shooting_star(scene_t *scene)
     body_t *shooting_star = body_init_with_info(
         shooting_star_list, GB_SHOOTING_STAR_MASS, GB_SHOOTING_STAR_COLOR,
         space_body_type_init(STAR), free);
-    vector_t pos = {.x = 0, .y = rand() % (int)ARENA_MAX.x};
+    vector_t pos = {.x = 0, .y = rand() % (int)INITIAL_ARENA_MAX.x};
     vector_t velocity = GB_SHOOTING_STAR_VELCOITY;
     body_set_velocity(shooting_star, velocity);
     body_set_centroid(shooting_star, pos);
@@ -182,7 +185,7 @@ body_t *game_build_rocket(scene_t *scene, game_state_t *state, void *type)
 void game_build_sky(scene_t *scene)
 {
     list_t *background_list = sprite_make_rect(
-        (int)ARENA_MIN.x, (int)ARENA_MAX.x, (int)ARENA_MIN.y, (int)ARENA_MAX.y);
+        (int)ARENA_MIN.x, (int)INITIAL_ARENA_MAX.x, (int)ARENA_MIN.y, (int)INITIAL_ARENA_MAX.y);
     body_t *background =
         body_init_with_info(background_list, INFINITY, GB_BACKGROUND_COLOR,
                             space_body_type_init(BACKGROUND_OBJECT), free);
@@ -192,9 +195,9 @@ void game_build_sky(scene_t *scene)
 void game_build_stars(scene_t *scene)
 {
 
-    for (double i = ARENA_MIN.y; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
+    for (double i = ARENA_MIN.y; i < INITIAL_ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
     {
-        for (double j = ARENA_MIN.x; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
+        for (double j = ARENA_MIN.x; j < INITIAL_ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
              j++)
         {
             list_t *star_list = sprite_make_star(
@@ -219,8 +222,8 @@ double get_rand()
 void game_build_draw_asteroids(game_state_t *state)
 {
 
-    double arena_width = ARENA_MAX.x - ARENA_MIN.x;
-    double arena_height = ARENA_MAX.y - ARENA_MIN.y;
+    double arena_width = INITIAL_ARENA_MAX.x - ARENA_MIN.x;
+    double arena_height = INITIAL_ARENA_MAX.y - ARENA_MIN.y;
 
     int squares_x = arena_width / GB_ASTEROID_CONTAINER_LENGTH;
     int squares_y = arena_height / GB_ASTEROID_CONTAINER_LENGTH;
@@ -256,10 +259,10 @@ void game_build_draw_asteroids(game_state_t *state)
 
 void game_build_endzone(game_state_t *state)
 {
-    double arena_height = ARENA_MAX.y - ARENA_MIN.y;
+    double arena_height = INITIAL_ARENA_MAX.y - ARENA_MIN.y;
     list_t *shape = sprite_make_rect(0, GB_FENCE_DEPTH, ARENA_MIN.y,
-                                     ARENA_MAX.y + GB_FENCE_DEPTH);
-    vector_t centroid = {.x = ARENA_MAX.x - (GB_FENCE_DEPTH / 2),
+                                     INITIAL_ARENA_MAX.y + GB_FENCE_DEPTH);
+    vector_t centroid = {.x = INITIAL_ARENA_MAX.x - (GB_FENCE_DEPTH / 2),
                          .y = ARENA_MIN.y - (GB_FENCE_DEPTH / 2) +
                               arena_height / 2.0};
     enum space_body_type_t *obstacle_type = space_body_type_init(ENDZONE);
@@ -287,23 +290,23 @@ void add_fence_to_scene(game_state_t *state, list_t *shape, vector_t centroid)
 
 void game_build_fence(game_state_t *state)
 {
-    double arena_width = ARENA_MAX.x - ARENA_MIN.x;
-    double arena_height = ARENA_MAX.y - ARENA_MIN.y;
+    double arena_width = INITIAL_ARENA_MAX.x - ARENA_MIN.x;
+    double arena_height = INITIAL_ARENA_MAX.y - ARENA_MIN.y;
 
     list_t *bottom_shape =
-        sprite_make_rect(ARENA_MIN.x, ARENA_MAX.x, 0, GB_FENCE_DEPTH);
+        sprite_make_rect(ARENA_MIN.x, INITIAL_ARENA_MAX.x, 0, GB_FENCE_DEPTH);
     vector_t bottom_centroid = {.x = ARENA_MIN.x + arena_width / 2.0,
                                 .y = -GB_FENCE_DEPTH / 2};
     add_fence_to_scene(state, bottom_shape, bottom_centroid);
 
     list_t *top_shape =
-        sprite_make_rect(ARENA_MIN.x, ARENA_MAX.x, 0, GB_FENCE_DEPTH);
+        sprite_make_rect(ARENA_MIN.x, INITIAL_ARENA_MAX.x, 0, GB_FENCE_DEPTH);
     vector_t top_centroid = {.x = ARENA_MIN.x + arena_width / 2.0,
-                             .y = ARENA_MAX.y - (GB_FENCE_DEPTH / 2)};
+                             .y = INITIAL_ARENA_MAX.y - (GB_FENCE_DEPTH / 2)};
     add_fence_to_scene(state, top_shape, top_centroid);
 
     list_t *left_shape = sprite_make_rect(0, GB_FENCE_DEPTH, ARENA_MIN.y,
-                                          ARENA_MAX.y + GB_FENCE_DEPTH);
+                                          INITIAL_ARENA_MAX.y + GB_FENCE_DEPTH);
     vector_t left_centroid = {.x = ARENA_MIN.x - (GB_FENCE_DEPTH / 2),
                               .y = ARENA_MIN.y - (GB_FENCE_DEPTH / 2) +
                                    arena_height / 2.0};

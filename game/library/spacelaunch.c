@@ -78,7 +78,7 @@ void screen_game_render(game_state_t *state)
     game_build_shooting_star(state->scene);
   }
 
-  state->timer += 0.1;
+  state->timer -= 0.1;
   game_actions_check_for_game_over(state);
 }
 
