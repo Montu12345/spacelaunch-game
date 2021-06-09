@@ -287,30 +287,12 @@ void sdl_create_words_numbers(text_t *text)
   boundary->h = text_get_text_dimensions(text).y;
   boundary->x = text_get_text_position(text).x;
   boundary->y = text_get_text_position(text).y;
-  SDL_RenderCopy(renderer, texture, NULL, boundary);
+  SDL_Rect *screen_bounds = transform_bounds_to_screen(boundary);
+  SDL_RenderCopy(renderer, texture, NULL, screen_bounds);
   SDL_DestroyTexture(texture);
   SDL_FreeSurface(surface);
   free(boundary);
-  TTF_CloseFont(font);
-}
-
-void sdl_create_words_only(text_t *text)
-{
-  TTF_Font *font = font = TTF_OpenFont("CourierPrime-Regular.ttf", 100);
-  SDL_Color color = {255, 255, 255};
-  char score_print[500];
-  sprintf(score_print, "%s", text_get_words(text));
-  SDL_Surface *surface = TTF_RenderUTF8_Blended(font, score_print, color);
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-  SDL_Rect *boundary = malloc(sizeof(SDL_Rect));
-  boundary->w = text_get_text_dimensions(text).x;
-  boundary->h = text_get_text_dimensions(text).y;
-  boundary->x = text_get_text_position(text).x;
-  boundary->y = text_get_text_position(text).y;
-  SDL_RenderCopy(renderer, texture, NULL, boundary);
-  SDL_DestroyTexture(texture);
-  SDL_FreeSurface(surface);
-  free(boundary);
+  free(screen_bounds);
   TTF_CloseFont(font);
 }
 

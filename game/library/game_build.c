@@ -52,22 +52,22 @@ const int GB_TEXT_WIDTH = 100;
 const int GB_TEXT_HEIGHT = 30;
 
 const vector_t GB_SCORE_POSITION = {
-    .x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = 5};
+    .x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y - 5 - GB_TEXT_HEIGHT};
 const vector_t GB_SCORE_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_TIMER_POSITION = {.x = GB_SCREEN_SIZE_X - GB_TEXT_WIDTH - 15,
-                                    .y = 5};
+                                    .y = GB_SCREEN_SIZE_Y - 5 - GB_TEXT_HEIGHT};
 const vector_t GB_TIMER_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
-const vector_t GB_HELP_POSITION = {.x = 10, .y = GB_SCREEN_SIZE_Y - 50};
+const vector_t GB_HELP_POSITION = {.x = 10, .y = 50 - GB_TEXT_HEIGHT};
 const vector_t GB_HELP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 50, .y = GB_TEXT_HEIGHT};
 const int GB_HELP_SIZE = 200;
 
-const vector_t GB_POWERUP_POSITION = {.x = GB_SCREEN_SIZE_X / 2 - (GB_TEXT_WIDTH + 100) / 2.0, .y = 50};
+const vector_t GB_POWERUP_POSITION = {.x = GB_SCREEN_SIZE_X / 2 - (GB_TEXT_WIDTH + 100) / 2.0, .y = GB_SCREEN_SIZE_Y - 50 - GB_TEXT_HEIGHT};
 const vector_t GB_POWERUP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 100, .y = GB_TEXT_HEIGHT};
 const int GB_POWERUP_SIZE = 300;
 
-const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
+const vector_t GB_HEALTH_POSITION = {.x = 40, .y = GB_SCREEN_SIZE_Y - 35 - GB_TEXT_HEIGHT};
 const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_FINAL_SCORE_POS = {
@@ -77,7 +77,7 @@ const vector_t GB_FINAL_SCORE_DIM = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_LEVEL_POSITION = {
     .x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0,
-    .y = GB_SCREEN_SIZE_Y - GB_TEXT_HEIGHT - 15};
+    .y = 50 - GB_TEXT_HEIGHT};
 const vector_t GB_LEVEL_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const double GB_FENCE_DEPTH = 50;
@@ -135,6 +135,16 @@ void game_build_draw_starry_night(scene_t *scene)
 {
     game_build_sky(scene);
     game_build_stars(scene);
+}
+
+char *vertical_fence_resource_path(game_state_t *state)
+{
+    return "game/textures/vertical_fence.png";
+}
+
+char *horizontal_fence_resource_path(game_state_t *state)
+{
+    return "game/textures/horizontal_fence.png";
 }
 
 char *endzone_resource_path(game_state_t *state)
@@ -198,9 +208,9 @@ void game_build_sky(scene_t *scene)
 void game_build_stars(scene_t *scene)
 {
 
-    for (double i = ARENA_MIN.y - 5 ; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
+    for (double i = ARENA_MIN.y - 5; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
     {
-        for (double j = ARENA_MIN.x- 10; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
+        for (double j = ARENA_MIN.x - 10; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
              j++)
         {
             list_t *star_list = sprite_make_star(
@@ -279,7 +289,7 @@ void game_build_endzone(game_state_t *state)
     scene_add_body(state->scene, endzone);
 }
 
-void add_fence_to_scene(game_state_t *state, list_t *shape, vector_t centroid)
+void add_vertical_fence_to_scene(game_state_t *state, list_t *shape, vector_t centroid)
 {
     enum space_body_type_t *obstacle_type = space_body_type_init(FENCE);
     body_t *fence =
@@ -288,6 +298,22 @@ void add_fence_to_scene(game_state_t *state, list_t *shape, vector_t centroid)
     body_set_movable(fence, false);
     game_actions_rocket_fence_collision(state, fence);
     body_set_camera_mode(fence, SCENE);
+    body_set_texture_path_func(fence, (texture_path_func_t)vertical_fence_resource_path,
+                               state, NULL);
+    scene_add_body(state->scene, fence);
+}
+
+void add_horizontal_fence_to_scene(game_state_t *state, list_t *shape, vector_t centroid)
+{
+    enum space_body_type_t *obstacle_type = space_body_type_init(FENCE);
+    body_t *fence =
+        body_init_with_info(shape, INFINITY, FENCE_COLOR, obstacle_type, free);
+    body_set_centroid(fence, centroid);
+    body_set_movable(fence, false);
+    game_actions_rocket_fence_collision(state, fence);
+    body_set_camera_mode(fence, SCENE);
+    body_set_texture_path_func(fence, (texture_path_func_t)horizontal_fence_resource_path,
+                               state, NULL);
     scene_add_body(state->scene, fence);
 }
 
@@ -300,13 +326,13 @@ void game_build_fence(game_state_t *state)
         sprite_make_rect(ARENA_MIN.x, ARENA_MAX.x, 0, GB_FENCE_DEPTH);
     vector_t bottom_centroid = {.x = ARENA_MIN.x + arena_width / 2.0,
                                 .y = -GB_FENCE_DEPTH / 2};
-    add_fence_to_scene(state, bottom_shape, bottom_centroid);
+    add_horizontal_fence_to_scene(state, bottom_shape, bottom_centroid);
 
     list_t *top_shape =
         sprite_make_rect(ARENA_MIN.x, ARENA_MAX.x, 0, GB_FENCE_DEPTH);
     vector_t top_centroid = {.x = ARENA_MIN.x + arena_width / 2.0,
                              .y = ARENA_MAX.y - (GB_FENCE_DEPTH / 2)};
-    add_fence_to_scene(state, top_shape, top_centroid);
+    add_horizontal_fence_to_scene(state, top_shape, top_centroid);
 
     list_t *left_shape = sprite_make_rect(0, GB_FENCE_DEPTH, ARENA_MIN.y,
                                           ARENA_MAX.y + GB_FENCE_DEPTH);
@@ -314,7 +340,7 @@ void game_build_fence(game_state_t *state)
                               .y = ARENA_MIN.y - (GB_FENCE_DEPTH / 2) +
                                    arena_height / 2.0};
 
-    add_fence_to_scene(state, left_shape, left_centroid);
+    add_vertical_fence_to_scene(state, left_shape, left_centroid);
 }
 
 void game_build_asteroid(game_state_t *state, vector_t centroid)

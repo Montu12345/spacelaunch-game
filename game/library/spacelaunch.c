@@ -14,7 +14,6 @@
 #include "game_build.h"
 #include "scene.h"
 #include "sdl_wrapper.h"
-#include "spacelaunch.h"
 #include "sprite.h"
 #include "text.h"
 
@@ -183,6 +182,7 @@ int main(int argc, char *argv[])
       break;
     case SCREEN_GAME:
       screen_game_render(state);
+      state->timer += dt;
       scene_tick(state->scene, dt);
       break;
     case SCREEN_GAME_OVER:
