@@ -14,7 +14,6 @@
 #include "game_build.h"
 #include "scene.h"
 #include "sdl_wrapper.h"
-#include "spacelaunch.h"
 #include "sprite.h"
 #include "text.h"
 
