@@ -139,13 +139,6 @@ void sdl_event_args(void *args);
 double time_since_last_tick(void);
 
 /**
- * Creates words on the screen
- * 
- * @param text text to appear on screen
- */
-void sdl_create_words_only(text_t *text);
-
-/**
  * Creates words with numbers on the screen
  * 
  * @param text text to appear on screen

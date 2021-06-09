@@ -77,7 +77,6 @@ void screen_game_render(game_state_t *state)
     game_build_shooting_star(state->scene);
   }
 
-  state->timer += 0.1;
   game_actions_check_for_game_over(state);
 }
 
@@ -182,6 +181,7 @@ int main(int argc, char *argv[])
       break;
     case SCREEN_GAME:
       screen_game_render(state);
+      state->timer += dt;
       scene_tick(state->scene, dt);
       break;
     case SCREEN_GAME_OVER:

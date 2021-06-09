@@ -51,22 +51,22 @@ const int GB_TEXT_WIDTH = 100;
 const int GB_TEXT_HEIGHT = 30;
 
 const vector_t GB_SCORE_POSITION = {
-    .x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = 5};
+    .x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0, .y = GB_SCREEN_SIZE_Y - 5 - GB_TEXT_HEIGHT};
 const vector_t GB_SCORE_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_TIMER_POSITION = {.x = GB_SCREEN_SIZE_X - GB_TEXT_WIDTH - 15,
-                                    .y = 5};
+                                    .y = GB_SCREEN_SIZE_Y - 5 - GB_TEXT_HEIGHT};
 const vector_t GB_TIMER_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
-const vector_t GB_HELP_POSITION = {.x = 10, .y = GB_SCREEN_SIZE_Y - 50};
+const vector_t GB_HELP_POSITION = {.x = 10, .y = 50 - GB_TEXT_HEIGHT};
 const vector_t GB_HELP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 50, .y = GB_TEXT_HEIGHT};
 const int GB_HELP_SIZE = 200;
 
-const vector_t GB_POWERUP_POSITION = {.x = GB_SCREEN_SIZE_X / 2 - (GB_TEXT_WIDTH + 100) / 2.0, .y = 50};
+const vector_t GB_POWERUP_POSITION = {.x = GB_SCREEN_SIZE_X / 2 - (GB_TEXT_WIDTH + 100) / 2.0, .y = GB_SCREEN_SIZE_Y - 50 - GB_TEXT_HEIGHT};
 const vector_t GB_POWERUP_DIMENSIONS = {.x = GB_TEXT_WIDTH + 100, .y = GB_TEXT_HEIGHT};
 const int GB_POWERUP_SIZE = 300;
 
-const vector_t GB_HEALTH_POSITION = {.x = 40, .y = 35};
+const vector_t GB_HEALTH_POSITION = {.x = 40, .y = GB_SCREEN_SIZE_Y - 35 - GB_TEXT_HEIGHT};
 const vector_t GB_HEALTH_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_FINAL_SCORE_POS = {
@@ -76,7 +76,7 @@ const vector_t GB_FINAL_SCORE_DIM = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const vector_t GB_LEVEL_POSITION = {
     .x = GB_SCREEN_SIZE_X / 2.0 - GB_TEXT_WIDTH / 2.0,
-    .y = GB_SCREEN_SIZE_Y - GB_TEXT_HEIGHT - 15};
+    .y = 50 - GB_TEXT_HEIGHT};
 const vector_t GB_LEVEL_DIMENSIONS = {.x = GB_TEXT_WIDTH, .y = GB_TEXT_HEIGHT};
 
 const double GB_FENCE_DEPTH = 50;
@@ -207,9 +207,9 @@ void game_build_sky(scene_t *scene)
 void game_build_stars(scene_t *scene)
 {
 
-    for (double i = ARENA_MIN.y - 5 ; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
+    for (double i = ARENA_MIN.y - 5; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
     {
-        for (double j = ARENA_MIN.x- 10; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
+        for (double j = ARENA_MIN.x - 10; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
              j++)
         {
             list_t *star_list = sprite_make_star(
