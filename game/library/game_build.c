@@ -137,6 +137,11 @@ void game_build_draw_starry_night(scene_t *scene)
     game_build_stars(scene);
 }
 
+char *endzone_resource_path(game_state_t *state)
+{
+    return "game/textures/endzone.png";
+}
+
 char *rocket_resource_path(game_state_t *state)
 {
     // If the body does not yet exist or it is not moving, return the idle image.
@@ -193,9 +198,9 @@ void game_build_sky(scene_t *scene)
 void game_build_stars(scene_t *scene)
 {
 
-    for (double i = ARENA_MIN.y; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
+    for (double i = ARENA_MIN.y - 5 ; i < ARENA_MAX.y / GB_FREQUENCY_FOR_STARS; i++)
     {
-        for (double j = ARENA_MIN.x; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
+        for (double j = ARENA_MIN.x- 10; j < ARENA_MAX.x / GB_FREQUENCY_FOR_STARS;
              j++)
         {
             list_t *star_list = sprite_make_star(
@@ -269,6 +274,8 @@ void game_build_endzone(game_state_t *state)
     body_set_movable(endzone, false);
     game_actions_rocket_endzone_collision(state, endzone);
     body_set_camera_mode(endzone, SCENE);
+    body_set_texture_path_func(endzone, (texture_path_func_t)endzone_resource_path,
+                               state, NULL);
     scene_add_body(state->scene, endzone);
 }
 

@@ -141,13 +141,15 @@ double time_since_last_tick(void);
 /**
  * Creates words on the screen
  * 
- * @param position score position
- * @param dimentions score dimentions
- * @param words words
- * @param number number
+ * @param text text to appear on screen
  */
 void sdl_create_words_only(text_t *text);
 
+/**
+ * Creates words with numbers on the screen
+ * 
+ * @param text text to appear on screen
+ */
 void sdl_create_words_numbers(text_t *text);
 
 #endif // #ifndef __SDL_WRAPPER_H__
