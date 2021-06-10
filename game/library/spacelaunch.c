@@ -24,10 +24,18 @@ const vector_t max = {.x = SCREEN_SIZE_X, .y = SCREEN_SIZE_Y};
 const rgb_color_t WAIT_BACKGROUND_COLOR = {.r = 0, .g = 0, .b = 0};
 const int SHOOTING_STAR_ADD_INTERVAL = 170;
 
-const vector_t END_GAME_SCORE_DIMENSIONS = {.x = 300, .y = 100};
+const vector_t END_GAME_SCORE_DIMENSIONS = {.x = 400, .y = 100};
 const int END_GAME_SCORE_SIZE = 100;
-const vector_t END_GAME_SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 300 / 2.0,
-                                          .y = SCREEN_SIZE_Y / 2.0 - 40};
+const vector_t END_GAME_SCORE_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 200,
+                                          .y = SCREEN_SIZE_Y / 2.0 - 80};
+const vector_t END_GAME_HEALTH_DIMENSIONS = {.x = 175, .y = 50};
+const int END_GAME_HEALTH_SIZE = 100;
+const vector_t END_GAME_HEALTH_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 190,
+                                          .y = SCREEN_SIZE_Y / 2.0};
+const vector_t END_GAME_TIME_DIMENSIONS = {.x = 185, .y = 50};
+const int END_GAME_TIME_SIZE = 100;
+const vector_t END_GAME_TIME_POSITION = {.x = SCREEN_SIZE_X / 2.0 + 20,
+                                          .y = SCREEN_SIZE_Y / 2.0};
 const vector_t END_GAME_CONT_DIMENSIONS = {.x = 500, .y = 100};
 const int END_GAME_CONT_SIZE = 100;
 const vector_t END_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 500 / 2.0,
@@ -42,18 +50,7 @@ const vector_t WIN_GAME_CONT_POSITION = {.x = SCREEN_SIZE_X / 2.0 - 700 / 2.0,
 const int TEXT_WIDTH = 100;
 const int TEXT_HEIGHT = 30;
 
-void update_score(game_state_t *state)
-{
-  if (!state->needs_restart)
-  {
-    int new_score = state->health / 10 - 10;
-    if (new_score < 0)
-    {
-      new_score = 0;
-    }
-    state->score = new_score;
-  }
-}
+const int TIME_LEVEL_SCALE = 10;
 
 void screen_game_render(game_state_t *state)
 {
@@ -90,9 +87,10 @@ void screen_game_over_render(game_state_t *state)
     state->needs_restart = false;
     state->level = 1;
     text_t *score =
-        text_init("SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
+        text_init("FINAL SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
                   state->score, END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
+    state->score = 0;
     game_build_lost_background(state);
   }
   state->ticks += 1;
@@ -112,6 +110,16 @@ void screen_game_win_render(game_state_t *state)
         text_init("SCORE: ", END_GAME_SCORE_POSITION, END_GAME_SCORE_SIZE,
                   state->score, END_GAME_SCORE_DIMENSIONS);
     scene_add_text(state->scene, score);
+    text_t *health =
+        text_init("HEALTH: ", END_GAME_HEALTH_POSITION, END_GAME_HEALTH_SIZE,
+                  state->health, END_GAME_HEALTH_DIMENSIONS);
+    scene_add_text(state->scene, health);
+    text_t *time =
+        text_init("TIME LEFT: ", END_GAME_TIME_POSITION, END_GAME_TIME_SIZE,
+                  state->timer, END_GAME_TIME_DIMENSIONS);
+    scene_add_text(state->scene, time);
+    state->timer = INITIAL_TIME + (state->level - 1) * TIME_LEVEL_SCALE;
+
   }
   state->ticks += 1;
 }
@@ -165,7 +173,6 @@ int main(int argc, char *argv[])
       break;
     }
     double dt = time_since_last_tick();
-    update_score(state);
     if (state->needs_restart)
     {
       state->ticks = 0;

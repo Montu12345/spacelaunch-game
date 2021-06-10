@@ -27,7 +27,6 @@ const vector_t GA_min = {.x = 0, .y = 0};
 const vector_t GA_max = {.x = GA_SCREEN_SIZE_X, .y = GA_SCREEN_SIZE_Y};
 
 const int INITIAL_TIME = 50;
-const int TIME_LEVEL_SCALE = 10;
 
 enum space_body_type_t
 {
@@ -315,6 +314,5 @@ void game_actions_game_win(game_state_t *state)
     state->current_screen = SCREEN_GAME_WIN;
     state->needs_restart = true;
     state->level++;
-    state->score += 0.5 * state->timer;
-    state->timer = INITIAL_TIME + (state->level - 1) * TIME_LEVEL_SCALE;
+    state->score += state->timer + state->health;
 }

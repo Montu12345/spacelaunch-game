@@ -16,6 +16,8 @@
 #include "sprite.h"
 #include "text.h"
 
+extern const int INITIAL_TIME;
+
 typedef enum {
   SCREEN_GAME_OVER,
   SCREEN_GAME_WIN,
@@ -33,7 +35,7 @@ typedef struct game_texts {
   text_t *level;
   text_t *power_up;
 } game_texts_t;
-
+ 
 /**
  * Properties to pass into the handler
  *  focal_body -- the focal_body body
