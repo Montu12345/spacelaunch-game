@@ -155,15 +155,15 @@ int main(int argc, char *argv[])
 
   // Used resource:
   // https://gigi.nullneuron.net/gigilabs/playing-a-wav-file-using-sdl2/
-  SDL_Init(SDL_INIT_AUDIO);
-  SDL_AudioSpec *wavSpec = malloc(sizeof(SDL_AudioSpec));
-  Uint32 *wavLength = malloc(sizeof(Uint32));
-  Uint8 **wavBuffer = malloc(sizeof(Uint8 *));
-  SDL_RWops *src = SDL_RWFromFile("Interlude.wav", "rb");
-  SDL_LoadWAV_RW(src, 1, wavSpec, wavBuffer, wavLength);
-  SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, wavSpec, NULL, 0);
-  SDL_QueueAudio(deviceId, *wavBuffer, *wavLength);
-  SDL_PauseAudioDevice(deviceId, 0);
+  // SDL_Init(SDL_INIT_AUDIO);
+  // SDL_AudioSpec *wavSpec = malloc(sizeof(SDL_AudioSpec));
+  // Uint32 *wavLength = malloc(sizeof(Uint32));
+  // Uint8 **wavBuffer = malloc(sizeof(Uint8 *));
+  // SDL_RWops *src = SDL_RWFromFile("Interlude.wav", "rb");
+  // SDL_LoadWAV_RW(src, 1, wavSpec, wavBuffer, wavLength);
+  // SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, wavSpec, NULL, 0);
+  // SDL_QueueAudio(deviceId, *wavBuffer, *wavLength);
+  // SDL_PauseAudioDevice(deviceId, 0);
 
   // Render the correct screen each tick.
   while (!sdl_is_done())
@@ -205,9 +205,9 @@ int main(int argc, char *argv[])
   TTF_Quit();
   game_state_free(state);
 
-  SDL_CloseAudioDevice(deviceId);
-  SDL_FreeWAV(*wavBuffer);
-  free(wavLength);
-  free(wavBuffer);
-  free(wavSpec);
+  // SDL_CloseAudioDevice(deviceId);
+  // SDL_FreeWAV(*wavBuffer);
+  // free(wavLength);
+  // free(wavBuffer);
+  // free(wavSpec);
 }
