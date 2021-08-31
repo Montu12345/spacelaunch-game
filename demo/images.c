@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-// Launch rocket demo
+// Launch rocket demo!
 
 const vector_t ACCELERATION = {.x = 0, .y = -5000};
 
